@@ -1,0 +1,16 @@
+html {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+#hrz-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    -webkit-perspective: 500px;
+            perspective: 500px;
+    -webkit-transform-origin: center center;
+        -ms-transform-origin: center center;
+            transform-origin: center center;
+}

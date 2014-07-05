@@ -1,0 +1,30 @@
+{
+  "name": "horizonal",
+  "version": "0.0.0",
+  "authors": [
+    "Michael Bromley <michael@michaelbromley.co.uk>"
+  ],
+  "description": "Transform your HTML document into a series of 3D transitioning pages.",
+  "main": "dist/horizonal.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "css",
+    "3d",
+    "transforms",
+    "paging",
+    "jquery"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1"
+  }
+}

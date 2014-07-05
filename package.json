@@ -1,0 +1,27 @@
+{
+  "name": "horizonal",
+  "version": "0.0.0",
+  "description": "Transform your HTML document into a series of 3D transitioning pages.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.5.0",
+    "grunt-autoprefixer": "^0.8.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-copy": "^0.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "css",
+    "3d",
+    "transforms",
+    "paging",
+    "jquery"
+  ],
+  "author": "Michael Bromley <michael@michaelbromley.co.uk>",
+  "license": "MIT"
+}
