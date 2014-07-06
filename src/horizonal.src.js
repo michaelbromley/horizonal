@@ -23,8 +23,9 @@ var horizonal = function($, window, document) {
         var documentHeight;
         var nodePageOrder = 0;
         options = $.extend( {}, defaults, _options);
-        lastPage = 0;
-        currentPage = 0;
+        pageOffsets = [0];
+        lastPage = 1;
+        currentPage = 1;
         allNodes = $(options.selector);
 
         // add a <style> block to the header which will contain custom CSS styles passed in by the options object
@@ -34,7 +35,6 @@ var horizonal = function($, window, document) {
         $('body').wrapInner('<div id="hrz-container"><div class="hrz-page"></div></div>');
         allNodes.addClass('hrz-element hrz-fore');
 
-        pageOffsets = [];
         viewportHeight = $(window).height() - PAGE_MARGIN * 2;
 
         allNodes.each(function(index, node) {
@@ -74,9 +74,9 @@ var horizonal = function($, window, document) {
         allNodes.each(function(index, node) {
             var $node = $(node);
             var pos = node.hrzCssPosition;
-            var offsetTop = node.hrzPage === 0 ? 0 : pageOffsets[node.hrzPage - 1];
+            var offsetTop = pageOffsets[node.hrzPage - 1];
             var delay = getStaggerDelay(node);
-            var pageMargin = node.hrzPage === 0 ? 0 : PAGE_MARGIN;
+            var pageMargin = node.hrzPage === 1 ? 0 : PAGE_MARGIN;
             $node.css({
                 'position': 'fixed',
                 'top' : pos.top - offsetTop + pageMargin + 'px',
@@ -137,6 +137,21 @@ var horizonal = function($, window, document) {
         } else if (upperBound < scrollTop) {
             currentPage ++;
             showPage(currentPage);
+        }
+    });
+
+    $(window).on('keydown', function(e) {
+        var midpoint;
+        if (e.which === 40 || e.which === 39) {
+            if (currentPage !== lastPage) {
+                $(window).scrollTop(pageOffsets[currentPage] + 10);
+            }
+        } else if (e.which === 38 || e.which === 37) {
+            if (currentPage === 1) {
+                $(window).scrollTop(pageOffsets[currentPage - 1]);
+            } else {
+                $(window).scrollTop(pageOffsets[currentPage - 2]);
+            }
         }
     });
 
