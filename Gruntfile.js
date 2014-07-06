@@ -45,8 +45,14 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['<%= jshint.files %>'],
-            tasks: ['jshint']
+            js: {
+            files: ['src/*.js'],
+            tasks: ['jshint', 'copy', 'uglify']
+            },
+            css: {
+            files: ['src/*.css'],
+            tasks: ['autoprefixer']
+            }
         }
     });
 
