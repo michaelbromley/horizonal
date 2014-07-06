@@ -2,39 +2,55 @@
  * Created by Michael on 05/07/14.
  */
 
-var horizonal = function($) {
+var horizonal = function($, window, document) {
 
-    var PAGE_MARGIN = 20;
-    var allNodes;
-    var currentPage = 0;
-    var lastPage = 0;
-    var pageOffsets;
+    var PAGE_MARGIN = 20,
+        allNodes,
+        currentPage,
+        lastPage,
+        pageOffsets,
+        options;
 
-    function init(options) {
+    var defaults = {
+        selector: 'body *:not(:has(*))',
+        stagger: 'random',
+        transitionSpeed: 1,
+        perspective: 500
+    };
+
+    function init(_options) {
         var viewportHeight;
         var documentHeight;
-        allNodes = $('body *:not(:has(*))');
-        //var allNodes = $('body *');
+        var nodePageOrder = 0;
+        options = $.extend( {}, defaults, _options);
+        lastPage = 0;
+        currentPage = 0;
+        allNodes = $(options.selector);
+
+        // add a <style> block to the header which will contain custom CSS styles passed in by the options object
+        $("head").append("<style type='text/css' id='hrz-custom-styles'></style>");
+
+        // add wrapper divs to hold the page contents
         $('body').wrapInner('<div id="hrz-container"><div class="hrz-page"></div></div>');
-        allNodes.addClass('hrz-element');
+        allNodes.addClass('hrz-element hrz-fore');
 
         pageOffsets = [];
         viewportHeight = $(window).height() - PAGE_MARGIN * 2;
 
         allNodes.each(function(index, node) {
-            var nodePage;
-            var $node = $(node);
-            var left = $node.offset().left;
-            var top = $node.offset().top - parseInt($node.css('margin-top'));
-            var width = $node.width();
-            var height = $node.height();
-            var nodeBottom = top + height;
+            var $node = $(node),
+                left = $node.offset().left,
+                top = $node.offset().top - parseInt($node.css('margin-top')),
+                width = $node.width(),
+                height = $node.height(),
+                nodeBottom = top + height;
 
             if (pageOffsets[lastPage] !== undefined) {
                 if (pageOffsets[lastPage] < nodeBottom) {
                     var pageLowerBound = pageOffsets[lastPage-1] === undefined ? 0 : pageOffsets[lastPage-1];
                     if ((pageLowerBound + viewportHeight) < nodeBottom) {
                         lastPage ++;
+                        nodePageOrder = 0;
                     } else {
                         pageOffsets[lastPage] = nodeBottom;
                     }
@@ -44,6 +60,8 @@ var horizonal = function($) {
             }
             $node.addClass("hrz-page-" + lastPage);
             node.hrzPage = lastPage;
+            node.pageOrder = nodePageOrder;
+            nodePageOrder ++;
 
             node.hrzCssPosition = {
                 'top' : top,
@@ -57,7 +75,7 @@ var horizonal = function($) {
             var $node = $(node);
             var pos = node.hrzCssPosition;
             var offsetTop = node.hrzPage === 0 ? 0 : pageOffsets[node.hrzPage - 1];
-            var delay = Math.random() *  0.5 + 0.7 ;
+            var delay = getStaggerDelay(node);
             var pageMargin = node.hrzPage === 0 ? 0 : PAGE_MARGIN;
             $node.css({
                 'position': 'fixed',
@@ -65,13 +83,27 @@ var horizonal = function($) {
                 'left' : pos.left + 'px',
                 'width' : pos.width + 'px',
                 'height' : pos.height + 'px',
-                '-webkit-transition': '-webkit-transform ' + delay + 's, opacity 1s'
+                'transition': 'transform ' + delay + 's, opacity ' + delay + 's',
+                '-webkit-transition': '-webkit-transform ' + delay + 's, opacity ' + delay + 's'
             });
         });
 
         documentHeight = pageOffsets[pageOffsets.length - 1] + viewportHeight;
         $("body").height(documentHeight);
+        addCustomCssToHead();
         showPage(currentPage);
+    }
+
+    function getStaggerDelay(node) {
+        var delay;
+        if (options.stagger === 'random') {
+            delay = Math.random() *  0.5 + 0.7 ;
+        } else if (options.stagger === 'sequence') {
+            delay = Math.log(node.pageOrder + 2);
+        } else {
+            delay = 1;
+        }
+        return delay / options.transitionSpeed;
     }
 
     function showPage(page) {
@@ -84,6 +116,14 @@ var horizonal = function($) {
                 $(node).removeClass('hrz-fore hrz-back');
             }
         });
+    }
+
+    function addCustomCssToHead() {
+        var customCss;
+        if (options.perspective != defaults.perspective) {
+            customCss = ".hrz-page {-webkit-perspective: " + options.perspective + "px; perspective: " + options.perspective + "px;}";
+        }
+        $('#hrz-custom-styles').html(customCss);
     }
 
     $(window).on('scroll', function() {
@@ -104,4 +144,4 @@ var horizonal = function($) {
         init: init
     };
 
-}(jQuery);
+}(jQuery, window, document);
