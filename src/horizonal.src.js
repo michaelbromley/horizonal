@@ -25,7 +25,7 @@ var horizonal = function($, window, document) {
         allNodes = $(options.selector);
 
         // add wrapper divs to hold the page contents
-        $('body').wrapInner('<div id="hrz-container"><div class="hrz-page"></div></div>');
+        $('body').wrapInner('<div id="hrz-container"></div>');
         allNodes.addClass('hrz-element hrz-fore');
 
         calculateNodePositionsAndPages(allNodes);
@@ -77,6 +77,12 @@ var horizonal = function($, window, document) {
             };
         });
 
+        $.each(pageOffsets, function(index) {
+            if (index !== 0) {
+                $('#hrz-container').prepend('<div class="hrz-page" id="hrz-page-' + index + '" />');
+            }
+        });
+
         allNodes.each(function(index, node) {
             var $node = $(node);
             var pos = node.hrzCssPosition;
@@ -92,6 +98,7 @@ var horizonal = function($, window, document) {
                 'transition': 'transform ' + delay + 's, opacity ' + delay + 's',
                 '-webkit-transition': '-webkit-transform ' + delay + 's, opacity ' + delay + 's'
             });
+            $('#hrz-page-' + node.hrzPage).append($node);
         });
 
         documentHeight = pageOffsets[pageOffsets.length - 1] + viewportHeight;
@@ -111,6 +118,15 @@ var horizonal = function($, window, document) {
     }
 
     function showPage(page) {
+        for (var i = 1; i <= lastPage; i++) {
+            if (i < page) {
+                $('#hrz-page-' + i).addClass('hrz-back');
+            } else if (page < i) {
+                $('#hrz-page-' + i).addClass('hrz-fore');
+            } else {
+                $('#hrz-page-' + i).removeClass('hrz-fore hrz-back');
+            }
+        }
         allNodes.each(function(index, node) {
             if (node.hrzPage < page) {
                 $(node).addClass('hrz-back');

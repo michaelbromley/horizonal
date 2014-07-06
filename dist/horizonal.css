@@ -12,8 +12,12 @@ html {
 }
 
 .hrz-page {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0,0,0,0.1);
     -webkit-transform-origin: center center;
         -ms-transform-origin: center center;
             transform-origin: center center;
@@ -21,26 +25,38 @@ html {
             perspective: 500px;
     -webkit-transform-style: preserve-3d;
             transform-style: preserve-3d;
+    outline: 1px solid red;
+    -webkit-transition: -webkit-transform 1s, opacity 1s;
+            transition: transform 1s, opacity 1s;
+    opacity: 1;
+}
+
+.hrz-page.hrz-fore {
+    -webkit-transform: translateZ(4000px) translateY(-100px);
+            transform: translateZ(4000px) translateY(-100px);
+    opacity: 0;
+}
+
+.hrz-page.hrz-back {
+    -webkit-transform: translateZ(-500px) translateY(100px);
+            transform: translateZ(-500px) translateY(100px);
+    opacity: 0;
 }
 
 .hrz-element {
-    -webkit-transform: rotateX(0deg);
-            transform: rotateX(0deg);
     opacity: 1;
-    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-            transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
     -webkit-transition: -webkit-transform 1s, opacity 1s;
             transition: transform 1s, opacity 1s;
 }
 
 .hrz-element.hrz-back {
     opacity: 0;
-    -webkit-transform: rotateX(0deg) translateZ(400px);
-            transform: rotateX(0deg) translateZ(400px);
+    -webkit-transform: translateZ(0px);
+            transform: translateZ(0px);
 }
 
 .hrz-element.hrz-fore {
     opacity: 0;
-    -webkit-transform: rotateX(0deg) translateZ(-1000px);
-            transform: rotateX(0deg) translateZ(-1000px);
+    -webkit-transform: translateZ(0px);
+            transform: translateZ(0px);
 }
