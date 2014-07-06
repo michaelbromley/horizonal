@@ -8,9 +8,39 @@ html {
     position: fixed;
     width: 100%;
     height: 100%;
-    -webkit-perspective: 500px;
-            perspective: 500px;
+
+}
+
+.hrz-page {
+    width: 100%;
+    height: 100%;
     -webkit-transform-origin: center center;
         -ms-transform-origin: center center;
             transform-origin: center center;
+    -webkit-perspective: 500px;
+            perspective: 500px;
+    -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+}
+
+.hrz-element {
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    opacity: 1;
+    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+            transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    -webkit-transition: -webkit-transform 1s, opacity 1s;
+            transition: transform 1s, opacity 1s;
+}
+
+.hrz-element.hrz-back {
+    opacity: 0;
+    -webkit-transform: rotateX(0deg) translateZ(400px);
+            transform: rotateX(0deg) translateZ(400px);
+}
+
+.hrz-element.hrz-fore {
+    opacity: 0;
+    -webkit-transform: rotateX(0deg) translateZ(-1000px);
+            transform: rotateX(0deg) translateZ(-1000px);
 }

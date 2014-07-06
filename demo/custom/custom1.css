@@ -1,0 +1,22 @@
+.hrz-element {
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    opacity: 1;
+    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+            transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    -webkit-transition: -webkit-transform 1s, opacity 1s;
+            transition: transform 1s, opacity 1s, background-color: 1s;
+}
+
+.hrz-element.hrz-back {
+    opacity: 0;
+    -webkit-transform: translateY(500px) translateZ(400px);
+            transform: translateY(500px) translateZ(400px);
+    background-color: rgba(0,0,0,0.2);
+}
+
+.hrz-element.hrz-fore {
+    opacity: 0;
+    -webkit-transform: translateY(500px) translateZ(-1000px);
+            transform: translateY(500px) translateZ(-1000px);
+}
