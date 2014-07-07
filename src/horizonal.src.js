@@ -5,6 +5,7 @@
 var horizonal = function($, window, document) {
 
     var PAGE_MARGIN = 20,
+        $bodyClone,
         allNodes,
         currentPage,
         lastPage,
@@ -15,18 +16,15 @@ var horizonal = function($, window, document) {
         selector: 'body *:not(:has(*))',
         stagger: 'random',
         transitionSpeed: 1,
-        customCssFile: false
+        customCssFile: false,
+        displayScrollbar: true
     };
 
     function init(_options) {
-        var viewportHeight;
         options = $.extend( {}, defaults, _options);
         currentPage = 1;
-        allNodes = $(options.selector);
-
-        // add wrapper divs to hold the page contents
-        $('body').wrapInner('<div id="hrz-container"></div>');
-        allNodes.addClass('hrz-element hrz-fore');
+        $bodyClone = $('body').clone(); // make a copy of the entire body DOM so that we can re-calculate the layout later
+        allNodes = $(options.selector).filter(':visible');
 
         calculateNodePositionsAndPages(allNodes);
         addCustomCssToHead();
@@ -41,6 +39,9 @@ var horizonal = function($, window, document) {
         viewportHeight = $(window).height() - PAGE_MARGIN * 2;
         pageOffsets = [0];
         lastPage = 1;
+
+        // add wrapper divs to hold the page contents
+        $('body').wrapInner('<div id="hrz-container"></div>');
 
         allNodes.each(function(index, node) {
             var pageLowerBound;
@@ -101,8 +102,13 @@ var horizonal = function($, window, document) {
             $('#hrz-page-' + node.hrzPage).append($node);
         });
 
+        allNodes.addClass('hrz-element hrz-fore');
+
         documentHeight = pageOffsets[pageOffsets.length - 1] + viewportHeight;
         $("body").height(documentHeight);
+        if (!options.displayScrollbar) {
+            $("body").css('overflow-y', 'hidden');
+        }
     }
 
     function getStaggerDelay(node) {
@@ -150,10 +156,12 @@ var horizonal = function($, window, document) {
 
     $(window).on('resize', function() {
         if (allNodes !== undefined) {
-            allNodes.each(function(index,  node) {
+            /*allNodes.each(function(index,  node) {
                 removePageClasses(node);
                 removeInlineCss(node);
-            });
+            });*/
+            $('body').replaceWith($bodyClone.clone());
+            allNodes = $(options.selector).filter(':visible');
             calculateNodePositionsAndPages(allNodes);
             showPage(currentPage);
         }

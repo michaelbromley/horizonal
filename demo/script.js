@@ -1,4 +1,5 @@
 horizonal.init({
     stagger: 'sequence',
-    transitionSpeed: 3
+    transitionSpeed: 2,
+    displayScrollbar: false
 });
