@@ -154,29 +154,26 @@ var horizonal = function($, window, document) {
         }
     }
 
-    $(window).on('resize', function() {
-        if (allNodes !== undefined) {
-            /*allNodes.each(function(index,  node) {
-                removePageClasses(node);
-                removeInlineCss(node);
-            });*/
-            $('body').replaceWith($bodyClone.clone());
-            allNodes = $(options.selector).filter(':visible');
-            calculateNodePositionsAndPages(allNodes);
-            showPage(currentPage);
-        }
-    });
+    $(window).on('resize', debounce(resize, 500));
 
-    function removePageClasses(node) {
-            var prefix = "hrz-page-";
-            var classes = node.className.split(" ").filter(function(c) {
-                return c.lastIndexOf(prefix, 0) !== 0;
-            });
-            node.className = classes.join(" ");
+    /**
+     * When the window is resized, we need to re-calculate the layout of the elements.
+     */
+    function resize() {
+        $('body').replaceWith($bodyClone.clone());
+        allNodes = $(options.selector).filter(':visible');
+        calculateNodePositionsAndPages(allNodes);
+        showPage(currentPage);
     }
 
-    function removeInlineCss(node) {
-        $(node).removeAttr('style');
+    function debounce(fun, mil){
+        var timer;
+        return function(){
+            clearTimeout(timer);
+            timer = setTimeout(function(){
+                fun();
+            }, mil);
+        };
     }
 
     $(window).on('scroll', function() {
