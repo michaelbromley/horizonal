@@ -44,20 +44,47 @@ var horizonal = function($, window, document) {
         // add wrapper div to hold the page contents
         $('body').wrapInner('<div id="hrz-container"></div>');
 
-        allNodes.each(function(index, node) {
+        var allNodesLength = allNodes.length;
+        var offsetDueToAddedNodes = 0;
+        for (var index = 0; index < allNodesLength; index ++) {
+            var node = allNodes[index];
             var pageLowerBound;
             var $node = $(node),
-                left = $node.offset().left,
-                top = $node.offset().top - parseInt($node.css('margin-top')),
-                width = $node.width(),
-                height = $node.height(),
-                nodeBottom = top + height;
+                left = node.hrzCssPosition ? node.hrzCssPosition.left : $node.offset().left,
+                top = node.hrzCssPosition ? node.hrzCssPosition.top : $node.offset().top - parseInt($node.css('margin-top')) + offsetDueToAddedNodes,
+                width = node.hrzCssPosition ? node.hrzCssPosition.width : $node.width(),
+                height = node.hrzCssPosition ? node.hrzCssPosition.height : $node.height(),
+                nodeBottom = top + height,
+                isTall = false;
+
+            // if the element is more than half the height of the viewport, we should make it span pages to avoid
+            // large areas of white space. To do this we need to clone the node and have it appear on both this page
+            // and the clone on the next, with the clone being offset on the y axis so that we only see the lower half.
+            if (viewportHeight / 2 < height) {
+                if (node.hrzIsClone !== true) {
+                    isTall = true;
+                    var clone = $node.clone()[0];
+                    allNodes.splice(index + 1, 0 , clone);
+                    allNodesLength ++;
+                    //offsetDueToAddedNodes += height;
+                    clone.hrzCssPosition = {
+                        'top' : top + offsetDueToAddedNodes,
+                        'left' : left,
+                        'width' : width,
+                        'height' : height
+                    };
+                    clone.hrzIsClone = true;
+                }
+            }
 
             if (pageOffsets[lastPage] !== undefined) {
                 if (pageOffsets[lastPage] < nodeBottom) {
                     pageLowerBound = pageOffsets[lastPage-1] === undefined ? 0 : pageOffsets[lastPage-1];
                     if ((pageLowerBound + viewportHeight) < nodeBottom) {
                         lastPage ++;
+                        if (viewportHeight < height) {
+                            pageOffsets[lastPage] = pageLowerBound + viewportHeight;
+                        }
                         nodePageOrder = 0;
                     } else {
                         pageOffsets[lastPage] = nodeBottom;
@@ -77,7 +104,7 @@ var horizonal = function($, window, document) {
                 'width' : width,
                 'height' : height
             };
-        });
+        }
 
         // now that we know how many pages there will be, we can create the page container divs and put them in the
         // main container.
