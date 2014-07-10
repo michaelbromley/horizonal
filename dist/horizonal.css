@@ -8,7 +8,11 @@ html {
     position: fixed;
     width: 100%;
     height: 100%;
-
+    -webkit-perspective: 300px;
+            perspective: 300px;
+    -webkit-transform-origin: center center;
+        -ms-transform-origin: center center;
+            transform-origin: center center;
 }
 
 .hrz-page {
@@ -17,46 +21,52 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.1);
-    -webkit-transform-origin: center center;
-        -ms-transform-origin: center center;
-            transform-origin: center center;
-    -webkit-perspective: 500px;
-            perspective: 500px;
     -webkit-transform-style: preserve-3d;
             transform-style: preserve-3d;
-    outline: 1px solid red;
-    -webkit-transition: -webkit-transform 1s, opacity 1s;
-            transition: transform 1s, opacity 1s;
+    -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
+            transition: transform 1s, opacity 1s, outline-color 1s;
     opacity: 1;
+    background-color: rgba(255,255,255,0);
+    outline: 2px solid #666;
 }
 
 .hrz-page.hrz-fore {
-    -webkit-transform: translateZ(4000px) translateY(-100px);
-            transform: translateZ(4000px) translateY(-100px);
+    -webkit-transform: rotateY(-20deg) translateZ(100px) rotateZ(40deg);
+            transform: rotateY(-20deg) translateZ(100px) rotateZ(40deg);
+    -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
+            transition: transform 1s, opacity 1s, outline-color 1s;
     opacity: 0;
 }
 
 .hrz-page.hrz-back {
-    -webkit-transform: translateZ(-500px) translateY(100px);
-            transform: translateZ(-500px) translateY(100px);
+    -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
+            transition: transform 1s, opacity 1s, outline-color 1s;
+    background-color: transparent;
+    -webkit-transform: rotateY(45deg) translateZ(-1000px) rotateZ(40deg);
+            transform: rotateY(45deg) translateZ(-1000px) rotateZ(40deg);
     opacity: 0;
+    outline-color: rgba(0,0,0,0);
 }
 
 .hrz-element {
     opacity: 1;
     -webkit-transition: -webkit-transform 1s, opacity 1s;
             transition: transform 1s, opacity 1s;
+    -webkit-transform: translateY(0px);
+        -ms-transform: translateY(0px);
+            transform: translateY(0px);
 }
 
 .hrz-element.hrz-back {
     opacity: 0;
-    -webkit-transform: translateZ(0px);
-            transform: translateZ(0px);
+    -webkit-transform: translateY(0px);
+        -ms-transform: translateY(0px);
+            transform: translateY(0px);
 }
 
 .hrz-element.hrz-fore {
     opacity: 0;
-    -webkit-transform: translateZ(0px);
-            transform: translateZ(0px);
+    -webkit-transform: translateY(0px);
+        -ms-transform: translateY(0px);
+            transform: translateY(0px);
 }

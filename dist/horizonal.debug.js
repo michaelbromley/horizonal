@@ -23,7 +23,8 @@ var horizonal = function($, window, document) {
     function init(_options) {
         options = $.extend( {}, defaults, _options);
         currentPage = 1;
-        $bodyClone = $('body').clone(); // make a copy of the entire body DOM so that we can re-calculate the layout later
+        // make a copy of the entire body DOM so that we can re-calculate the layout later if needed (ie on re-size)
+        $bodyClone = $('body').clone();
         allNodes = $(options.selector).filter(':visible');
 
         calculateNodePositionsAndPages(allNodes);
@@ -40,7 +41,7 @@ var horizonal = function($, window, document) {
         pageOffsets = [0];
         lastPage = 1;
 
-        // add wrapper divs to hold the page contents
+        // add wrapper div to hold the page contents
         $('body').wrapInner('<div id="hrz-container"></div>');
 
         allNodes.each(function(index, node) {
@@ -78,6 +79,8 @@ var horizonal = function($, window, document) {
             };
         });
 
+        // now that we know how many pages there will be, we can create the page container divs and put them in the
+        // main container.
         $.each(pageOffsets, function(index) {
             if (index !== 0) {
                 $('#hrz-container').prepend('<div class="hrz-page" id="hrz-page-' + index + '" />');
@@ -105,10 +108,14 @@ var horizonal = function($, window, document) {
         allNodes.addClass('hrz-element hrz-fore');
 
         documentHeight = pageOffsets[pageOffsets.length - 1] + viewportHeight;
-        $("body").height(documentHeight);
+        $('body').height(documentHeight);
         if (!options.displayScrollbar) {
             $("body").css('overflow-y', 'hidden');
         }
+
+        // remove any DOM nodes that are not included in the selector, since they will just be left
+        // floating around in the wrong place
+        $('#hrz-container > *').not('.hrz-page').filter(':visible').remove();
     }
 
     function getStaggerDelay(node) {
@@ -123,20 +130,20 @@ var horizonal = function($, window, document) {
         return delay / options.transitionSpeed;
     }
 
-    function showPage(page) {
+    function showPage(pageNumber) {
         for (var i = 1; i <= lastPage; i++) {
-            if (i < page) {
+            if (i < pageNumber) {
                 $('#hrz-page-' + i).addClass('hrz-back');
-            } else if (page < i) {
+            } else if (pageNumber < i) {
                 $('#hrz-page-' + i).addClass('hrz-fore');
             } else {
                 $('#hrz-page-' + i).removeClass('hrz-fore hrz-back');
             }
         }
         allNodes.each(function(index, node) {
-            if (node.hrzPage < page) {
+            if (node.hrzPage < pageNumber) {
                 $(node).addClass('hrz-back');
-            } else if (page < node.hrzPage) {
+            } else if (pageNumber < node.hrzPage) {
                 $(node).addClass('hrz-fore');
             } else {
                 $(node).removeClass('hrz-fore hrz-back');
@@ -145,21 +152,21 @@ var horizonal = function($, window, document) {
     }
 
     function addCustomCssToHead() {
+        var $customCssElement;
         if (options.customCssFile) {
-            if (0 < $('#hrz-custom-css').length) {
-                $('#hrz-custom-css').attr('href', options.customCssFile);
+            $customCssElement = $('#hrz-custom-css');
+            if (0 < $customCssElement.length) {
+                $customCssElement.attr('href', options.customCssFile);
             } else {
                 $('head').append('<link rel="stylesheet" id="hrz-custom-css" href="' + options.customCssFile + '" type="text/css" />');
             }
         }
     }
 
-    $(window).on('resize', debounce(resize, 500));
-
     /**
-     * When the window is resized, we need to re-calculate the layout of the elements.
+     * When the window is re-sized, we need to re-calculate the layout of the elements.
      */
-    function resize() {
+    function resizeHandler() {
         $('body').replaceWith($bodyClone.clone());
         allNodes = $(options.selector).filter(':visible');
         calculateNodePositionsAndPages(allNodes);
@@ -176,21 +183,7 @@ var horizonal = function($, window, document) {
         };
     }
 
-    $(window).on('scroll', function() {
-        var scrollTop = $(window).scrollTop();
-        var lowerBound = currentPage === 0 ? 0 : pageOffsets[currentPage - 1];
-        var upperBound = pageOffsets[currentPage];
-
-        if (scrollTop < lowerBound) {
-            currentPage --;
-            showPage(currentPage);
-        } else if (upperBound < scrollTop) {
-            currentPage ++;
-            showPage(currentPage);
-        }
-    });
-
-    $(window).on('keydown', function(e) {
+    function keydownHandler(e) {
         var scrollTo;
         if (e.which === 40 || e.which === 39) {
             if (currentPage !== lastPage) {
@@ -203,12 +196,36 @@ var horizonal = function($, window, document) {
                 scrollTo = pageOffsets[currentPage - 2];
             }
         }
-
         if (scrollTo !== undefined) {
             $(window).scrollTop(scrollTo);
         }
-    });
+    }
 
+    function scrollHandler() {
+        var scrollTop = $(window).scrollTop();
+        var lowerBound = currentPage === 0 ? 0 : pageOffsets[currentPage - 1];
+        var upperBound = pageOffsets[currentPage];
+
+        if (scrollTop < lowerBound) {
+            currentPage --;
+            showPage(currentPage);
+        } else if (upperBound < scrollTop) {
+            currentPage ++;
+            showPage(currentPage);
+        }
+    }
+
+
+    /**
+     * Register the event handlers
+     */
+    $(window).on('resize', debounce(resizeHandler, 500));
+    $(window).on('keydown', keydownHandler);
+    $(window).on('scroll', scrollHandler);
+
+    /**
+     * Public API
+     */
     return {
         init: init
     };
