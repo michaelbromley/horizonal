@@ -4,7 +4,7 @@
 
 var horizonal = function($, window, document) {
 
-    var PAGE_MARGIN = 20,
+    var PAGE_MARGIN = 0,
         $bodyClone,
         allNodes,
         currentPage,
@@ -66,23 +66,31 @@ var horizonal = function($, window, document) {
             if (viewportHeight / 2 < height && pageUpperBound < nodeBottom) {
                 if (node.hrzIsClone !== true) {
                     isTall = true;
-                    var clone = $node.clone()[0];
-                    $(clone).attr('data-is-clone', true);
-                    allNodes.splice(index + 1, 0 , clone);
-                    allNodesLength ++;
-                    clone.hrzCssPosition = {
-                        'top' : top,
-                        'left' : left,
-                        'width' : width,
-                        'height' : height
-                    };
-                    clone.hrzIsClone = true;
-                    clone.hrzOverhang = nodeBottom - pageUpperBound;
+
+                    var overhang = nodeBottom - pageUpperBound;
+                    var i = 1;
+                    while(0 < overhang) {
+                        var clone = $node.clone()[0];
+                        $(clone).attr('data-is-clone', true);
+                        allNodes.splice(index + i, 0 , clone);
+                        allNodesLength ++;
+                        clone.hrzCssPosition = {
+                            'top' : top,
+                            'left' : left,
+                            'width' : width,
+                            'height' : height
+                        };
+                        clone.hrzIsClone = true;
+                        clone.hrzOverhang = overhang;
+
+                        overhang = overhang - viewportHeight;
+                        i ++;
+                    }
                 }
             }
 
             if (pageOffsets[lastPage] !== undefined) {
-                if (pageOffsets[lastPage] < nodeBottom) {
+                if (pageOffsets[lastPage] <= nodeBottom) {
                     //pageLowerBound = pageOffsets[lastPage-1] === undefined ? 0 : pageOffsets[lastPage-1];
                     var nodeDoesNotFitOnPage = (pageLowerBound + viewportHeight) < nodeBottom;
                     if (!isTall) {
@@ -91,7 +99,7 @@ var horizonal = function($, window, document) {
                             if (viewportHeight < height) {
                                 pageOffsets[lastPage] = pageLowerBound + viewportHeight;
                                 if (node.hrzOverhang) {
-                                    pageOffsets[lastPage] += node.hrzOverhang;
+                                    pageOffsets[lastPage] += Math.min(node.hrzOverhang, viewportHeight);
                                 }
                             } else {
                                 pageOffsets[lastPage] = nodeBottom;
