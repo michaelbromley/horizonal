@@ -45,49 +45,65 @@ var horizonal = function($, window, document) {
         $('body').wrapInner('<div id="hrz-container"></div>');
 
         var allNodesLength = allNodes.length;
-        var offsetDueToAddedNodes = 0;
         for (var index = 0; index < allNodesLength; index ++) {
             var node = allNodes[index];
-            var pageLowerBound;
+            var pageLowerBound = pageOffsets[lastPage-1] === undefined ? 0 : pageOffsets[lastPage-1];
+            var pageUpperBound = pageLowerBound + viewportHeight;
             var $node = $(node),
                 left = node.hrzCssPosition ? node.hrzCssPosition.left : $node.offset().left,
-                top = node.hrzCssPosition ? node.hrzCssPosition.top : $node.offset().top - parseInt($node.css('margin-top')) + offsetDueToAddedNodes,
+                top = node.hrzCssPosition ? node.hrzCssPosition.top : $node.offset().top - parseInt($node.css('margin-top')),
                 width = node.hrzCssPosition ? node.hrzCssPosition.width : $node.width(),
                 height = node.hrzCssPosition ? node.hrzCssPosition.height : $node.height(),
-                nodeBottom = top + height,
                 isTall = false;
+            if (node.hrzOverhang) {
+                //top -= node.hrzOverhang;
+            }
+            var nodeBottom = top + height;
 
             // if the element is more than half the height of the viewport, we should make it span pages to avoid
             // large areas of white space. To do this we need to clone the node and have it appear on both this page
             // and the clone on the next, with the clone being offset on the y axis so that we only see the lower half.
-            if (viewportHeight / 2 < height) {
+            if (viewportHeight / 2 < height && pageUpperBound < nodeBottom) {
                 if (node.hrzIsClone !== true) {
                     isTall = true;
                     var clone = $node.clone()[0];
+                    $(clone).attr('data-is-clone', true);
                     allNodes.splice(index + 1, 0 , clone);
                     allNodesLength ++;
-                    //offsetDueToAddedNodes += height;
                     clone.hrzCssPosition = {
-                        'top' : top + offsetDueToAddedNodes,
+                        'top' : top,
                         'left' : left,
                         'width' : width,
                         'height' : height
                     };
                     clone.hrzIsClone = true;
+                    clone.hrzOverhang = nodeBottom - pageUpperBound;
                 }
             }
 
             if (pageOffsets[lastPage] !== undefined) {
                 if (pageOffsets[lastPage] < nodeBottom) {
-                    pageLowerBound = pageOffsets[lastPage-1] === undefined ? 0 : pageOffsets[lastPage-1];
-                    if ((pageLowerBound + viewportHeight) < nodeBottom) {
-                        lastPage ++;
-                        if (viewportHeight < height) {
+                    //pageLowerBound = pageOffsets[lastPage-1] === undefined ? 0 : pageOffsets[lastPage-1];
+                    var nodeDoesNotFitOnPage = (pageLowerBound + viewportHeight) < nodeBottom;
+                    if (!isTall) {
+                        if (nodeDoesNotFitOnPage || node.hrzIsClone) {
+                            lastPage ++;
+                            if (viewportHeight < height) {
+                                pageOffsets[lastPage] = pageLowerBound + viewportHeight;
+                                if (node.hrzOverhang) {
+                                    pageOffsets[lastPage] += node.hrzOverhang;
+                                }
+                            } else {
+                                pageOffsets[lastPage] = nodeBottom;
+                            }
+                            nodePageOrder = 0;
+                        } else {
+                            pageOffsets[lastPage] = nodeBottom;
+                        }
+                    } else {
+                        if (nodeDoesNotFitOnPage) {
                             pageOffsets[lastPage] = pageLowerBound + viewportHeight;
                         }
-                        nodePageOrder = 0;
-                    } else {
-                        pageOffsets[lastPage] = nodeBottom;
                     }
                 }
             } else {
@@ -191,8 +207,9 @@ var horizonal = function($, window, document) {
     }
 
     /**
-     * When the window is re-sized, we need to re-calculate the layout of the elements.
+     * Define the event handler functions
      */
+    // When the window is re-sized, we need to re-calculate the layout of the elements.
     function resizeHandler() {
         $('body').replaceWith($bodyClone.clone());
         allNodes = $(options.selector).filter(':visible');

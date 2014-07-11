@@ -31,8 +31,9 @@ html {
 }
 
 .hrz-page.hrz-fore {
-    -webkit-transform: rotateY(-20deg) translateZ(100px) rotateZ(40deg);
-            transform: rotateY(-20deg) translateZ(100px) rotateZ(40deg);
+    -webkit-transform:  translateY(-100px);
+        -ms-transform:  translateY(-100px);
+            transform:  translateY(-100px);
     -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
             transition: transform 1s, opacity 1s, outline-color 1s;
     opacity: 0;
@@ -42,8 +43,9 @@ html {
     -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
             transition: transform 1s, opacity 1s, outline-color 1s;
     background-color: transparent;
-    -webkit-transform: rotateY(45deg) translateZ(-1000px) rotateZ(40deg);
-            transform: rotateY(45deg) translateZ(-1000px) rotateZ(40deg);
+    -webkit-transform: translateY(100px);
+        -ms-transform: translateY(100px);
+            transform: translateY(100px);
     opacity: 0;
     outline-color: rgba(0,0,0,0);
 }

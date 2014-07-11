@@ -24,7 +24,7 @@ html {
 }
 
 .hrz-page.hrz-fore {
-    transform: rotateY(-20deg) translateZ(100px) rotateZ(40deg);
+    transform:  translateY(-100px);
     transition: transform 1s, opacity 1s, outline-color 1s;
     opacity: 0;
 }
@@ -32,7 +32,7 @@ html {
 .hrz-page.hrz-back {
     transition: transform 1s, opacity 1s, outline-color 1s;
     background-color: transparent;
-    transform: rotateY(45deg) translateZ(-1000px) rotateZ(40deg);
+    transform: translateY(100px);
     opacity: 0;
     outline-color: rgba(0,0,0,0);
 }
