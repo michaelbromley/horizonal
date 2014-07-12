@@ -1,5 +1,6 @@
 horizonal.init({
     stagger: 'sequence',
     transitionSpeed: 2,
-    displayScrollbar: true
+    displayScrollbar: true,
+    selector: 'p,img,h1,h2,h3'
 });

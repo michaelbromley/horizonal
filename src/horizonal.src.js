@@ -11,8 +11,9 @@ var horizonal = function($, window, document) {
         options;
 
     var defaults = {
-        selector: 'body *:not(:has(*))',
+        selector: 'h1, h2, h3, h4, h5, h6, p, li, img, table',
         stagger: 'random',
+        staggerDelay: 0.1,
         transitionSpeed: 1,
         customCssFile: false,
         displayScrollbar: true,
@@ -36,12 +37,10 @@ var horizonal = function($, window, document) {
      * Register the event handlers
      */
     function registerEventHandlers() {
-        $(window).on('resize', debounce(resizeHandler, 500));
+        $(window).on('resize', debounce(resizeHandler, 250));
         $(window).on('keydown', keydownHandler);
         $(window).on('scroll', scrollHandler);
     }
-
-
 
     function calculateNodePositionsAndPages(allNodes) {
         var viewportHeight = $(window).height() - options.pageMargin * 2;
