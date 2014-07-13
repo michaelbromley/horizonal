@@ -2,6 +2,20 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        concat: {
+            build: {
+                src: [
+                    'src/prefix.js',
+                    'src/horizonal.js',
+                    'src/eventHandlers.js',
+                    'src/node.js',
+                    'src/nodeCollection.js',
+                    'src/api.js',
+                    'src/suffix.js'
+                ],
+                dest: 'dist/horizonal.debug.js'
+            }
+        },
         copy: {
             files: {
                 cwd: 'src/',
@@ -33,7 +47,7 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            files: ['Gruntfile.js', 'src/**/*.js'],
+            files: ['Gruntfile.js', 'src/**/*.js', '!src/prefix.js', '!src/suffix.js'],
             options: {
                 // options here to override JSHint defaults
                 globals: {
@@ -46,12 +60,12 @@ module.exports = function(grunt) {
         },
         watch: {
             js: {
-            files: ['src/*.js'],
-            tasks: ['jshint', 'copy', 'uglify']
+                files: ['src/*.js'],
+                tasks: ['jshint', 'concat:build', 'uglify']
             },
             css: {
-            files: ['src/*.css'],
-            tasks: ['autoprefixer']
+                files: ['src/*.css'],
+                tasks: ['autoprefixer']
             }
         }
     });
@@ -61,7 +75,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-autoprefixer');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
-    grunt.registerTask('default', ['jshint', 'copy', 'uglify', 'autoprefixer']);
+    grunt.registerTask('default', ['jshint', 'concat:build', 'uglify', 'autoprefixer']);
 
 };
