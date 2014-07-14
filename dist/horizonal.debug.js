@@ -1,11 +1,9 @@
 (function($, window, document) {
-
-var CURRENT_PAGE;
-var BODY_CLONE;
-var PAGE_OFFSETS;
-var NODE_COLLECTION;
+var PAGE_COLLECTION;
 var OPTIONS;
 var CONTAINER;
+var BODY_CLONE;
+var VIEWPORT_HEIGHT;
 
 
 function Horizonal() {
@@ -17,30 +15,34 @@ function Horizonal() {
         transitionSpeed: 1,
         customCssFile: false,
         displayScrollbar: true,
+        scrollStep: 2,
         pageMargin: 20
     };
 
     this.init = function(_OPTIONS) {
-        PAGE_OFFSETS = [0];
-        CURRENT_PAGE = 1;
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-        NODE_COLLECTION = new NodeCollection(OPTIONS.selector);
-        // make a copy of the entire body DOM so that we 
-        // can re-calculate the layout later if needed (ie on re-size)
         BODY_CLONE = $('body').clone();
         $('body').wrapInner('<div id="hrz-container"></div>');
         CONTAINER = $('#hrz-container');
+        VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
 
-        var environment = {
-            viewportHeight: $(window).height() - OPTIONS.pageMargin * 2
-        };
-        NODE_COLLECTION.calculateNodePositionsAndPages(environment);
         addCustomCssToHead();
-        showPage(CURRENT_PAGE);
+
+        var allNodes = new NodeCollection(OPTIONS.selector);
+        PAGE_COLLECTION = allNodes.splitIntoPages();
+        PAGE_COLLECTION.renderToDom();
+        PAGE_COLLECTION.showPage(1);
         registerEventHandlers();
+
         // remove any DOM nodes that are not included in the selector, since they will just be left
         // floating around in the wrong place
         CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+
+        var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
+        $('body').height(documentHeight);
+        if (!OPTIONS.displayScrollbar) {
+            $('body').css('overflow-y', 'hidden');
+        }
     };
 }
 
@@ -51,35 +53,6 @@ function registerEventHandlers() {
     $(window).on('resize', debounce(resizeHandler, 250));
     $(window).on('keydown', keydownHandler);
     $(window).on('scroll', scrollHandler);
-}
-
-/**
- * To show a given page, we just need to remove the -fore and -back CSS classes
- * from the page and the nodes on that page. Lower-ordered pages have the -fore
- * class added, and higher-ordered pages have the -back class added.
- *
- * @param pageNumber
- */
-function showPage(pageNumber) {
-    var totalPages = PAGE_OFFSETS.length - 1;
-    for (var i = 1; i <= totalPages; i++) {
-        if (i < pageNumber) {
-            $('#hrz-page-' + i).addClass('hrz-back');
-        } else if (pageNumber < i) {
-            $('#hrz-page-' + i).addClass('hrz-fore');
-        } else {
-            $('#hrz-page-' + i).removeClass('hrz-fore hrz-back');
-        }
-    }
-    $.each(NODE_COLLECTION, function(index, node) {
-        if (node.page < pageNumber) {
-            node.moveToBackground();
-        } else if (pageNumber < node.page) {
-            node.moveToForground();
-        } else {
-            node.moveToFocus();
-        }
-    });
 }
 
 function addCustomCssToHead() {
@@ -93,10 +66,6 @@ function addCustomCssToHead() {
         }
     }
 }
-/*
- Define the event handler functions
- */
-
 /**
  * When the window is re-sized, we need to re-calculate the layout of the all the elements.
  * To ensure that we get the same results as the initial load, we simple purge the entire <body> element
@@ -134,17 +103,10 @@ function debounce(fun, mil){
  */
 function keydownHandler(e) {
     var scrollTo;
-    var lastPage = PAGE_OFFSETS.length - 1;
     if (e.which === 40 || e.which === 39) {
-        if (CURRENT_PAGE !== lastPage) {
-            scrollTo = PAGE_OFFSETS[CURRENT_PAGE] + 10;
-        }
+        scrollTo = PAGE_COLLECTION.getCurrent().bottom  / OPTIONS.scrollStep + 10;
     } else if (e.which === 38 || e.which === 37) {
-        if (CURRENT_PAGE === 1) {
-            scrollTo = PAGE_OFFSETS[CURRENT_PAGE - 1];
-        } else {
-            scrollTo = PAGE_OFFSETS[CURRENT_PAGE - 2];
-        }
+        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep;
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
@@ -157,21 +119,19 @@ function keydownHandler(e) {
  */
 function scrollHandler() {
     var scrollTop = $(window).scrollTop();
-    var lowerBound = CURRENT_PAGE === 0 ? 0 : PAGE_OFFSETS[CURRENT_PAGE - 1];
-    var upperBound = PAGE_OFFSETS[CURRENT_PAGE];
+    var currentPage = PAGE_COLLECTION.currentPage;
+    var lowerBound = PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep;
+    var upperBound = PAGE_COLLECTION.getCurrent().bottom / OPTIONS.scrollStep;
 
     if (scrollTop < lowerBound) {
-        CURRENT_PAGE --;
-        showPage(CURRENT_PAGE);
+        PAGE_COLLECTION.showPage(currentPage - 1);
     } else if (upperBound < scrollTop) {
-        CURRENT_PAGE ++;
-        showPage(CURRENT_PAGE);
+        PAGE_COLLECTION.showPage(currentPage + 1);
     }
 }
 function Node(domNode, index) {
     this.domNode = domNode;
     this.index = index;
-    this.page = null;
     this.isClone = false;
     this.layout = this.getLayout();
     this.isTall = false;
@@ -227,24 +187,20 @@ Node.prototype = {
 
     /**
      * Set which page this node should appear on.
-     * @param pageNumber
+     * @param parentPage
      */
-    setPage: function(pageNumber) {
-        this.page = pageNumber;
-        $(this.domNode).addClass("hrz-page-" + pageNumber);
-        if ($('#hrz-page-' + this.page).length === 0) {
-            CONTAINER.prepend('<div class="hrz-page" id="hrz-page-' + this.page + '" />');
-        }
-        $('#hrz-page-' + this.page).append(this.domNode);
+    renderToDom: function(parentPage) {
+        $(this.domNode).addClass(parentPage.pageId);
+        $('#' + parentPage.pageId).append(this.domNode);
+        this.setCssProperties(parentPage.top);
     },
 
-    setCssProperties: function() {
-        var offsetTop = PAGE_OFFSETS[this.page - 1];
+    setCssProperties: function(pageOffset) {
         var delay = this.getStaggerDelay();
         var pageMargin = this.page === 1 ? 0 : OPTIONS.pageMargin;
         $(this.domNode).css({
             'position': 'fixed',
-            'top' : this.layout.top - offsetTop + pageMargin + 'px',
+            'top' : this.layout.top - pageOffset + pageMargin + 'px',
             'left' : this.layout.left + 'px',
             'width' : this.layout.width + 'px',
             'height' : this.layout.height + 'px',
@@ -265,7 +221,7 @@ Node.prototype = {
         return delay / OPTIONS.transitionSpeed;
     },
 
-    moveToForground: function() {
+    moveToForeground: function() {
         $(this.domNode).addClass('hrz-fore');
     },
 
@@ -296,89 +252,234 @@ var NodeCollectionAPI = {
         });
     },
 
-    calculateNodePositionsAndPages: function(environment) {
-        var viewportHeight = environment.viewportHeight;
+    splitIntoPages: function() {
         var lastPage = 1;
         var index;
+        var pageCollection = new PageCollection();
 
         for (index = 0; index < this.length; index ++) {
             var node = this[index];
-            var pageLowerBound = PAGE_OFFSETS[lastPage-1] === undefined ? 0 : PAGE_OFFSETS[lastPage-1];
-            var pageUpperBound = pageLowerBound + viewportHeight;
+            var pageUpperBound = pageCollection.getLastOffset() + VIEWPORT_HEIGHT;
 
-            var nodeIsTallAndDoesNotFitOnPage = viewportHeight / 2 < node.layout.height && pageUpperBound < node.layout.bottom;
-            if (nodeIsTallAndDoesNotFitOnPage) {
-                if (!node.isClone) {
-                    node.isTall = true;
-                    var pageOverhang = node.layout.bottom - pageUpperBound;
-                    var i = 1;
-                    // As long as the node hangs over the edge of the page, we need to keep
-                    // adding clones that will each appear on subsequent pages.
-                    while(0 < pageOverhang) {
-                        var cloneIndex = index + i;
-                        var clone = node.makeClone(cloneIndex);
-                        clone.pageOverhang = pageOverhang;
-                        NODE_COLLECTION.splice(cloneIndex, 0 , clone);
-                        pageOverhang = pageOverhang - viewportHeight;
-                        i ++;
-                    }
+            var nodeIsTallAndDoesNotFitOnPage = VIEWPORT_HEIGHT / 2 < node.layout.height && pageUpperBound < node.layout.bottom;
+            if (nodeIsTallAndDoesNotFitOnPage && !node.isClone) {
+                node.isTall = true;
+                var pageOverhang = node.layout.bottom - pageUpperBound;
+                var i = 1;
+                // As long as the node hangs over the edge of the page, we need to keep
+                // adding clones that will each appear on subsequent pages.
+                while(0 < pageOverhang) {
+                    var cloneIndex = index + i;
+                    var clone = node.makeClone(cloneIndex);
+                    clone.pageOverhang = pageOverhang;
+                    this.splice(cloneIndex, 0 , clone);
+                    pageOverhang = pageOverhang - VIEWPORT_HEIGHT;
+                    i ++;
                 }
             }
-            calculateLastPageAndPageOffset(node);
+            lastPage = this.calculateLastPageAndPageOffset(node, pageCollection, lastPage);
 
-            node.setPage(lastPage);
+            pageCollection.getPage(lastPage).addNode(node);
         }
 
-        $.each(this, function(index, node) {
-            node.setCssProperties();
-        });
+        return pageCollection;
+    },
 
-        var documentHeight = PAGE_OFFSETS[PAGE_OFFSETS.length - 1] + viewportHeight;
-        $('body').height(documentHeight);
-        if (!OPTIONS.displayScrollbar) {
-            $('body').css('overflow-y', 'hidden');
-        }
-
-        /**
-         * For a given node, we need to know what page it should be on, and whether it extends off the bottom
-         * off the current page (lastPage). If so, we need to start a new page. Sorry about the complexity.
-         * @param node
-         */
-        function calculateLastPageAndPageOffset(node) {
-            if (PAGE_OFFSETS[lastPage] !== undefined) {
-                if (PAGE_OFFSETS[lastPage] <= node.layout.bottom) {
-                    var nodeDoesNotFitOnPage = pageUpperBound < node.layout.bottom;
-                    if (!node.isTall) {
-                        if (nodeDoesNotFitOnPage || node.isClone) {
-                            lastPage ++;
-                            if (viewportHeight < node.layout.height) {
-                                PAGE_OFFSETS[lastPage] = pageUpperBound;
-                                if (node.pageOverhang) {
-                                    PAGE_OFFSETS[lastPage] += Math.min(node.pageOverhang, viewportHeight);
-                                }
-                            } else {
-                                PAGE_OFFSETS[lastPage] = node.layout.bottom;
+    /**
+     * For a given node, we need to know what page it should be on, and whether it extends off the bottom
+     * off the current page (lastPage). If so, we need to start a new page. Sorry about the complexity.
+     * @param node
+     * @param lastPage
+     * @param pageCollection
+     */
+    calculateLastPageAndPageOffset: function(node, pageCollection, lastPage) {
+        if (pageCollection[lastPage - 1] !== undefined) {
+            var page = pageCollection.getPage(lastPage);
+            var pageUpperBound = page.top + VIEWPORT_HEIGHT;
+            if (page.bottom <= node.layout.bottom) {
+                var nodeDoesNotFitOnPage = pageUpperBound < node.layout.bottom;
+                if (!node.isTall) {
+                    if (nodeDoesNotFitOnPage || node.isClone) {
+                        lastPage ++;
+                        pageCollection.add();
+                        var newPage = pageCollection.last();
+                        if (VIEWPORT_HEIGHT < node.layout.height) {
+                            newPage.bottom = pageUpperBound;
+                            if (node.pageOverhang) {
+                                newPage.bottom += Math.min(node.pageOverhang, VIEWPORT_HEIGHT);
                             }
                         } else {
-                            PAGE_OFFSETS[lastPage] = node.layout.bottom;
+                            newPage.bottom = node.layout.bottom;
                         }
                     } else {
-                        if (nodeDoesNotFitOnPage) {
-                            PAGE_OFFSETS[lastPage] = pageUpperBound;
-                        }
+                        page.bottom = node.layout.bottom;
+                    }
+                } else {
+                    if (nodeDoesNotFitOnPage) {
+                        page.bottom = pageUpperBound;
                     }
                 }
-            } else {
-                PAGE_OFFSETS[lastPage] = node.layout.bottom;
             }
+        } else {
+            pageCollection.add();
+            pageCollection.last().bottom = node.layout.bottom;
         }
+
+        return lastPage;
+    },
+
+    renderToDom: function(parentPage) {
+        this.forEach(function(node) {
+            node.renderToDom(parentPage);
+        });
     }
+
+
 
 };
 
 NodeCollection.prototype = [];
 $.extend(NodeCollection.prototype, NodeCollectionAPI);
 
+function Page(pageNumber) {
+    this.top = 0;
+    this.bottom = 0;
+    this.height = 0;
+    this.nodes = new NodeCollection();
+    this.pageNumber = pageNumber || 0;
+    this.domNode = null;
+
+    Object.defineProperty(this, "pageId", {
+        get: function() {
+            return "hrz-page-" + this.pageNumber;
+        }
+    });
+}
+
+Page.prototype = {
+
+    addNode: function(node) {
+        this.nodes.push(node);
+    },
+
+    renderToDom: function() {
+        CONTAINER.prepend('<div class="hrz-page hrz-fore" id="' + this.pageId + '" />');
+        this.domNode = $('#' + this.pageId)[0];
+        this.nodes.renderToDom(this);
+    },
+
+    moveToForeground: function() {
+        $(this.domNode).addClass('hrz-fore');
+        this.nodes.forEach(function(node) {
+            node.moveToForeground();
+        });
+    },
+
+    moveToBackground: function() {
+        $(this.domNode).addClass('hrz-back');
+        this.nodes.forEach(function(node) {
+            node.moveToBackground();
+        });
+    },
+
+    moveToFocus: function() {
+        $(this.domNode).removeClass('hrz-fore hrz-back');
+        this.nodes.forEach(function(node) {
+            node.moveToFocus();
+        });
+    }
+};
+function PageCollection() {
+
+    var _currentPage = 0;
+
+    Object.defineProperty(this, "currentPage", {
+        get: function() {
+            return _currentPage;
+        },
+        set: function(val) {
+            if (this.last() < val) {
+                _currentPage = this.last();
+            } else if (val < 1) {
+                _currentPage = 1;
+            } else {
+                _currentPage = val;
+            }
+        }
+    });
+}
+
+var PageCollectionAPI = {
+
+    getPage: function(pageNumber) {
+        if (0 < pageNumber && pageNumber <= this.length) {
+            return this[pageNumber - 1];
+        } else {
+            return new Page();
+        }
+    },
+
+    getCurrent: function() {
+        return this.getPage(this.currentPage);
+    },
+
+    getPrevious: function() {
+        return this.getPage(this.currentPage - 1);
+    },
+
+    add: function() {
+        var pageNumber = this.length + 1;
+        var newPage = new Page(pageNumber);
+        newPage.top = this.getPage(this.length).bottom;
+        this.push(newPage);
+    },
+
+    last: function() {
+        return this[this.length - 1];
+    },
+
+    getLastOffset: function() {
+        if (this.length <= 1) {
+            return 0;
+        } else {
+            return this.last().top;
+        }
+    },
+
+    renderToDom: function() {
+        this.forEach(function(page) {
+            page.renderToDom();
+        });
+    },
+
+    /**
+     * To show a given page, we just need to remove the -fore and -back CSS classes
+     * from the page and the nodes on that page. Lower-ordered pages have the -fore
+     * class added, and higher-ordered pages have the -back class added.
+     *
+     * @param pageNumber
+     */
+    showPage: function(pageNumber) {
+        var oldPageNumber = this.currentPage;
+        this.currentPage = pageNumber;
+        var newPageNumber = this.currentPage;
+
+        if (oldPageNumber === 0) {
+            this.getPage(newPageNumber).moveToFocus();
+        } else {
+            if (oldPageNumber < newPageNumber) {
+                this.getPage(oldPageNumber).moveToBackground();
+                this.getPage(newPageNumber).moveToFocus();
+            } else if (newPageNumber < oldPageNumber) {
+                this.getPage(oldPageNumber).moveToForeground();
+                this.getPage(newPageNumber).moveToFocus();
+            }
+        }
+    }
+};
+
+PageCollection.prototype = [];
+$.extend(PageCollection.prototype, PageCollectionAPI);
 
 
 window.horizonal = (function() {

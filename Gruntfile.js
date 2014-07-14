@@ -10,6 +10,8 @@ module.exports = function(grunt) {
                     'src/eventHandlers.js',
                     'src/node.js',
                     'src/nodeCollection.js',
+                    'src/page.js',
+                    'src/pageCollection.js',
                     'src/api.js',
                     'src/suffix.js'
                 ],

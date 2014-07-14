@@ -1,7 +1,3 @@
-/*
- Define the event handler functions
- */
-
 /**
  * When the window is re-sized, we need to re-calculate the layout of the all the elements.
  * To ensure that we get the same results as the initial load, we simple purge the entire <body> element
@@ -39,17 +35,10 @@ function debounce(fun, mil){
  */
 function keydownHandler(e) {
     var scrollTo;
-    var lastPage = PAGE_OFFSETS.length - 1;
     if (e.which === 40 || e.which === 39) {
-        if (CURRENT_PAGE !== lastPage) {
-            scrollTo = PAGE_OFFSETS[CURRENT_PAGE] + 10;
-        }
+        scrollTo = PAGE_COLLECTION.getCurrent().bottom  / OPTIONS.scrollStep + 10;
     } else if (e.which === 38 || e.which === 37) {
-        if (CURRENT_PAGE === 1) {
-            scrollTo = PAGE_OFFSETS[CURRENT_PAGE - 1];
-        } else {
-            scrollTo = PAGE_OFFSETS[CURRENT_PAGE - 2];
-        }
+        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep;
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
@@ -62,14 +51,13 @@ function keydownHandler(e) {
  */
 function scrollHandler() {
     var scrollTop = $(window).scrollTop();
-    var lowerBound = CURRENT_PAGE === 0 ? 0 : PAGE_OFFSETS[CURRENT_PAGE - 1];
-    var upperBound = PAGE_OFFSETS[CURRENT_PAGE];
+    var currentPage = PAGE_COLLECTION.currentPage;
+    var lowerBound = PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep;
+    var upperBound = PAGE_COLLECTION.getCurrent().bottom / OPTIONS.scrollStep;
 
     if (scrollTop < lowerBound) {
-        CURRENT_PAGE --;
-        showPage(CURRENT_PAGE);
+        PAGE_COLLECTION.showPage(currentPage - 1);
     } else if (upperBound < scrollTop) {
-        CURRENT_PAGE ++;
-        showPage(CURRENT_PAGE);
+        PAGE_COLLECTION.showPage(currentPage + 1);
     }
 }

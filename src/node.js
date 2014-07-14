@@ -1,7 +1,6 @@
 function Node(domNode, index) {
     this.domNode = domNode;
     this.index = index;
-    this.page = null;
     this.isClone = false;
     this.layout = this.getLayout();
     this.isTall = false;
@@ -57,24 +56,20 @@ Node.prototype = {
 
     /**
      * Set which page this node should appear on.
-     * @param pageNumber
+     * @param parentPage
      */
-    setPage: function(pageNumber) {
-        this.page = pageNumber;
-        $(this.domNode).addClass("hrz-page-" + pageNumber);
-        if ($('#hrz-page-' + this.page).length === 0) {
-            CONTAINER.prepend('<div class="hrz-page" id="hrz-page-' + this.page + '" />');
-        }
-        $('#hrz-page-' + this.page).append(this.domNode);
+    renderToDom: function(parentPage) {
+        $(this.domNode).addClass(parentPage.pageId);
+        $('#' + parentPage.pageId).append(this.domNode);
+        this.setCssProperties(parentPage.top);
     },
 
-    setCssProperties: function() {
-        var offsetTop = PAGE_OFFSETS[this.page - 1];
+    setCssProperties: function(pageOffset) {
         var delay = this.getStaggerDelay();
         var pageMargin = this.page === 1 ? 0 : OPTIONS.pageMargin;
         $(this.domNode).css({
             'position': 'fixed',
-            'top' : this.layout.top - offsetTop + pageMargin + 'px',
+            'top' : this.layout.top - pageOffset + pageMargin + 'px',
             'left' : this.layout.left + 'px',
             'width' : this.layout.width + 'px',
             'height' : this.layout.height + 'px',
@@ -95,7 +90,7 @@ Node.prototype = {
         return delay / OPTIONS.transitionSpeed;
     },
 
-    moveToForground: function() {
+    moveToForeground: function() {
         $(this.domNode).addClass('hrz-fore');
     },
 
