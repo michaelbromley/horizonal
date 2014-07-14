@@ -55,6 +55,17 @@ var PageCollectionAPI = {
         }
     },
 
+    /**
+     * Given a y-axis offset in pixels, return the page in the collection which contains this
+     * offset between its top and bottom properties.
+     * @param offset
+     */
+    getPageAtOffset: function(offset) {
+        return this.filter(function(page) {
+            return (page.top <= offset && offset < page.bottom);
+        })[0];
+    },
+
     renderToDom: function() {
         this.forEach(function(page) {
             page.renderToDom();

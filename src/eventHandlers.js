@@ -4,13 +4,10 @@
  * and replace it with the clone that we made right at the start of the init() method.
  */
 function resizeHandler() {
+    var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollStep;
     $('body').replaceWith(BODY_CLONE.clone());
-    NODE_COLLECTION = new NodeCollection(OPTIONS.selector);
-    var environment = {
-        viewportHeight: $(window).height() - OPTIONS.pageMargin * 2
-    };
-    NODE_COLLECTION.calculateNodePositionsAndPages(environment);
-    showPage(CURRENT_PAGE);
+    composePage();
+    $(window).scrollTop(currentScroll);
 }
 
 /**
@@ -38,7 +35,7 @@ function keydownHandler(e) {
     if (e.which === 40 || e.which === 39) {
         scrollTo = PAGE_COLLECTION.getCurrent().bottom  / OPTIONS.scrollStep + 10;
     } else if (e.which === 38 || e.which === 37) {
-        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep;
+        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep + OPTIONS.pageMargin * 2 + 10;
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
@@ -51,13 +48,10 @@ function keydownHandler(e) {
  */
 function scrollHandler() {
     var scrollTop = $(window).scrollTop();
-    var currentPage = PAGE_COLLECTION.currentPage;
-    var lowerBound = PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep;
-    var upperBound = PAGE_COLLECTION.getCurrent().bottom / OPTIONS.scrollStep;
+    var currentPageNumber = PAGE_COLLECTION.currentPage;
 
-    if (scrollTop < lowerBound) {
-        PAGE_COLLECTION.showPage(currentPage - 1);
-    } else if (upperBound < scrollTop) {
-        PAGE_COLLECTION.showPage(currentPage + 1);
+    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollStep).pageNumber;
+    if (newPageNumber !== currentPageNumber) {
+        PAGE_COLLECTION.showPage(newPageNumber);
     }
 }

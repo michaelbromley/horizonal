@@ -22,28 +22,29 @@ function Horizonal() {
     this.init = function(_OPTIONS) {
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
         BODY_CLONE = $('body').clone();
-        $('body').wrapInner('<div id="hrz-container"></div>');
-        CONTAINER = $('#hrz-container');
-        VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
-
         addCustomCssToHead();
-
-        var allNodes = new NodeCollection(OPTIONS.selector);
-        PAGE_COLLECTION = allNodes.splitIntoPages();
-        PAGE_COLLECTION.renderToDom();
-        PAGE_COLLECTION.showPage(1);
+        composePage();
         registerEventHandlers();
-
-        // remove any DOM nodes that are not included in the selector, since they will just be left
-        // floating around in the wrong place
-        CONTAINER.children().not('.hrz-page').filter(':visible').remove();
-
-        var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
-        $('body').height(documentHeight);
-        if (!OPTIONS.displayScrollbar) {
-            $('body').css('overflow-y', 'hidden');
-        }
+        PAGE_COLLECTION.showPage(1);
     };
+    
+}
+
+function composePage() {
+    $('body').wrapInner('<div id="hrz-container"></div>');
+    CONTAINER = $('#hrz-container');
+    VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
+    var allNodes = new NodeCollection(OPTIONS.selector);
+    PAGE_COLLECTION = allNodes.splitIntoPages();
+    PAGE_COLLECTION.renderToDom();
+    // remove any DOM nodes that are not included in the selector,
+    // since they will just be left floating around in the wrong place.
+    CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+    var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
+    $('body').height(documentHeight);
+    if (!OPTIONS.displayScrollbar) {
+        $('body').css('overflow-y', 'hidden');
+    }
 }
 
 /**
@@ -72,13 +73,10 @@ function addCustomCssToHead() {
  * and replace it with the clone that we made right at the start of the init() method.
  */
 function resizeHandler() {
+    var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollStep;
     $('body').replaceWith(BODY_CLONE.clone());
-    NODE_COLLECTION = new NodeCollection(OPTIONS.selector);
-    var environment = {
-        viewportHeight: $(window).height() - OPTIONS.pageMargin * 2
-    };
-    NODE_COLLECTION.calculateNodePositionsAndPages(environment);
-    showPage(CURRENT_PAGE);
+    composePage();
+    $(window).scrollTop(currentScroll);
 }
 
 /**
@@ -106,7 +104,7 @@ function keydownHandler(e) {
     if (e.which === 40 || e.which === 39) {
         scrollTo = PAGE_COLLECTION.getCurrent().bottom  / OPTIONS.scrollStep + 10;
     } else if (e.which === 38 || e.which === 37) {
-        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep;
+        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep + OPTIONS.pageMargin * 2 + 10;
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
@@ -119,14 +117,11 @@ function keydownHandler(e) {
  */
 function scrollHandler() {
     var scrollTop = $(window).scrollTop();
-    var currentPage = PAGE_COLLECTION.currentPage;
-    var lowerBound = PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep;
-    var upperBound = PAGE_COLLECTION.getCurrent().bottom / OPTIONS.scrollStep;
+    var currentPageNumber = PAGE_COLLECTION.currentPage;
 
-    if (scrollTop < lowerBound) {
-        PAGE_COLLECTION.showPage(currentPage - 1);
-    } else if (upperBound < scrollTop) {
-        PAGE_COLLECTION.showPage(currentPage + 1);
+    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollStep).pageNumber;
+    if (newPageNumber !== currentPageNumber) {
+        PAGE_COLLECTION.showPage(newPageNumber);
     }
 }
 function Node(domNode, index) {
@@ -444,6 +439,17 @@ var PageCollectionAPI = {
         } else {
             return this.last().top;
         }
+    },
+
+    /**
+     * Given a y-axis offset in pixels, return the page in the collection which contains this
+     * offset between its top and bottom properties.
+     * @param offset
+     */
+    getPageAtOffset: function(offset) {
+        return this.filter(function(page) {
+            return (page.top <= offset && offset < page.bottom);
+        })[0];
     },
 
     renderToDom: function() {

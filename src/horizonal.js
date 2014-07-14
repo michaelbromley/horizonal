@@ -21,28 +21,29 @@ function Horizonal() {
     this.init = function(_OPTIONS) {
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
         BODY_CLONE = $('body').clone();
-        $('body').wrapInner('<div id="hrz-container"></div>');
-        CONTAINER = $('#hrz-container');
-        VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
-
         addCustomCssToHead();
-
-        var allNodes = new NodeCollection(OPTIONS.selector);
-        PAGE_COLLECTION = allNodes.splitIntoPages();
-        PAGE_COLLECTION.renderToDom();
-        PAGE_COLLECTION.showPage(1);
+        composePage();
         registerEventHandlers();
-
-        // remove any DOM nodes that are not included in the selector, since they will just be left
-        // floating around in the wrong place
-        CONTAINER.children().not('.hrz-page').filter(':visible').remove();
-
-        var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
-        $('body').height(documentHeight);
-        if (!OPTIONS.displayScrollbar) {
-            $('body').css('overflow-y', 'hidden');
-        }
+        PAGE_COLLECTION.showPage(1);
     };
+    
+}
+
+function composePage() {
+    $('body').wrapInner('<div id="hrz-container"></div>');
+    CONTAINER = $('#hrz-container');
+    VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
+    var allNodes = new NodeCollection(OPTIONS.selector);
+    PAGE_COLLECTION = allNodes.splitIntoPages();
+    PAGE_COLLECTION.renderToDom();
+    // remove any DOM nodes that are not included in the selector,
+    // since they will just be left floating around in the wrong place.
+    CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+    var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
+    $('body').height(documentHeight);
+    if (!OPTIONS.displayScrollbar) {
+        $('body').css('overflow-y', 'hidden');
+    }
 }
 
 /**
