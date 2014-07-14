@@ -8,6 +8,9 @@ var VIEWPORT_HEIGHT;
 
 function Horizonal() {
 
+    var _hasBeenInitialized = false;
+    var _disabled = false;
+
     var defaults = {
         selector: 'h1, h2, h3, h4, h5, h6, p, li, img, table',
         stagger: 'random',
@@ -16,18 +19,36 @@ function Horizonal() {
         customCssFile: false,
         displayScrollbar: true,
         scrollStep: 2,
-        pageMargin: 20
+        pageMargin: 20,
+        displayPageCount: true
     };
 
     this.init = function(_OPTIONS) {
+        if (!_hasBeenInitialized) {
+            BODY_CLONE = $('body').clone();
+            registerEventHandlers();
+        }
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-        BODY_CLONE = $('body').clone();
         addCustomCssToHead();
         composePage();
-        registerEventHandlers();
         PAGE_COLLECTION.showPage(1);
+        updatePageCount();
     };
-    
+
+    this.disable = function() {
+        if (!_disabled) {
+            $('body').replaceWith(BODY_CLONE.clone());
+            unregisterEventHandlers();
+            _disabled = true;
+        }
+    };
+
+    this.enable = function() {
+        if (_disabled) {
+            resizeHandler();
+            registerEventHandlers();
+        }
+    };
 }
 
 function composePage() {
@@ -40,11 +61,27 @@ function composePage() {
     // remove any DOM nodes that are not included in the selector,
     // since they will just be left floating around in the wrong place.
     CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+
     var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
     $('body').height(documentHeight);
     if (!OPTIONS.displayScrollbar) {
         $('body').css('overflow-y', 'hidden');
     }
+    renderPageCount();
+}
+
+function renderPageCount() {
+    var pageCountDiv = $('<div class="hrz-page-count"></div>');
+    $('body').append(pageCountDiv);
+    pageCountDiv.append('<span id="hrz-current-page"></span> / <span id="hrz-total-pages"></span>');
+    $('#hrz-total-pages').html(PAGE_COLLECTION.length);
+    if (!OPTIONS.displayPageCount) {
+        pageCountDiv.addClass('hidden');
+    }
+}
+
+function updatePageCount() {
+    $('#hrz-current-page').html(PAGE_COLLECTION.currentPage);
 }
 
 /**
@@ -54,6 +91,12 @@ function registerEventHandlers() {
     $(window).on('resize', debounce(resizeHandler, 250));
     $(window).on('keydown', keydownHandler);
     $(window).on('scroll', scrollHandler);
+}
+
+function unregisterEventHandlers() {
+    $(window).off('resize', debounce(resizeHandler, 250));
+    $(window).off('keydown', keydownHandler);
+    $(window).off('scroll', scrollHandler);
 }
 
 function addCustomCssToHead() {
@@ -77,6 +120,9 @@ function resizeHandler() {
     $('body').replaceWith(BODY_CLONE.clone());
     composePage();
     $(window).scrollTop(currentScroll);
+    if (currentScroll === 0) {
+        scrollHandler();
+    }
 }
 
 /**
@@ -122,6 +168,7 @@ function scrollHandler() {
     var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollStep).pageNumber;
     if (newPageNumber !== currentPageNumber) {
         PAGE_COLLECTION.showPage(newPageNumber);
+        updatePageCount();
     }
 }
 function Node(domNode, index) {
@@ -492,7 +539,9 @@ window.horizonal = (function() {
     var instance = new Horizonal();
 
     return {
-        init: instance.init
+        init: instance.init,
+        disable: instance.disable,
+        enable: instance.enable
     };
 })();
 

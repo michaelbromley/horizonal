@@ -3,5 +3,6 @@ horizonal.init({
     transitionSpeed: 2,
     displayScrollbar: true,
     scrollStep: 2,
-    selector: 'p,img,h1,h2,h3'
+    selector: 'p,img,h1,h2,h3',
+    displayPageCount: false
 });

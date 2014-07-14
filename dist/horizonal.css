@@ -4,6 +4,16 @@ html {
             box-sizing: border-box;
 }
 
+.hrz-page-count {
+    position: fixed;
+    padding: 10px;
+    bottom: 20px;
+    right: 20px;
+}
+.hrz-page-count.hidden {
+    display: none;
+}
+
 #hrz-container {
     position: fixed;
     width: 100%;

@@ -8,6 +8,9 @@ function resizeHandler() {
     $('body').replaceWith(BODY_CLONE.clone());
     composePage();
     $(window).scrollTop(currentScroll);
+    if (currentScroll === 0) {
+        scrollHandler();
+    }
 }
 
 /**
@@ -53,5 +56,6 @@ function scrollHandler() {
     var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollStep).pageNumber;
     if (newPageNumber !== currentPageNumber) {
         PAGE_COLLECTION.showPage(newPageNumber);
+        updatePageCount();
     }
 }
