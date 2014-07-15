@@ -10,6 +10,7 @@ html {
     bottom: 20px;
     right: 20px;
 }
+
 .hrz-page-count.hidden {
     display: none;
 }
@@ -18,67 +19,52 @@ html {
     position: fixed;
     width: 100%;
     height: 100%;
-    -webkit-perspective: 300px;
-            perspective: 300px;
-    -webkit-transform-origin: center center;
-        -ms-transform-origin: center center;
-            transform-origin: center center;
 }
 
 .hrz-page {
     position: absolute;
+    overflow: hidden;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     -webkit-transform-style: preserve-3d;
             transform-style: preserve-3d;
-    -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
-            transition: transform 1s, opacity 1s, outline-color 1s;
+    -webkit-transform-origin: center center;
+        -ms-transform-origin: center center;
+            transform-origin: center center;
+    -webkit-perspective: 500px;
+            perspective: 500px;
+    -webkit-transition: opacity 0s;
+            transition: opacity 0s;
     opacity: 1;
-    background-color: rgba(255,255,255,0);
-    outline: 2px solid #666;
+    background-color: transparent;
 }
 
 .hrz-page.hrz-fore {
-    -webkit-transform:  translateY(-100px);
-        -ms-transform:  translateY(-100px);
-            transform:  translateY(-100px);
-    -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
-            transition: transform 1s, opacity 1s, outline-color 1s;
-    opacity: 0;
+    opacity: 1;
 }
 
 .hrz-page.hrz-back {
-    -webkit-transition: -webkit-transform 1s, opacity 1s, outline-color 1s;
-            transition: transform 1s, opacity 1s, outline-color 1s;
-    background-color: transparent;
-    -webkit-transform: translateY(100px);
-        -ms-transform: translateY(100px);
-            transform: translateY(100px);
-    opacity: 0;
-    outline-color: rgba(0,0,0,0);
+    opacity: 1;
 }
 
 .hrz-element {
     opacity: 1;
-    -webkit-transition: -webkit-transform 1s, opacity 1s;
-            transition: transform 1s, opacity 1s;
-    -webkit-transform: translateY(0px);
-        -ms-transform: translateY(0px);
-            transform: translateY(0px);
+    -webkit-transition: -webkit-transform 0.7s, opacity 0.2s 0.3s;
+            transition: transform 0.7s, opacity 0.2s 0.3s;
+    -webkit-transform: translateZ(0px);
+            transform: translateZ(0px);
 }
 
 .hrz-element.hrz-back {
     opacity: 0;
-    -webkit-transform: translateY(0px);
-        -ms-transform: translateY(0px);
-            transform: translateY(0px);
+    -webkit-transform: translateZ(-3000px);
+            transform: translateZ(-3000px);
 }
 
 .hrz-element.hrz-fore {
     opacity: 0;
-    -webkit-transform: translateY(0px);
-        -ms-transform: translateY(0px);
-            transform: translateY(0px);
+    -webkit-transform: translateZ(1000px);
+            transform: translateZ(1000px);
 }

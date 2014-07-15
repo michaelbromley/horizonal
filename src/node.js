@@ -5,13 +5,25 @@ function Node(domNode, index) {
     this.layout = this.getLayout();
     this.isTall = false;
     this.pageOverhang = 0;
-    $(this.domNode).addClass('hrz-element hrz-fore');
+    this.originalComputedStyle = this.cloneComputedStyle();
+    this.staggerOrder = 0;
 }
 
 Node.prototype = {
+
     /**
-     * Calculate the bounding box of the node and return it as an object. The isTall property is used to
-     * signal that this node is over 1/2 the height of the current viewport height.
+     * In order to ensure a faithful visual reproduction of the original page, before we do anything with the DOM, we
+     * need to store a copy of *all* of the computed CSS style rules that apply to this DOM node. We will use this
+     * information at the final rendering step in order to perform a diff and inline any changed styles.
+     * @returns {*}
+     */
+    cloneComputedStyle: function() {
+        var computedStyle = window.getComputedStyle(this.domNode);
+        return $.extend({}, computedStyle);
+    },
+
+    /**
+     * Calculate the bounding box and absolute position of the node and return it as an object.
      * @param node
      * @returns {{top: number, left: number, bottom: number, width: number, height: number}}
      */
@@ -19,8 +31,8 @@ Node.prototype = {
         var $node = $(this.domNode),
             left = $node.offset().left,
             top = $node.offset().top - parseInt($node.css('margin-top')),
-            width = $node.width(),
-            height = $node.height(),
+            width = $node.width() + parseInt($node.css('padding-left')) + parseInt($node.css('padding-right')),
+            height = $node.height() + parseInt($node.css('padding-top')) + parseInt($node.css('padding-bottom')),
             bottom = top + height;
 
         return {
@@ -55,39 +67,94 @@ Node.prototype = {
     },
 
     /**
-     * Set which page this node should appear on.
+     * Append the DOM node to the correct page div and apply the positioning and CSS style diff rules.
      * @param parentPage
      */
     renderToDom: function(parentPage) {
         $(this.domNode).addClass(parentPage.pageId);
         $('#' + parentPage.pageId).append(this.domNode);
-        this.setCssProperties(parentPage.top);
+        this.applyStyleDiff();
+        $(this.domNode).addClass('hrz-element hrz-fore');
+        this.setCssPosition(parentPage.top);
+        this.setTransitionDelay();
     },
 
-    setCssProperties: function(pageOffset) {
-        var delay = this.getStaggerDelay();
+    /**
+     * Apply the style rules needed to make the
+     * DOM node appear identical to the original form.
+     * @param pageOffset
+     */
+    applyStyleDiff: function() {
+        var styleDiff = this.getStyleDiff();
+        $(this.domNode).css(styleDiff);
+    },
+
+    /**
+     * Apply the absolute positioning to make the DOM node appear in
+     * the correct place on the page.
+     * @param pageOffset
+     */
+    setCssPosition: function(pageOffset) {
         var pageMargin = this.page === 1 ? 0 : OPTIONS.pageMargin;
         $(this.domNode).css({
             'position': 'fixed',
             'top' : this.layout.top - pageOffset + pageMargin + 'px',
             'left' : this.layout.left + 'px',
             'width' : this.layout.width + 'px',
-            'height' : this.layout.height + 'px',
-            'transition': 'transform ' + delay + 's, opacity ' + delay + 's',
-            '-webkit-transition': '-webkit-transform ' + delay + 's, opacity ' + delay + 's'
+            'height' : this.layout.height + 'px'
         });
     },
 
-    getStaggerDelay: function() {
-        var delay;
-        if (OPTIONS.stagger === 'random') {
-            delay = Math.random() *  0.5 + 0.7 ;
-        } else if (OPTIONS.stagger === 'sequence') {
-            delay = Math.log(this.pageOrder + 2);
-        } else {
-            delay = 1;
+    setTransitionDelay: function() {
+        var stagger = this.getStaggerDelay();
+        var transition = window.getComputedStyle(this.domNode).transition;
+        var webkitTransition = window.getComputedStyle(this.domNode)['-webkit-transition'];
+
+        transition = replaceDelayValue(transition);
+        webkitTransition = replaceDelayValue(webkitTransition);
+
+        function replaceDelayValue(original) {
+            return original.replace(/(\S+\s)([0-9\.]+)(s[^,])/g, function(match, p1, p2, p3) {
+                var delay = parseInt(p2) + stagger;
+                return p1 + delay + p3;
+            });
         }
-        return delay / OPTIONS.transitionSpeed;
+
+        $(this.domNode).css({
+            'transition': transition,
+            '-webkit-transition': webkitTransition
+        });
+    },
+
+    /**
+     * In order to make the final rendered DOM node appear identical to how it did on the original page,
+     * we took a snapshot of all the computed CSS styles before making any changes to the page layout.
+     * Now that we have removed the DOM node from the original place in the document, any cascaded
+     * styles from parent divs will have been lost.
+     *
+     * This diff method gets the current computed CSS styles for the node, and compares them to the
+     * snapshot we took with the cloneComputedStyle() method. If any of the style rules are not equal,
+     * we add them to the styleDiff object so we can apply them inline to the DOM node.
+     * @returns {{}}
+     */
+    getStyleDiff: function() {
+        var styleDiff = {};
+        var newComputedStyles = window.getComputedStyle(this.domNode);
+        var self = this;
+        $.each(newComputedStyles, function(index, property) {
+            var camelCasedProperty = property.replace(/\-(\w)/g, function (strMatch, property){
+                return property.toUpperCase();
+            });
+            if (newComputedStyles[property] != self.originalComputedStyle[camelCasedProperty]) {
+                styleDiff[property] = self.originalComputedStyle[camelCasedProperty];
+            }
+        });
+        return styleDiff;
+    },
+
+    getStaggerDelay: function() {
+        var delay = OPTIONS.staggerDelay * this.staggerOrder;
+        return Math.round(delay * 100) / 100;
     },
 
     moveToForeground: function() {

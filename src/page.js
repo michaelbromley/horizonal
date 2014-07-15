@@ -20,7 +20,7 @@ Page.prototype = {
     },
 
     renderToDom: function() {
-        CONTAINER.prepend('<div class="hrz-page hrz-fore" id="' + this.pageId + '" />');
+        CONTAINER.append('<div class="hrz-page hrz-fore" id="' + this.pageId + '" />');
         this.domNode = $('#' + this.pageId)[0];
         this.nodes.renderToDom(this);
     },

@@ -11,7 +11,8 @@ var NodeCollectionAPI = {
         var self = this;
         var allNodes = $(selector).filter(':visible');
         allNodes.each(function(index, domNode) {
-            self.push(new Node(domNode, index));
+            var node = new Node(domNode, index);
+            self.push(node);
         });
     },
 
@@ -92,11 +93,32 @@ var NodeCollectionAPI = {
     },
 
     renderToDom: function(parentPage) {
-        this.forEach(function(node) {
+        // at this stage we can assign an appropriate staggerOrder to
+        // the nodes, since we now know how many are on each page.
+        var staggerOrder = [];
+        for (var i = 1; i <= this.length; i++) {
+            staggerOrder.push(i);
+        }
+        if (OPTIONS.stagger === 'random') {
+            staggerOrder = this.shuffle(staggerOrder);
+        }
+
+        this.forEach(function(node, index) {
+            node.staggerOrder = staggerOrder[index];
             node.renderToDom(parentPage);
         });
-    }
+    },
 
+    /**
+     * + Jonas Raoni Soares Silva
+     * @ http://jsfromhell.com/array/shuffle [v1.0]
+     * @param o
+     * @returns {*}
+     */
+    shuffle: function(o){
+        for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    }
 
 
 };

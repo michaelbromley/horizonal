@@ -14,7 +14,6 @@ function Horizonal() {
         selector: 'h1, h2, h3, h4, h5, h6, p, li, img, table',
         stagger: 'random',
         staggerDelay: 0.1,
-        transitionSpeed: 1,
         customCssFile: false,
         displayScrollbar: true,
         scrollStep: 2,
@@ -46,6 +45,7 @@ function Horizonal() {
         if (_disabled) {
             resizeHandler();
             registerEventHandlers();
+            _disabled = false;
         }
     };
 }
