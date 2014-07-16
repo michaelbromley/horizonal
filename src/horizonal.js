@@ -1,7 +1,8 @@
 var PAGE_COLLECTION;
 var OPTIONS;
 var CONTAINER;
-var BODY_CLONE;
+var ROOT;
+var ROOT_CLONE;
 var VIEWPORT_HEIGHT;
 
 
@@ -18,24 +19,29 @@ function Horizonal() {
         displayScrollbar: true,
         scrollStep: 2,
         pageMargin: 20,
-        displayPageCount: true
+        displayPageCount: true,
+        rootElement: 'body'
     };
 
     this.init = function(_OPTIONS) {
+        var currentScroll = $(window).scrollTop();
+        OPTIONS = $.extend( {}, defaults, _OPTIONS);
+
         if (!_hasBeenInitialized) {
-            BODY_CLONE = $('body').clone();
+            // TODO: do some checks to make sure the specified options are okay
+            ROOT = $(OPTIONS.rootElement);
+            ROOT_CLONE = ROOT.clone();
             registerEventHandlers();
         }
-        OPTIONS = $.extend( {}, defaults, _OPTIONS);
+
         addCustomCssToHead();
-        var currentScroll = $(window).scrollTop();
         composePage(currentScroll);
         updatePageCount();
     };
 
     this.disable = function() {
         if (!_disabled) {
-            $('body').replaceWith(BODY_CLONE.clone());
+            ROOT.replaceWith(ROOT_CLONE.clone());
             unregisterEventHandlers();
             _disabled = true;
         }
@@ -51,8 +57,10 @@ function Horizonal() {
 }
 
 function composePage(currentScroll) {
-    $('body').wrapInner('<div id="hrz-container"></div>');
+    ROOT = $(OPTIONS.rootElement);
+    ROOT.wrapInner('<div id="hrz-container"></div>');
     CONTAINER = $('#hrz-container');
+    CONTAINER.width(ROOT.width());
     VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
     var allNodes = new NodeCollection(OPTIONS.selector);
     PAGE_COLLECTION = allNodes.splitIntoPages();
@@ -62,20 +70,22 @@ function composePage(currentScroll) {
     CONTAINER.children().not('.hrz-page').filter(':visible').remove();
 
     var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
-    $('body').height(documentHeight);
+    ROOT.height(documentHeight);
     if (!OPTIONS.displayScrollbar) {
-        $('body').css('overflow-y', 'hidden');
+        ROOT.css('overflow-y', 'hidden');
     }
     renderPageCount();
 }
 
 function renderPageCount() {
-    var pageCountDiv = $('<div class="hrz-page-count"></div>');
-    $('body').append(pageCountDiv);
-    pageCountDiv.append('<span id="hrz-current-page"></span> / <span id="hrz-total-pages"></span>');
-    $('#hrz-total-pages').html(PAGE_COLLECTION.length);
-    if (!OPTIONS.displayPageCount) {
-        pageCountDiv.addClass('hidden');
+    if ($('.hrz-page-count').length === 0) {
+        var pageCountDiv = $('<div class="hrz-page-count"></div>');
+        $('body').append(pageCountDiv);
+        pageCountDiv.append('<span id="hrz-current-page"></span> / <span id="hrz-total-pages"></span>');
+        $('#hrz-total-pages').html(PAGE_COLLECTION.length);
+        if (!OPTIONS.displayPageCount) {
+            pageCountDiv.addClass('hidden');
+        }
     }
 }
 

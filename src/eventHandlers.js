@@ -5,7 +5,7 @@
  */
 function resizeHandler() {
     var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollStep;
-    $('body').replaceWith(BODY_CLONE.clone());
+    ROOT.replaceWith(ROOT_CLONE.clone());
     composePage(currentScroll);
     $(window).scrollTop(currentScroll);
     updatePageCount();
