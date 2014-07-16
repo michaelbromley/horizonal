@@ -90,11 +90,16 @@ var PageCollectionAPI = {
         if (oldPageNumber === 0) {
             this.getPage(newPageNumber).moveToFocus();
         } else {
+            var i;
             if (oldPageNumber < newPageNumber) {
-                this.getPage(oldPageNumber).moveToBackground();
+                for (i = oldPageNumber; i < newPageNumber; i ++) {
+                    this.getPage(i).moveToBackground();
+                }
                 this.getPage(newPageNumber).moveToFocus();
             } else if (newPageNumber < oldPageNumber) {
-                this.getPage(oldPageNumber).moveToForeground();
+                for (i = oldPageNumber; newPageNumber < i; i --) {
+                    this.getPage(i).moveToForeground();
+                }
                 this.getPage(newPageNumber).moveToFocus();
             }
         }

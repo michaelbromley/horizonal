@@ -38,6 +38,10 @@ function Horizonal() {
         addCustomCssToHead();
         composePage(currentScroll);
         updatePageCount();
+
+        if (window.location.hash !== '') {
+            hashChangeHandler();
+        }
     };
 
     this.disable = function() {
@@ -52,10 +56,26 @@ function Horizonal() {
         if (_disabled) {
             resizeHandler();
             registerEventHandlers();
+            if (window.location.hash !== '') {
+                hashChangeHandler();
+            }
             _disabled = false;
         }
     };
+
+    this.goTo = function(target) {
+        var pageNumber;
+        if (target.substr(0, 1) === "#") {
+            hashChangeHandler(target);
+        } else {
+            // TODO: verify target is valid integer
+            pageNumber = target;
+            PAGE_COLLECTION.showPage(pageNumber);
+        }
+    };
 }
+
+
 
 function composePage(currentScroll) {
     ROOT = $(OPTIONS.rootElement);
@@ -101,12 +121,14 @@ function registerEventHandlers() {
     $(window).on('resize', debounce(resizeHandler, 250));
     $(window).on('keydown', keydownHandler);
     $(window).on('scroll', scrollHandler);
+    $(window).on('hashchange', hashChangeHandler);
 }
 
 function unregisterEventHandlers() {
     $(window).off('resize', debounce(resizeHandler, 250));
     $(window).off('keydown', keydownHandler);
     $(window).off('scroll', scrollHandler);
+    $(window).off('hashchange', hashChangeHandler);
 }
 
 function addCustomCssToHead() {

@@ -57,3 +57,14 @@ function scrollHandler() {
         updatePageCount();
     }
 }
+
+function hashChangeHandler() {
+    var hash = window.location.hash;
+    if (hash !== "") {
+        var page = $(hash).closest('.hrz-page');
+        var pageNumber = parseInt(page.attr('id').replace(/^\D+/g, ''));
+        PAGE_COLLECTION.showPage(pageNumber);
+        $(window).scrollTop(PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep);
+        updatePageCount();
+    }
+}

@@ -33,7 +33,7 @@ Page.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).addClass('hrz-fore');
+        $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToForeground();
@@ -41,7 +41,7 @@ Page.prototype = {
     },
 
     moveToBackground: function() {
-        $(this.domNode).addClass('hrz-back');
+        $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToBackground();
@@ -49,8 +49,7 @@ Page.prototype = {
     },
 
     moveToFocus: function() {
-        $(this.domNode).removeClass('hrz-hidden');
-        $(this.domNode).removeClass('hrz-fore hrz-back');
+        $(this.domNode).removeClass('hrz-fore hrz-back hrz-hidden');
         if (this.hideTimer !== null) {
             clearTimeout(this.hideTimer);
             this.hideTimer = null;

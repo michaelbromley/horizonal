@@ -39,6 +39,10 @@ function Horizonal() {
         addCustomCssToHead();
         composePage(currentScroll);
         updatePageCount();
+
+        if (window.location.hash !== '') {
+            hashChangeHandler();
+        }
     };
 
     this.disable = function() {
@@ -53,10 +57,26 @@ function Horizonal() {
         if (_disabled) {
             resizeHandler();
             registerEventHandlers();
+            if (window.location.hash !== '') {
+                hashChangeHandler();
+            }
             _disabled = false;
         }
     };
+
+    this.goTo = function(target) {
+        var pageNumber;
+        if (target.substr(0, 1) === "#") {
+            hashChangeHandler(target);
+        } else {
+            // TODO: verify target is valid integer
+            pageNumber = target;
+            PAGE_COLLECTION.showPage(pageNumber);
+        }
+    };
 }
+
+
 
 function composePage(currentScroll) {
     ROOT = $(OPTIONS.rootElement);
@@ -102,12 +122,14 @@ function registerEventHandlers() {
     $(window).on('resize', debounce(resizeHandler, 250));
     $(window).on('keydown', keydownHandler);
     $(window).on('scroll', scrollHandler);
+    $(window).on('hashchange', hashChangeHandler);
 }
 
 function unregisterEventHandlers() {
     $(window).off('resize', debounce(resizeHandler, 250));
     $(window).off('keydown', keydownHandler);
     $(window).off('scroll', scrollHandler);
+    $(window).off('hashchange', hashChangeHandler);
 }
 
 function addCustomCssToHead() {
@@ -180,6 +202,17 @@ function scrollHandler() {
         updatePageCount();
     }
 }
+
+function hashChangeHandler() {
+    var hash = window.location.hash;
+    if (hash !== "") {
+        var page = $(hash).closest('.hrz-page');
+        var pageNumber = parseInt(page.attr('id').replace(/^\D+/g, ''));
+        PAGE_COLLECTION.showPage(pageNumber);
+        $(window).scrollTop(PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep);
+        updatePageCount();
+    }
+}
 function Node(domNode, index) {
     this.domNode = domNode;
     this.index = index;
@@ -212,7 +245,7 @@ Node.prototype = {
     getLayout: function() {
         var $node = $(this.domNode),
             left = $node.offset().left - ROOT.offset().left,
-            top = $node.position().top - ROOT.offset().top - parseInt($node.css('margin-top')),
+            top = $node.position().top - ROOT.offset().top,
             width = $node.width() + parseInt($node.css('padding-left')) + parseInt($node.css('padding-right')),
             height = $node.height() + parseInt($node.css('padding-top')) + parseInt($node.css('padding-bottom')),
             bottom = top + height;
@@ -350,11 +383,11 @@ Node.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).addClass('hrz-fore');
+        $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
     },
 
     moveToBackground: function() {
-        $(this.domNode).addClass('hrz-back');
+        $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
     },
 
     moveToFocus: function() {
@@ -526,7 +559,7 @@ Page.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).addClass('hrz-fore');
+        $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToForeground();
@@ -534,7 +567,7 @@ Page.prototype = {
     },
 
     moveToBackground: function() {
-        $(this.domNode).addClass('hrz-back');
+        $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToBackground();
@@ -542,8 +575,7 @@ Page.prototype = {
     },
 
     moveToFocus: function() {
-        $(this.domNode).removeClass('hrz-hidden');
-        $(this.domNode).removeClass('hrz-fore hrz-back');
+        $(this.domNode).removeClass('hrz-fore hrz-back hrz-hidden');
         if (this.hideTimer !== null) {
             clearTimeout(this.hideTimer);
             this.hideTimer = null;
@@ -652,11 +684,16 @@ var PageCollectionAPI = {
         if (oldPageNumber === 0) {
             this.getPage(newPageNumber).moveToFocus();
         } else {
+            var i;
             if (oldPageNumber < newPageNumber) {
-                this.getPage(oldPageNumber).moveToBackground();
+                for (i = oldPageNumber; i < newPageNumber; i ++) {
+                    this.getPage(i).moveToBackground();
+                }
                 this.getPage(newPageNumber).moveToFocus();
             } else if (newPageNumber < oldPageNumber) {
-                this.getPage(oldPageNumber).moveToForeground();
+                for (i = oldPageNumber; newPageNumber < i; i --) {
+                    this.getPage(i).moveToForeground();
+                }
                 this.getPage(newPageNumber).moveToFocus();
             }
         }

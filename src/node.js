@@ -30,7 +30,7 @@ Node.prototype = {
     getLayout: function() {
         var $node = $(this.domNode),
             left = $node.offset().left - ROOT.offset().left,
-            top = $node.position().top - ROOT.offset().top - parseInt($node.css('margin-top')),
+            top = $node.position().top - ROOT.offset().top,
             width = $node.width() + parseInt($node.css('padding-left')) + parseInt($node.css('padding-right')),
             height = $node.height() + parseInt($node.css('padding-top')) + parseInt($node.css('padding-bottom')),
             bottom = top + height;
@@ -168,11 +168,11 @@ Node.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).addClass('hrz-fore');
+        $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
     },
 
     moveToBackground: function() {
-        $(this.domNode).addClass('hrz-back');
+        $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
     },
 
     moveToFocus: function() {
