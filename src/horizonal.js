@@ -20,7 +20,8 @@ function Horizonal() {
         scrollStep: 2,
         pageMargin: 20,
         displayPageCount: true,
-        rootElement: 'body'
+        rootElement: 'body',
+        pageHideDelay: 1 // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
     };
 
     this.init = function(_OPTIONS) {

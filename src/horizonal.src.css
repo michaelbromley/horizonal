@@ -13,6 +13,10 @@ html {
     display: none;
 }
 
+.hrz-page.hrz-hidden {
+    left: -5000px;
+}
+
 #hrz-container {
     position: fixed;
     width: 100%;
@@ -44,7 +48,7 @@ html {
 
 .hrz-element {
     opacity: 1;
-    transition: transform 0.7s, opacity 0.2s 0.3s;
+    transition: transform 1s, opacity 0.2s 0.3s;
     transform: translateZ(0px);
 }
 
