@@ -19,8 +19,14 @@ Page.prototype = {
         this.nodes.push(node);
     },
 
-    renderToDom: function() {
-        CONTAINER.append('<div class="hrz-page hrz-fore" id="' + this.pageId + '" />');
+    renderToDom: function(currentPage) {
+        var zClass = "";
+        if (this.pageNumber < currentPage) {
+            zClass = "hrz-back";
+        } else if (currentPage < this.pageNumber) {
+            zClass = "hrz-fore";
+        }
+        CONTAINER.append('<div class="hrz-page ' + zClass + '" id="' + this.pageId + '" />');
         this.domNode = $('#' + this.pageId)[0];
         this.nodes.renderToDom(this);
     },

@@ -28,8 +28,8 @@ function Horizonal() {
         }
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
         addCustomCssToHead();
-        composePage();
-        PAGE_COLLECTION.showPage(1);
+        var currentScroll = $(window).scrollTop();
+        composePage(currentScroll);
         updatePageCount();
     };
 
@@ -50,13 +50,13 @@ function Horizonal() {
     };
 }
 
-function composePage() {
+function composePage(currentScroll) {
     $('body').wrapInner('<div id="hrz-container"></div>');
     CONTAINER = $('#hrz-container');
     VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
     var allNodes = new NodeCollection(OPTIONS.selector);
     PAGE_COLLECTION = allNodes.splitIntoPages();
-    PAGE_COLLECTION.renderToDom();
+    PAGE_COLLECTION.renderToDom(currentScroll);
     // remove any DOM nodes that are not included in the selector,
     // since they will just be left floating around in the wrong place.
     CONTAINER.children().not('.hrz-page').filter(':visible').remove();

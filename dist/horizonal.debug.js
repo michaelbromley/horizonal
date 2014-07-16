@@ -29,8 +29,8 @@ function Horizonal() {
         }
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
         addCustomCssToHead();
-        composePage();
-        PAGE_COLLECTION.showPage(1);
+        var currentScroll = $(window).scrollTop();
+        composePage(currentScroll);
         updatePageCount();
     };
 
@@ -51,13 +51,13 @@ function Horizonal() {
     };
 }
 
-function composePage() {
+function composePage(currentScroll) {
     $('body').wrapInner('<div id="hrz-container"></div>');
     CONTAINER = $('#hrz-container');
     VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
     var allNodes = new NodeCollection(OPTIONS.selector);
     PAGE_COLLECTION = allNodes.splitIntoPages();
-    PAGE_COLLECTION.renderToDom();
+    PAGE_COLLECTION.renderToDom(currentScroll);
     // remove any DOM nodes that are not included in the selector,
     // since they will just be left floating around in the wrong place.
     CONTAINER.children().not('.hrz-page').filter(':visible').remove();
@@ -118,11 +118,9 @@ function addCustomCssToHead() {
 function resizeHandler() {
     var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollStep;
     $('body').replaceWith(BODY_CLONE.clone());
-    composePage();
+    composePage(currentScroll);
     $(window).scrollTop(currentScroll);
-    if (currentScroll === 0) {
-        scrollHandler();
-    }
+    updatePageCount();
 }
 
 /**
@@ -247,7 +245,13 @@ Node.prototype = {
         $(this.domNode).addClass(parentPage.pageId);
         $('#' + parentPage.pageId).append(this.domNode);
         this.applyStyleDiff();
-        $(this.domNode).addClass('hrz-element hrz-fore');
+        var zClass = "";
+        if (parentPage.pageNumber < PAGE_COLLECTION.currentPage) {
+            zClass = "hrz-back";
+        } else if (PAGE_COLLECTION.currentPage < parentPage.pageNumber) {
+            zClass = "hrz-fore";
+        }
+        $(this.domNode).addClass('hrz-element ' + zClass);
         this.setCssPosition(parentPage.top);
         this.setTransitionDelay();
     },
@@ -287,10 +291,14 @@ Node.prototype = {
         webkitTransition = replaceDelayValue(webkitTransition);
 
         function replaceDelayValue(original) {
-            return original.replace(/(\S+\s)([0-9\.]+)(s[^,])/g, function(match, p1, p2, p3) {
-                var delay = parseInt(p2) + stagger;
-                return p1 + delay + p3;
-            });
+            if (typeof original !== 'undefined') {
+                return original.replace(/(\S+\s)([0-9\.]+)s(,|$)/g, function(match, p1, p2, p3) {
+                    var delay = parseInt(p2) + stagger;
+                    return p1 + delay + 's' + p3;
+                });
+            } else {
+                return "";
+            }
         }
 
         $(this.domNode).css({
@@ -493,8 +501,14 @@ Page.prototype = {
         this.nodes.push(node);
     },
 
-    renderToDom: function() {
-        CONTAINER.append('<div class="hrz-page hrz-fore" id="' + this.pageId + '" />');
+    renderToDom: function(currentPage) {
+        var zClass = "";
+        if (this.pageNumber < currentPage) {
+            zClass = "hrz-back";
+        } else if (currentPage < this.pageNumber) {
+            zClass = "hrz-fore";
+        }
+        CONTAINER.append('<div class="hrz-page ' + zClass + '" id="' + this.pageId + '" />');
         this.domNode = $('#' + this.pageId)[0];
         this.nodes.renderToDom(this);
     },
@@ -522,7 +536,7 @@ Page.prototype = {
 };
 function PageCollection() {
 
-    var _currentPage = 0;
+    var _currentPage = 1;
 
     Object.defineProperty(this, "currentPage", {
         get: function() {
@@ -588,9 +602,12 @@ var PageCollectionAPI = {
         })[0];
     },
 
-    renderToDom: function() {
+    renderToDom: function(currentScroll) {
+        var self = this;
+        currentScroll = currentScroll || 0;
+        this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollStep).pageNumber;
         this.forEach(function(page) {
-            page.renderToDom();
+            page.renderToDom(self.currentPage);
         });
     },
 

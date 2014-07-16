@@ -74,7 +74,13 @@ Node.prototype = {
         $(this.domNode).addClass(parentPage.pageId);
         $('#' + parentPage.pageId).append(this.domNode);
         this.applyStyleDiff();
-        $(this.domNode).addClass('hrz-element hrz-fore');
+        var zClass = "";
+        if (parentPage.pageNumber < PAGE_COLLECTION.currentPage) {
+            zClass = "hrz-back";
+        } else if (PAGE_COLLECTION.currentPage < parentPage.pageNumber) {
+            zClass = "hrz-fore";
+        }
+        $(this.domNode).addClass('hrz-element ' + zClass);
         this.setCssPosition(parentPage.top);
         this.setTransitionDelay();
     },
@@ -114,10 +120,14 @@ Node.prototype = {
         webkitTransition = replaceDelayValue(webkitTransition);
 
         function replaceDelayValue(original) {
-            return original.replace(/(\S+\s)([0-9\.]+)(s[^,])/g, function(match, p1, p2, p3) {
-                var delay = parseInt(p2) + stagger;
-                return p1 + delay + p3;
-            });
+            if (typeof original !== 'undefined') {
+                return original.replace(/(\S+\s)([0-9\.]+)s(,|$)/g, function(match, p1, p2, p3) {
+                    var delay = parseInt(p2) + stagger;
+                    return p1 + delay + 's' + p3;
+                });
+            } else {
+                return "";
+            }
         }
 
         $(this.domNode).css({

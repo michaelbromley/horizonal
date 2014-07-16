@@ -1,6 +1,6 @@
 function PageCollection() {
 
-    var _currentPage = 0;
+    var _currentPage = 1;
 
     Object.defineProperty(this, "currentPage", {
         get: function() {
@@ -66,9 +66,12 @@ var PageCollectionAPI = {
         })[0];
     },
 
-    renderToDom: function() {
+    renderToDom: function(currentScroll) {
+        var self = this;
+        currentScroll = currentScroll || 0;
+        this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollStep).pageNumber;
         this.forEach(function(page) {
-            page.renderToDom();
+            page.renderToDom(self.currentPage);
         });
     },
 

@@ -6,11 +6,9 @@
 function resizeHandler() {
     var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollStep;
     $('body').replaceWith(BODY_CLONE.clone());
-    composePage();
+    composePage(currentScroll);
     $(window).scrollTop(currentScroll);
-    if (currentScroll === 0) {
-        scrollHandler();
-    }
+    updatePageCount();
 }
 
 /**
