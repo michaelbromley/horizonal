@@ -25,7 +25,7 @@ function Horizonal() {
         pageHideDelay: 1 // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
     };
 
-    this.init = function(_OPTIONS) {
+    function init(_OPTIONS) {
         var currentScroll = $(window).scrollTop();
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
 
@@ -43,17 +43,17 @@ function Horizonal() {
         if (window.location.hash !== '') {
             hashChangeHandler();
         }
-    };
+    }
 
-    this.disable = function() {
+    function disable() {
         if (!_disabled) {
             ROOT.replaceWith(ROOT_CLONE.clone());
             unregisterEventHandlers();
             _disabled = true;
         }
-    };
+    }
 
-    this.enable = function() {
+    function enable() {
         if (_disabled) {
             resizeHandler();
             registerEventHandlers();
@@ -62,9 +62,9 @@ function Horizonal() {
             }
             _disabled = false;
         }
-    };
+    }
 
-    this.goTo = function(target) {
+    function goTo(target) {
         var pageNumber;
         if (target.substr(0, 1) === "#") {
             hashChangeHandler(target);
@@ -73,10 +73,46 @@ function Horizonal() {
             pageNumber = target;
             PAGE_COLLECTION.showPage(pageNumber);
         }
+    }
+
+    function registerEventHandlers() {
+        $(window).on('resize', debounce(resizeHandler, 250));
+        $(window).on('keydown', keydownHandler);
+        $(window).on('scroll', scrollHandler);
+        $(window).on('hashchange', hashChangeHandler);
+    }
+
+    function unregisterEventHandlers() {
+        $(window).off('resize', debounce(resizeHandler, 250));
+        $(window).off('keydown', keydownHandler);
+        $(window).off('scroll', scrollHandler);
+        $(window).off('hashchange', hashChangeHandler);
+    }
+
+    function addCustomCssToHead() {
+        var $customCssElement;
+        if (OPTIONS.customCssFile) {
+            $customCssElement = $('#hrz-custom-css');
+            if (0 < $customCssElement.length) {
+                $customCssElement.attr('href', OPTIONS.customCssFile);
+            } else {
+                $('head').append('<link rel="stylesheet" id="hrz-custom-css" href="' + OPTIONS.customCssFile + '" type="text/css" />');
+            }
+        }
+    }
+
+    /**
+     * Return the public API
+     */
+    return {
+        init: init,
+        enable: enable,
+        disable: disable,
+        goTo: goTo
     };
 }
 
-
+window.horizonal = new Horizonal();
 
 function composePage(currentScroll) {
     ROOT = $(OPTIONS.rootElement);
@@ -113,35 +149,6 @@ function renderPageCount() {
 
 function updatePageCount() {
     $('#hrz-current-page').html(PAGE_COLLECTION.currentPage);
-}
-
-/**
- * Register the event handlers
- */
-function registerEventHandlers() {
-    $(window).on('resize', debounce(resizeHandler, 250));
-    $(window).on('keydown', keydownHandler);
-    $(window).on('scroll', scrollHandler);
-    $(window).on('hashchange', hashChangeHandler);
-}
-
-function unregisterEventHandlers() {
-    $(window).off('resize', debounce(resizeHandler, 250));
-    $(window).off('keydown', keydownHandler);
-    $(window).off('scroll', scrollHandler);
-    $(window).off('hashchange', hashChangeHandler);
-}
-
-function addCustomCssToHead() {
-    var $customCssElement;
-    if (OPTIONS.customCssFile) {
-        $customCssElement = $('#hrz-custom-css');
-        if (0 < $customCssElement.length) {
-            $customCssElement.attr('href', OPTIONS.customCssFile);
-        } else {
-            $('head').append('<link rel="stylesheet" id="hrz-custom-css" href="' + OPTIONS.customCssFile + '" type="text/css" />');
-        }
-    }
 }
 /**
  * When the window is re-sized, we need to re-calculate the layout of the all the elements.
@@ -702,16 +709,4 @@ var PageCollectionAPI = {
 
 PageCollection.prototype = [];
 $.extend(PageCollection.prototype, PageCollectionAPI);
-
-
-window.horizonal = (function() {
-    var instance = new Horizonal();
-
-    return {
-        init: instance.init,
-        disable: instance.disable,
-        enable: instance.enable
-    };
-})();
-
 })(jQuery, window, document);

@@ -7,12 +7,12 @@ module.exports = function(grunt) {
                 src: [
                     'src/prefix.js',
                     'src/horizonal.js',
+                    'src/common.js',
                     'src/eventHandlers.js',
                     'src/node.js',
                     'src/nodeCollection.js',
                     'src/page.js',
                     'src/pageCollection.js',
-                    'src/api.js',
                     'src/suffix.js'
                 ],
                 dest: 'dist/horizonal.debug.js'
