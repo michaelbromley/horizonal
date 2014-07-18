@@ -100,27 +100,14 @@ var NodeCollectionAPI = {
             staggerOrder.push(i);
         }
         if (OPTIONS.stagger === 'random') {
-            staggerOrder = this.shuffle(staggerOrder);
+            staggerOrder = shuffle(staggerOrder);
         }
 
         this.forEach(function(node, index) {
             node.staggerOrder = staggerOrder[index];
             node.renderToDom(parentPage);
         });
-    },
-
-    /**
-     * + Jonas Raoni Soares Silva
-     * @ http://jsfromhell.com/array/shuffle [v1.0]
-     * @param o
-     * @returns {*}
-     */
-    shuffle: function(o){
-        for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
     }
-
-
 };
 
 NodeCollection.prototype = [];

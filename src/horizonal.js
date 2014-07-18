@@ -33,11 +33,14 @@ function Horizonal() {
             ROOT = $(OPTIONS.rootElement);
             ROOT_CLONE = ROOT.clone();
             registerEventHandlers();
+            composePage(currentScroll);
+            updatePageCount();
+            _hasBeenInitialized = true;
+        } else {
+            resizeHandler();
+            registerEventHandlers();
         }
-
         addCustomCssToHead();
-        composePage(currentScroll);
-        updatePageCount();
 
         if (window.location.hash !== '') {
             hashChangeHandler();
@@ -63,6 +66,10 @@ function Horizonal() {
         }
     }
 
+    /**
+     * Takes a page number or URL fragment (#) and goes to that page.
+     * @param target
+     */
     function goTo(target) {
         var pageNumber;
         if (target.substr(0, 1) === "#") {
@@ -71,6 +78,25 @@ function Horizonal() {
             // TODO: verify target is valid integer
             pageNumber = target;
             PAGE_COLLECTION.showPage(pageNumber);
+        }
+    }
+
+    function next() {
+        var current = PAGE_COLLECTION.currentPage;
+        var last = PAGE_COLLECTION.length;
+
+        if (current < last) {
+            var scrollTop = PAGE_COLLECTION.getPage(current + 1).midPoint;
+            $(window).scrollTop(scrollTop);
+        }
+    }
+
+    function previous() {
+        var current = PAGE_COLLECTION.currentPage;
+
+        if (1 < current) {
+            var scrollTop = PAGE_COLLECTION.getPage(current - 1).midPoint;
+            $(window).scrollTop(scrollTop);
         }
     }
 
@@ -107,7 +133,9 @@ function Horizonal() {
         init: init,
         enable: enable,
         disable: disable,
-        goTo: goTo
+        goTo: goTo,
+        next: next,
+        previous: previous
     };
 }
 

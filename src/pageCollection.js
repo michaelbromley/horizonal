@@ -32,6 +32,10 @@ var PageCollectionAPI = {
         return this.getPage(this.currentPage);
     },
 
+    getNext: function() {
+        return this.getPage(this.currentPage + 1);
+    },
+
     getPrevious: function() {
         return this.getPage(this.currentPage - 1);
     },
@@ -79,6 +83,7 @@ var PageCollectionAPI = {
      * To show a given page, we just need to remove the -fore and -back CSS classes
      * from the page and the nodes on that page. Lower-ordered pages have the -fore
      * class added, and higher-ordered pages have the -back class added.
+     *
      *
      * @param pageNumber
      */

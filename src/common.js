@@ -34,3 +34,14 @@ function renderPageCount() {
 function updatePageCount() {
     $('#hrz-current-page').html(PAGE_COLLECTION.currentPage);
 }
+
+/**
+ * + Jonas Raoni Soares Silva
+ * @ http://jsfromhell.com/array/shuffle [v1.0]
+ * @param o
+ * @returns {*}
+ */
+function shuffle(o){
+    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    return o;
+}

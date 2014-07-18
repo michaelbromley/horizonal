@@ -24,13 +24,12 @@ Node.prototype = {
 
     /**
      * Calculate the bounding box and absolute position of the node and return it as an object.
-     * @param node
      * @returns {{top: number, left: number, bottom: number, width: number, height: number}}
      */
     getLayout: function() {
         var $node = $(this.domNode),
             left = $node.offset().left - ROOT.offset().left,
-            top = $node.position().top - ROOT.offset().top,
+            top = $node.offset().top - ROOT.offset().top - parseInt($node.css('margin-top')),
             width = $node.width() + parseInt($node.css('padding-left')) + parseInt($node.css('padding-right')),
             height = $node.height() + parseInt($node.css('padding-top')) + parseInt($node.css('padding-bottom')),
             bottom = top + height;
@@ -81,7 +80,7 @@ Node.prototype = {
             zClass = "hrz-fore";
         }
         $(this.domNode).addClass('hrz-element ' + zClass);
-        this.setCssPosition(parentPage.top);
+        this.setCssPosition(parentPage);
         this.setTransitionDelay();
     },
 
@@ -98,13 +97,13 @@ Node.prototype = {
     /**
      * Apply the absolute positioning to make the DOM node appear in
      * the correct place on the page.
-     * @param pageOffset
+     * @param parentPage
      */
-    setCssPosition: function(pageOffset) {
-        var pageMargin = this.page === 1 ? 0 : OPTIONS.pageMargin;
+    setCssPosition: function(parentPage) {
+        var pageMargin = parentPage.pageNumber === 1 ? 0 : OPTIONS.pageMargin;
         $(this.domNode).css({
             'position': 'fixed',
-            'top' : this.layout.top - pageOffset + pageMargin + 'px',
+            'top' : this.layout.top - parentPage.top + pageMargin + 'px',
             'left' : this.layout.left + 'px',
             'width' : this.layout.width + 'px',
             'height' : this.layout.height + 'px'

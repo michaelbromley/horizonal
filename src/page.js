@@ -12,6 +12,12 @@ function Page(pageNumber) {
             return "hrz-page-" + this.pageNumber;
         }
     });
+
+    Object.defineProperty(this, "midPoint", {
+        get: function() {
+            return (this.bottom + this.top) / 2 / OPTIONS.scrollStep;
+        }
+    });
 }
 
 Page.prototype = {

@@ -34,9 +34,15 @@ function debounce(fun, mil){
 function keydownHandler(e) {
     var scrollTo;
     if (e.which === 40 || e.which === 39) {
-        scrollTo = PAGE_COLLECTION.getCurrent().bottom  / OPTIONS.scrollStep + 10;
+        if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
+            scrollTo = PAGE_COLLECTION.getNext().midPoint;
+        }
     } else if (e.which === 38 || e.which === 37) {
-        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep + OPTIONS.pageMargin * 2 + 10;
+        if (PAGE_COLLECTION.currentPage === 2) {
+            scrollTo = 0;
+        } else if (1 < PAGE_COLLECTION.currentPage) {
+            scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
+        }
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
