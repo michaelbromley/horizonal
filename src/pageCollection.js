@@ -73,7 +73,7 @@ var PageCollectionAPI = {
     renderToDom: function(currentScroll) {
         var self = this;
         currentScroll = currentScroll || 0;
-        this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollStep).pageNumber;
+        this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollbarShortenRatio).pageNumber;
         this.forEach(function(page) {
             page.renderToDom(self.currentPage);
         });

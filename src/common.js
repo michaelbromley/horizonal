@@ -11,7 +11,7 @@ function composePage(currentScroll) {
     // since they will just be left floating around in the wrong place.
     CONTAINER.children().not('.hrz-page').filter(':visible').remove();
 
-    var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
+    var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
     ROOT.height(documentHeight);
     if (!OPTIONS.displayScrollbar) {
         ROOT.css('overflow-y', 'hidden');

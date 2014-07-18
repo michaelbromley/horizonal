@@ -4,7 +4,7 @@
  * and replace it with the clone that we made right at the start of the init() method.
  */
 function resizeHandler() {
-    var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollStep;
+    var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollbarShortenRatio;
     ROOT.replaceWith(ROOT_CLONE.clone());
     composePage(currentScroll);
     $(window).scrollTop(currentScroll);
@@ -57,7 +57,7 @@ function scrollHandler() {
     var scrollTop = $(window).scrollTop();
     var currentPageNumber = PAGE_COLLECTION.currentPage;
 
-    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollStep).pageNumber;
+    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollbarShortenRatio).pageNumber;
     if (newPageNumber !== currentPageNumber) {
         PAGE_COLLECTION.showPage(newPageNumber);
         updatePageCount();
@@ -70,7 +70,7 @@ function hashChangeHandler() {
         var page = $(hash).closest('.hrz-page');
         var pageNumber = parseInt(page.attr('id').replace(/^\D+/g, ''));
         PAGE_COLLECTION.showPage(pageNumber);
-        $(window).scrollTop(PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep);
+        $(window).scrollTop(PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollbarShortenRatio);
         updatePageCount();
     }
 }

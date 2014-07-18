@@ -17,10 +17,11 @@ function Horizonal() {
         staggerDelay: 0.1,
         customCssFile: false,
         displayScrollbar: true,
-        scrollStep: 2,
+        scrollbarShortenRatio: 2, // long scrolling between pages can be a pain, so a higher value here will shorten the scroll distance between pages
         pageMargin: 20,
         displayPageCount: true,
         rootElement: 'body',
+        newPageClass: 'hrz-start-new-page',
         pageHideDelay: 1 // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
     };
 

@@ -15,7 +15,7 @@ function Page(pageNumber) {
 
     Object.defineProperty(this, "midPoint", {
         get: function() {
-            return (this.bottom + this.top) / 2 / OPTIONS.scrollStep;
+            return (this.bottom + this.top) / 2 / OPTIONS.scrollbarShortenRatio;
         }
     });
 }

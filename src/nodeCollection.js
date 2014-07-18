@@ -57,6 +57,9 @@ var NodeCollectionAPI = {
      * @param pageCollection
      */
     calculateLastPageAndPageOffset: function(node, pageCollection, lastPage) {
+        if ($(node.domNode).hasClass(OPTIONS.newPageClass)) {
+            lastPage ++;
+        }
         if (pageCollection[lastPage - 1] !== undefined) {
             var page = pageCollection.getPage(lastPage);
             var pageUpperBound = page.top + VIEWPORT_HEIGHT;
