@@ -5,6 +5,7 @@ function composePage(currentScroll) {
     CONTAINER.width(ROOT.width());
     VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
     var allNodes = new NodeCollection(OPTIONS.selector);
+
     PAGE_COLLECTION = allNodes.splitIntoPages();
     PAGE_COLLECTION.renderToDom(currentScroll);
     // remove any DOM nodes that are not included in the selector,
@@ -45,3 +46,5 @@ function shuffle(o){
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
 }
+
+function noop() {}

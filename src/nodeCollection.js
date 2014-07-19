@@ -11,8 +11,43 @@ var NodeCollectionAPI = {
         var self = this;
         var allNodes = $(selector).filter(':visible');
 
-        // if any of the selected nodes have children that
-        // are not selected, then those children must also be added to the array
+        this.addUnselectedChildNodes(allNodes);
+
+        allNodes.each(function(index, domNode) {
+            var node = new Node(domNode, index);
+            self.push(node);
+        });
+    },
+
+    /**
+     * If any of the selected nodes have children that are visible but
+     * are not selected, then those children must also be added to the
+     * allNodes array.
+     *
+     * @param allNodes
+     * @returns {{}}
+     */
+    addUnselectedChildNodes: function(allNodes) {
+        var childNodes = this.getUnselectedChildNodes(allNodes);
+        var allNodesLength = allNodes.length;
+        for (var i = allNodesLength; 0 <= i; i --) {
+            if (typeof childNodes[i] !== "undefined") {
+                var args = [i + 1, 0].concat(childNodes[i]);
+                Array.prototype.splice.apply(allNodes, args);
+            }
+        }
+    },
+
+    /**
+     * Given a jQuery collection of DOM nodes, make an object containing any children of those
+     * nodes. The returned object has the original (parent) node's index as the key, and
+     * an array of child nodes as the value. However, we need to first check if these child nodes
+     * are already part of the allNodes array, and if so we don't add them
+     * twice.
+     * @param allNodes
+     * @returns {{}}
+     */
+    getUnselectedChildNodes: function(allNodes) {
         var childNodes = {};
         allNodes.each(function(index, domNode) {
             var children = $(domNode).find('*').filter(':visible').get();
@@ -22,19 +57,7 @@ var NodeCollectionAPI = {
                 });
             }
         });
-
-        var allNodesLength = allNodes.length;
-        for (var i = allNodesLength; 0 <= i; i --) {
-            if (typeof childNodes[i] !== "undefined") {
-                var args = [i + 1, 0].concat(childNodes[i]);
-                Array.prototype.splice.apply(allNodes, args);
-            }
-        }
-
-        allNodes.each(function(index, domNode) {
-            var node = new Node(domNode, index);
-            self.push(node);
-        });
+        return childNodes;
     },
 
     splitIntoPages: function() {
