@@ -10,6 +10,27 @@ var NodeCollectionAPI = {
     fromSelector: function(selector) {
         var self = this;
         var allNodes = $(selector).filter(':visible');
+
+        // if any of the selected nodes have children that
+        // are not selected, then those children must also be added to the array
+        var childNodes = {};
+        allNodes.each(function(index, domNode) {
+            var children = $(domNode).find('*').filter(':visible').get();
+            if (0 < children.length) {
+                childNodes[index] = children.filter(function(domNode) {
+                    return ($.inArray(domNode, allNodes) === -1);
+                });
+            }
+        });
+
+        var allNodesLength = allNodes.length;
+        for (var i = allNodesLength; 0 <= i; i --) {
+            if (typeof childNodes[i] !== "undefined") {
+                var args = [i + 1, 0].concat(childNodes[i]);
+                Array.prototype.splice.apply(allNodes, args);
+            }
+        }
+
         allNodes.each(function(index, domNode) {
             var node = new Node(domNode, index);
             self.push(node);
@@ -42,7 +63,6 @@ var NodeCollectionAPI = {
                 }
             }
             lastPage = this.calculateLastPageAndPageOffset(node, pageCollection, lastPage);
-
             pageCollection.getPage(lastPage).addNode(node);
         }
 
