@@ -9,6 +9,7 @@ function resizeHandler() {
     composePage(currentScroll);
     $(window).scrollTop(currentScroll);
     updatePageCount();
+    OPTIONS.onResize();
 }
 
 /**
