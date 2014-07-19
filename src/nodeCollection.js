@@ -11,53 +11,17 @@ var NodeCollectionAPI = {
         var self = this;
         var allNodes = $(selector).filter(':visible');
 
-        this.addUnselectedChildNodes(allNodes);
-
+        var topLevelNodes = $([]);
         allNodes.each(function(index, domNode) {
+            if ($(domNode).parents(selector).length === 0) {
+                topLevelNodes = topLevelNodes.add(domNode);
+            }
+        });
+
+        topLevelNodes.each(function(index, domNode) {
             var node = new Node(domNode, index);
             self.push(node);
         });
-    },
-
-    /**
-     * If any of the selected nodes have children that are visible but
-     * are not selected, then those children must also be added to the
-     * allNodes array.
-     *
-     * @param allNodes
-     * @returns {{}}
-     */
-    addUnselectedChildNodes: function(allNodes) {
-        var childNodes = this.getUnselectedChildNodes(allNodes);
-        var allNodesLength = allNodes.length;
-        for (var i = allNodesLength; 0 <= i; i --) {
-            if (typeof childNodes[i] !== "undefined") {
-                var args = [i + 1, 0].concat(childNodes[i]);
-                Array.prototype.splice.apply(allNodes, args);
-            }
-        }
-    },
-
-    /**
-     * Given a jQuery collection of DOM nodes, make an object containing any children of those
-     * nodes. The returned object has the original (parent) node's index as the key, and
-     * an array of child nodes as the value. However, we need to first check if these child nodes
-     * are already part of the allNodes array, and if so we don't add them
-     * twice.
-     * @param allNodes
-     * @returns {{}}
-     */
-    getUnselectedChildNodes: function(allNodes) {
-        var childNodes = {};
-        allNodes.each(function(index, domNode) {
-            var children = $(domNode).find('*').filter(':visible').get();
-            if (0 < children.length) {
-                childNodes[index] = children.filter(function(domNode) {
-                    return ($.inArray(domNode, allNodes) === -1);
-                });
-            }
-        });
-        return childNodes;
     },
 
     splitIntoPages: function() {

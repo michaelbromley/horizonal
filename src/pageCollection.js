@@ -61,13 +61,14 @@ var PageCollectionAPI = {
 
     /**
      * Given a y-axis offset in pixels, return the page in the collection which contains this
-     * offset between its top and bottom properties.
+     * offset between its top and bottom properties. If the offset is not valid, return the
+     * first page.
      * @param offset
      */
     getPageAtOffset: function(offset) {
         return this.filter(function(page) {
             return (page.top <= offset && offset < page.bottom);
-        })[0];
+        })[0] || this[0];
     },
 
     renderToDom: function(currentScroll) {
