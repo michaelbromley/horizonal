@@ -3,41 +3,82 @@
 <head>
     <title>Horizonal.js Demo Page</title>
     <link rel="stylesheet" href="vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="../dist/horizonal.css" />
 </head>
 <body>
 
-<div class="container">
+<div id="demo-controls">
+    <label for="theme-selector">Loaded theme:</label>
+    <select id="theme-selector">
+
+    </select>
+</div>
+<div class="container" id="root">
     <div class="row">
         <div class="col-sm-10 col-sm-push-1">
             <div class="jumbotron text-center h">
                 <h1>Horizonal.js</h1>
-                <h1><small>Add a new dimention to your HTML</small></h1>
+                <h1><small>Add a new <a href="#final-paragraph">dimension</a>  to your HTML</small></h1>
             </div>
-            <p class="lead">What is this? </p>
 
-            <h4>Inspect anything brought into the house sweet beast hate dog</h4>
-            <p>Cat ipsum dolor sit amet, intently stare at the same spot. Swat at dog. Stand in front of the computer screen intently sniff hand. Under the bed make muffins for swat at dog hopped up on goofballs rub face on everything or stick butt in face. Need to chase tail sun bathe why must they do that throwup on your pillow burrow under covers. Burrow under covers throwup on your pillow stare at ceiling so sleep on keyboard, chew foot. Behind the couch shake treat bag lick butt, yet attack feet. Leave dead animals as gifts intently sniff hand for throwup on your pillow. Cat snacks. Throwup on your pillow run in circles and missing until dinner time but throwup on your pillow, or claw drapes. Shake treat bag chew iPad power cord need to chase tail flop over. Burrow under covers claw drapes. Leave hair everywhere stand in front of the computer screen chase imaginary bugs hopped up on goofballs or hunt anything that moves or leave dead animals as gifts. Flop over stand in front of the computer screen hate dog, stare at ceiling so chew iPad power cord and intently stare at the same spot sun bathe. Burrow under covers swat at dog or attack feet and need to chase tail chew iPad power cord, for climb leg. Claw drapes attack feet play time. Stick butt in face. Missing until dinner time play time. Run in circles chase imaginary bugs.
+            <p class="lead">
+                Horizonal.js takes a regular HTML document and chops it up into a series of screen-sized pages, providing you with hooks
+                with which you can define how the pages transition. Use CSS transforms, CSS animations, or JavaScript functions.
             </p>
-            <p>Flop over run in circles so give attitude hide when guests come over give attitude. Chew foot climb leg so rub face on everything all of a sudden go crazy. Chase imaginary bugs climb leg chew iPad power cord. Hide when guests come over. Intently sniff hand intently stare at the same spot flop over yet claw drapes yet lick butt. Claw drapes intrigued by the shower or behind the couch sleep on keyboard. Sleep on keyboard flop over but make muffins hunt anything that moves for why must they do that. Stand in front of the computer screen make muffins mark territory, but hide when guests come over. Destroy couch cat snacks yet attack feet and flop over and run in circles yet chase mice yet find something else more interesting. Give attitude chase mice or stick butt in face chew iPad power cord and run in circles so sleep on keyboard. Chew foot use lap as chair stare at ceiling attack feet so under the bed swat at dog. Make muffins lick butt play time. All of a sudden go crazy. Intrigued by the shower climb leg, yet sleep on keyboard leave dead animals as gifts intrigued by the shower and hunt anything that moves stare at ceiling. Burrow under covers rub face on everything why must they do that but throwup on your pillow. Stick butt in face intently sniff hand for destroy couch. Intently stare at the same spot leave hair everywhere cat snacks and lick butt.
-            </p>
-            <img src="assets/petronas_tower.jpg" />
-            <p>Chew foot leave hair everywhere inspect anything brought into the house stretch chase imaginary bugs so claw drapes and stretch. Stand in front of the computer screen missing until dinner time. Chew foot flop over. Play time hate dog. Destroy couch give attitude so all of a sudden go crazy hopped up on goofballs and throwup on your pillow. Lick butt. Hunt anything that moves chew foot. Lick butt.
-            </p>
-            <p>Under the bed claw drapes for attack feet yet stick butt in face and leave hair everywhere chase mice. Stick butt in face play time, and throwup on your pillow climb leg hopped up on goofballs sweet beast, but under the bed. Stick butt in face chase imaginary bugs, stick butt in face. Use lap as chair all of a sudden go crazy and hide when guests come over. Stand in front of the computer screen climb leg attack feet but stare at ceiling for intently sniff hand, for hopped up on goofballs. Attack feet climb leg leave dead animals as gifts stand in front of the computer screen or need to chase tail. Intently stare at the same spot chew foot shake treat bag. Under the bed stare at ceiling for inspect anything brought into the house make muffins stare at ceiling for intently sniff hand.
-            </p>
-            <p>Intently sniff hand attack feet yet cat snacks yet hunt anything that moves play time but run in circles. Intently sniff hand stretch burrow under covers yet need to chase tail use lap as chair. Shake treat bag climb leg and use lap as chair all of a sudden go crazy chase imaginary bugs need to chase tail. Throwup on your pillow claw drapes missing until dinner time attack feet. Leave hair everywhere stick butt in face but chew foot sleep on keyboard destroy couch mark territory. Swat at dog. Stretch. Mark territory run in circles for swat at dog rub face on everything, nap all day and chew iPad power cord. Flop over play time nap all day and make muffins rub face on everything sun bathe. Make muffins flop over why must they do that.
-            </p>
+            <h2>scroll down or use <code>&darr;</code></h2>
+
+            <div class="h hrz-start-new-page">
+                <h2>I Saw a Man Pursuing the Horizon</h2>
+                <p>I saw a man pursuing the horizon;</p>
+                <p>Round and round they sped.</p>
+                <p>I was disturbed at this;</p>
+                <p>I accosted the man.</p>
+                <p>"It is futile," I said,</p>
+                <p>"You can never &mdash;"
+                    <br></p>
+                <p>"You lie," he cried,</p>
+                <p>And ran on.</p>
+                <em>&mdash; Stephen Crane</em>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/5366078166_027c226f5a_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/rejik/5366078166/" />
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/12205212124_abda6a0a2c_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/halfrain/12205212124/" />
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/2170875891_6caa4182cc_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/ehsank/2170875891/" />
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/7831711764_72db60a31d_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/chrisschoenbohm/7831711764/" />
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/14646922666_6c9e814d46_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/panduadnyana/14646922666/" />
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/5890474955_29f879d5ec_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/nasamarshall/5890474955/" />
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/1125471764_1f26f271e2_q%20(1).jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/generalnoir/1125471764/" />
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <img class="thumbnail" src="assets/6143615821_03f301925e_q%20(1).jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/donkeyhotey/6143615821/" />
+                </div>
+            </div>
             <p>Chew iPad power cord intently sniff hand yet stand in front of the computer screen for burrow under covers and chase mice run in circles. Claw drapes. Run in circles give attitude. Hopped up on goofballs. Intently stare at the same spot climb leg. Hopped up on goofballs lick butt, and stand in front of the computer screen or nap all day so need to chase tail. Make muffins give attitude for claw drapes, for destroy couch destroy couch but chew foot but make muffins. Chew foot. Intently stare at the same spot destroy couch yet all of a sudden go crazy yet intrigued by the shower hunt anything that moves stretch for stare at ceiling. Stare at ceiling intently stare at the same spot but under the bed, stick butt in face yet chew iPad power cord leave dead animals as gifts destroy couch. Chase imaginary bugs leave hair everywhere intently sniff hand but sleep on keyboard and cat snacks sun bathe. Missing until dinner time. Sleep on keyboard hunt anything that moves but mark territory swat at dog. Destroy couch sun bathe. Chase mice flop over yet all of a sudden go crazy. Inspect anything brought into the house nap all day use lap as chair attack feet for attack feet so mark territory. Behind the couch nap all day, run in circles nap all day so intently sniff hand hide when guests come over.
             </p>
+            <h2 id="final-paragraph">Final paragraph</h2>
             <p>Behind the couch. Use lap as chair climb leg attack feet stick butt in face. Sun bathe climb leg or under the bed so intently sniff hand. Stick butt in face rub face on everything. Swat at dog stretch attack feet, hopped up on goofballs yet claw drapes so leave hair everywhere. All of a sudden go crazy hide when guests come over or chew iPad power cord so nap all day swat at dog nap all day. Chew iPad power cord intently stare at the same spot make muffins, for intently sniff hand rub face on everything and mark territory. Chew iPad power cord swat at dog nap all day, yet chase imaginary bugs hide when guests come over or destroy couch. Why must they do that stand in front of the computer screen. Stare at ceiling sleep on keyboard use lap as chair.
             </p>
-             </div>
+        </div>
     </div>
 </div>
 
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../dist/horizonal.debug.js"></script>
+<script src="themes/themes.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

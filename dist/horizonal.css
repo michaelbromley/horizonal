@@ -15,6 +15,10 @@ html {
     display: none;
 }
 
+.hrz-page.hrz-hidden {
+    left: -5000px;
+}
+
 #hrz-container {
     position: fixed;
     width: 100%;
@@ -35,36 +39,19 @@ html {
             transform-origin: center center;
     -webkit-perspective: 500px;
             perspective: 500px;
-    -webkit-transition: opacity 0s;
-            transition: opacity 0s;
-    opacity: 1;
-    background-color: transparent;
 }
 
 .hrz-page.hrz-fore {
-    opacity: 1;
 }
 
 .hrz-page.hrz-back {
-    opacity: 1;
 }
 
 .hrz-element {
-    opacity: 1;
-    -webkit-transition: -webkit-transform 0.7s, opacity 0.2s 0.3s;
-            transition: transform 0.7s, opacity 0.2s 0.3s;
-    -webkit-transform: translateZ(0px);
-            transform: translateZ(0px);
 }
 
 .hrz-element.hrz-back {
-    opacity: 0;
-    -webkit-transform: translateZ(-3000px);
-            transform: translateZ(-3000px);
 }
 
 .hrz-element.hrz-fore {
-    opacity: 0;
-    -webkit-transform: translateZ(1000px);
-            transform: translateZ(1000px);
 }

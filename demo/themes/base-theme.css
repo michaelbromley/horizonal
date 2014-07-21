@@ -1,0 +1,32 @@
+.hrz-page {
+    transform-style: preserve-3d;
+    transform-origin: center center;
+    perspective: 500px;
+    transition: opacity 0s;
+    opacity: 1;
+    background-color: transparent;
+}
+
+.hrz-page.hrz-fore {
+    opacity: 1;
+}
+
+.hrz-page.hrz-back {
+    opacity: 1;
+}
+
+.hrz-element {
+    opacity: 1;
+    transition: transform 0.5s, opacity 0.2s 0.3s;
+    transform: translateZ(0px);
+}
+
+.hrz-element.hrz-back {
+    opacity: 0;
+    transform: translateZ(-3000px);
+}
+
+.hrz-element.hrz-fore {
+    opacity: 0;
+    transform: translateZ(1000px);
+}
