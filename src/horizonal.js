@@ -29,9 +29,8 @@ function Horizonal() {
     function init(_OPTIONS) {
         var currentScroll = $(window).scrollTop();
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-
+        addCustomCssToHead();
         if (!_hasBeenInitialized) {
-            // TODO: do some checks to make sure the specified options are okay
             ROOT = $(OPTIONS.rootElement);
             ROOT_CLONE = ROOT.clone();
             registerEventHandlers();
@@ -42,8 +41,6 @@ function Horizonal() {
             resizeHandler();
             registerEventHandlers();
         }
-        addCustomCssToHead();
-
         if (window.location.hash !== '') {
             hashChangeHandler();
         }

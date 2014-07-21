@@ -111,27 +111,12 @@ Node.prototype = {
     },
 
     setTransitionDelay: function() {
-        var stagger = this.getStaggerDelay();
-        var transition = window.getComputedStyle(this.domNode).transition;
-        var webkitTransition = window.getComputedStyle(this.domNode)['-webkit-transition'];
-
-        transition = replaceDelayValue(transition);
-        webkitTransition = replaceDelayValue(webkitTransition);
-
-        function replaceDelayValue(original) {
-            if (typeof original !== 'undefined') {
-                return original.replace(/(\S+\s)([0-9\.]+)s(,|$)/g, function(match, p1, p2, p3) {
-                    var delay = parseInt(p2) + stagger;
-                    return p1 + delay + 's' + p3;
-                });
-            } else {
-                return "";
-            }
-        }
-
+        var stagger = this.getStaggerDelay() + 's';
         $(this.domNode).css({
-            'transition': transition,
-            '-webkit-transition': webkitTransition
+            'transition-delay': stagger,
+            '-webkit-transition-delay': stagger,
+            'animation-delay': stagger,
+            '-webkit-animation-delay': stagger
         });
     },
 

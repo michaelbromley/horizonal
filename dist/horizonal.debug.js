@@ -18,28 +18,30 @@ function Horizonal() {
         staggerDelay: 0.1,
         customCssFile: false,
         displayScrollbar: true,
-        scrollStep: 2,
+        scrollbarShortenRatio: 2, // long scrolling between pages can be a pain, so a higher value here will shorten the scroll distance between pages
         pageMargin: 20,
         displayPageCount: true,
         rootElement: 'body',
-        pageHideDelay: 1 // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
+        newPageClass: 'hrz-start-new-page',
+        pageHideDelay: 1, // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
+        onResize: noop
     };
 
     function init(_OPTIONS) {
         var currentScroll = $(window).scrollTop();
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-
+        addCustomCssToHead();
         if (!_hasBeenInitialized) {
-            // TODO: do some checks to make sure the specified options are okay
             ROOT = $(OPTIONS.rootElement);
             ROOT_CLONE = ROOT.clone();
             registerEventHandlers();
+            composePage(currentScroll);
+            updatePageCount();
+            _hasBeenInitialized = true;
+        } else {
+            resizeHandler();
+            registerEventHandlers();
         }
-
-        addCustomCssToHead();
-        composePage(currentScroll);
-        updatePageCount();
-
         if (window.location.hash !== '') {
             hashChangeHandler();
         }
@@ -64,6 +66,10 @@ function Horizonal() {
         }
     }
 
+    /**
+     * Takes a page number or URL fragment (#) and goes to that page.
+     * @param target
+     */
     function goTo(target) {
         var pageNumber;
         if (target.substr(0, 1) === "#") {
@@ -72,6 +78,25 @@ function Horizonal() {
             // TODO: verify target is valid integer
             pageNumber = target;
             PAGE_COLLECTION.showPage(pageNumber);
+        }
+    }
+
+    function next() {
+        var current = PAGE_COLLECTION.currentPage;
+        var last = PAGE_COLLECTION.length;
+
+        if (current < last) {
+            var scrollTop = PAGE_COLLECTION.getPage(current + 1).midPoint;
+            $(window).scrollTop(scrollTop);
+        }
+    }
+
+    function previous() {
+        var current = PAGE_COLLECTION.currentPage;
+
+        if (1 < current) {
+            var scrollTop = PAGE_COLLECTION.getPage(current - 1).midPoint;
+            $(window).scrollTop(scrollTop);
         }
     }
 
@@ -108,7 +133,9 @@ function Horizonal() {
         init: init,
         enable: enable,
         disable: disable,
-        goTo: goTo
+        goTo: goTo,
+        next: next,
+        previous: previous
     };
 }
 
@@ -121,13 +148,14 @@ function composePage(currentScroll) {
     CONTAINER.width(ROOT.width());
     VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
     var allNodes = new NodeCollection(OPTIONS.selector);
+
     PAGE_COLLECTION = allNodes.splitIntoPages();
     PAGE_COLLECTION.renderToDom(currentScroll);
     // remove any DOM nodes that are not included in the selector,
     // since they will just be left floating around in the wrong place.
     CONTAINER.children().not('.hrz-page').filter(':visible').remove();
 
-    var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollStep + VIEWPORT_HEIGHT;
+    var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
     ROOT.height(documentHeight);
     if (!OPTIONS.displayScrollbar) {
         ROOT.css('overflow-y', 'hidden');
@@ -150,17 +178,31 @@ function renderPageCount() {
 function updatePageCount() {
     $('#hrz-current-page').html(PAGE_COLLECTION.currentPage);
 }
+
+/**
+ * + Jonas Raoni Soares Silva
+ * @ http://jsfromhell.com/array/shuffle [v1.0]
+ * @param o
+ * @returns {*}
+ */
+function shuffle(o){
+    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    return o;
+}
+
+function noop() {}
 /**
  * When the window is re-sized, we need to re-calculate the layout of the all the elements.
  * To ensure that we get the same results as the initial load, we simple purge the entire <body> element
  * and replace it with the clone that we made right at the start of the init() method.
  */
 function resizeHandler() {
-    var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollStep;
+    var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollbarShortenRatio;
     ROOT.replaceWith(ROOT_CLONE.clone());
     composePage(currentScroll);
     $(window).scrollTop(currentScroll);
     updatePageCount();
+    OPTIONS.onResize();
 }
 
 /**
@@ -186,9 +228,15 @@ function debounce(fun, mil){
 function keydownHandler(e) {
     var scrollTo;
     if (e.which === 40 || e.which === 39) {
-        scrollTo = PAGE_COLLECTION.getCurrent().bottom  / OPTIONS.scrollStep + 10;
+        if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
+            scrollTo = PAGE_COLLECTION.getNext().midPoint;
+        }
     } else if (e.which === 38 || e.which === 37) {
-        scrollTo = PAGE_COLLECTION.getPrevious().top  / OPTIONS.scrollStep + OPTIONS.pageMargin * 2 + 10;
+        if (PAGE_COLLECTION.currentPage === 2) {
+            scrollTo = 0;
+        } else if (1 < PAGE_COLLECTION.currentPage) {
+            scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
+        }
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
@@ -203,7 +251,7 @@ function scrollHandler() {
     var scrollTop = $(window).scrollTop();
     var currentPageNumber = PAGE_COLLECTION.currentPage;
 
-    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollStep).pageNumber;
+    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollbarShortenRatio).pageNumber;
     if (newPageNumber !== currentPageNumber) {
         PAGE_COLLECTION.showPage(newPageNumber);
         updatePageCount();
@@ -216,7 +264,7 @@ function hashChangeHandler() {
         var page = $(hash).closest('.hrz-page');
         var pageNumber = parseInt(page.attr('id').replace(/^\D+/g, ''));
         PAGE_COLLECTION.showPage(pageNumber);
-        $(window).scrollTop(PAGE_COLLECTION.getCurrent().top / OPTIONS.scrollStep);
+        $(window).scrollTop(PAGE_COLLECTION.getCurrent().midPoint);
         updatePageCount();
     }
 }
@@ -246,13 +294,12 @@ Node.prototype = {
 
     /**
      * Calculate the bounding box and absolute position of the node and return it as an object.
-     * @param node
      * @returns {{top: number, left: number, bottom: number, width: number, height: number}}
      */
     getLayout: function() {
         var $node = $(this.domNode),
             left = $node.offset().left - ROOT.offset().left,
-            top = $node.position().top - ROOT.offset().top,
+            top = $node.offset().top - ROOT.offset().top - parseInt($node.css('margin-top')),
             width = $node.width() + parseInt($node.css('padding-left')) + parseInt($node.css('padding-right')),
             height = $node.height() + parseInt($node.css('padding-top')) + parseInt($node.css('padding-bottom')),
             bottom = top + height;
@@ -303,7 +350,7 @@ Node.prototype = {
             zClass = "hrz-fore";
         }
         $(this.domNode).addClass('hrz-element ' + zClass);
-        this.setCssPosition(parentPage.top);
+        this.setCssPosition(parentPage);
         this.setTransitionDelay();
     },
 
@@ -320,13 +367,13 @@ Node.prototype = {
     /**
      * Apply the absolute positioning to make the DOM node appear in
      * the correct place on the page.
-     * @param pageOffset
+     * @param parentPage
      */
-    setCssPosition: function(pageOffset) {
-        var pageMargin = this.page === 1 ? 0 : OPTIONS.pageMargin;
+    setCssPosition: function(parentPage) {
+        var pageMargin = parentPage.pageNumber === 1 ? 0 : OPTIONS.pageMargin;
         $(this.domNode).css({
             'position': 'fixed',
-            'top' : this.layout.top - pageOffset + pageMargin + 'px',
+            'top' : this.layout.top - parentPage.top + pageMargin + 'px',
             'left' : this.layout.left + 'px',
             'width' : this.layout.width + 'px',
             'height' : this.layout.height + 'px'
@@ -334,18 +381,24 @@ Node.prototype = {
     },
 
     setTransitionDelay: function() {
-        var stagger = this.getStaggerDelay();
-        var transition = window.getComputedStyle(this.domNode).transition;
+        var stagger = this.getStaggerDelay() + 's';
+        /*var transition = window.getComputedStyle(this.domNode).transition;
         var webkitTransition = window.getComputedStyle(this.domNode)['-webkit-transition'];
 
         transition = replaceDelayValue(transition);
         webkitTransition = replaceDelayValue(webkitTransition);
 
+        var animation = window.getComputedStyle(this.domNode).animation;
+        var webkitAnimation = window.getComputedStyle(this.domNode)['-webkit-animation'];
+
+        animation = replaceDelayValue(animation);
+        webkitAnimation = replaceDelayValue(webkitAnimation);
+
         function replaceDelayValue(original) {
             if (typeof original !== 'undefined') {
-                return original.replace(/(\S+\s)([0-9\.]+)s(,|$)/g, function(match, p1, p2, p3) {
+                return original.replace(/(\S+\s[0-9\.]+s\s\S+\s)([0-9\.]+)s/g, function(match, p1, p2) {
                     var delay = parseInt(p2) + stagger;
-                    return p1 + delay + 's' + p3;
+                    return p1 + delay + 's';
                 });
             } else {
                 return "";
@@ -354,7 +407,15 @@ Node.prototype = {
 
         $(this.domNode).css({
             'transition': transition,
-            '-webkit-transition': webkitTransition
+            '-webkit-transition': webkitTransition,
+            'animation': animation,
+            '-webkit-animation': webkitAnimation
+         });*/
+        $(this.domNode).css({
+            'transition-delay': stagger,
+            '-webkit-transition-delay': stagger,
+            'animation-delay': stagger,
+            '-webkit-animation-delay': stagger
         });
     },
 
@@ -415,7 +476,15 @@ var NodeCollectionAPI = {
     fromSelector: function(selector) {
         var self = this;
         var allNodes = $(selector).filter(':visible');
+
+        var topLevelNodes = $([]);
         allNodes.each(function(index, domNode) {
+            if ($(domNode).parents(selector).length === 0) {
+                topLevelNodes = topLevelNodes.add(domNode);
+            }
+        });
+
+        topLevelNodes.each(function(index, domNode) {
             var node = new Node(domNode, index);
             self.push(node);
         });
@@ -447,7 +516,6 @@ var NodeCollectionAPI = {
                 }
             }
             lastPage = this.calculateLastPageAndPageOffset(node, pageCollection, lastPage);
-
             pageCollection.getPage(lastPage).addNode(node);
         }
 
@@ -462,6 +530,9 @@ var NodeCollectionAPI = {
      * @param pageCollection
      */
     calculateLastPageAndPageOffset: function(node, pageCollection, lastPage) {
+        if ($(node.domNode).hasClass(OPTIONS.newPageClass)) {
+            lastPage ++;
+        }
         if (pageCollection[lastPage - 1] !== undefined) {
             var page = pageCollection.getPage(lastPage);
             var pageUpperBound = page.top + VIEWPORT_HEIGHT;
@@ -505,27 +576,14 @@ var NodeCollectionAPI = {
             staggerOrder.push(i);
         }
         if (OPTIONS.stagger === 'random') {
-            staggerOrder = this.shuffle(staggerOrder);
+            staggerOrder = shuffle(staggerOrder);
         }
 
         this.forEach(function(node, index) {
             node.staggerOrder = staggerOrder[index];
             node.renderToDom(parentPage);
         });
-    },
-
-    /**
-     * + Jonas Raoni Soares Silva
-     * @ http://jsfromhell.com/array/shuffle [v1.0]
-     * @param o
-     * @returns {*}
-     */
-    shuffle: function(o){
-        for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
     }
-
-
 };
 
 NodeCollection.prototype = [];
@@ -543,6 +601,12 @@ function Page(pageNumber) {
     Object.defineProperty(this, "pageId", {
         get: function() {
             return "hrz-page-" + this.pageNumber;
+        }
+    });
+
+    Object.defineProperty(this, "midPoint", {
+        get: function() {
+            return (this.bottom + this.top) / 2 / OPTIONS.scrollbarShortenRatio;
         }
     });
 }
@@ -633,6 +697,10 @@ var PageCollectionAPI = {
         return this.getPage(this.currentPage);
     },
 
+    getNext: function() {
+        return this.getPage(this.currentPage + 1);
+    },
+
     getPrevious: function() {
         return this.getPage(this.currentPage - 1);
     },
@@ -658,19 +726,20 @@ var PageCollectionAPI = {
 
     /**
      * Given a y-axis offset in pixels, return the page in the collection which contains this
-     * offset between its top and bottom properties.
+     * offset between its top and bottom properties. If the offset is not valid, return the
+     * first page.
      * @param offset
      */
     getPageAtOffset: function(offset) {
         return this.filter(function(page) {
             return (page.top <= offset && offset < page.bottom);
-        })[0];
+        })[0] || this[0];
     },
 
     renderToDom: function(currentScroll) {
         var self = this;
         currentScroll = currentScroll || 0;
-        this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollStep).pageNumber;
+        this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollbarShortenRatio).pageNumber;
         this.forEach(function(page) {
             page.renderToDom(self.currentPage);
         });
@@ -680,6 +749,7 @@ var PageCollectionAPI = {
      * To show a given page, we just need to remove the -fore and -back CSS classes
      * from the page and the nodes on that page. Lower-ordered pages have the -fore
      * class added, and higher-ordered pages have the -back class added.
+     *
      *
      * @param pageNumber
      */
