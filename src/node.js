@@ -82,12 +82,12 @@ Node.prototype = {
         $(this.domNode).addClass('hrz-element ' + zClass);
         this.setCssPosition(parentPage);
         this.setTransitionDelay();
+        this.setRestorePoint();
     },
 
     /**
      * Apply the style rules needed to make the
      * DOM node appear identical to the original form.
-     * @param pageOffset
      */
     applyStyleDiff: function() {
         var styleDiff = this.getStyleDiff();
@@ -111,13 +111,28 @@ Node.prototype = {
     },
 
     setTransitionDelay: function() {
-        var stagger = this.getStaggerDelay() + 's';
-        $(this.domNode).css({
-            'transition-delay': stagger,
-            '-webkit-transition-delay': stagger,
-            'animation-delay': stagger,
-            '-webkit-animation-delay': stagger
-        });
+        var stagger = this.getStaggerDelay();
+        if (0 < stagger) {
+            var cssProp = $(this.domNode).css.bind($(this.domNode));
+            var transitionDurationIsDefined = existsAndIsNotZero(cssProp('transition-duration')) || existsAndIsNotZero(cssProp('-webkit-transition-duration'));
+            var animationDurationIsDefined = existsAndIsNotZero(cssProp('animation-duration')) || existsAndIsNotZero(cssProp('-webkit-animation-duration'));
+            if (transitionDurationIsDefined) {
+                $(this.domNode).css({
+                    'transition-delay': stagger + 's',
+                    '-webkit-transition-delay': stagger + 's'
+                });
+            }
+            if (animationDurationIsDefined) {
+                $(this.domNode).css({
+                    'animation-delay': stagger + 's',
+                    '-webkit-animation-delay': stagger + 's'
+                });
+            }
+        }
+
+        function existsAndIsNotZero(property) {
+            return typeof property !== 'undefined' && property !== '0s';
+        }
     },
 
     /**
@@ -153,14 +168,53 @@ Node.prototype = {
 
     moveToForeground: function() {
         $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
+        OPTIONS.onNodeTransition('toForeground', this.getPublicObject());
     },
 
     moveToBackground: function() {
         $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
+        var self = this;
+       /* setTimeout(function() {
+        OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
+        }, this.getStaggerDelay() * 1000);*/
+        OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
     },
 
     moveToFocus: function() {
         $(this.domNode).removeClass('hrz-fore hrz-back');
+        OPTIONS.onNodeTransition('toFocus', this.getPublicObject());
+    },
+
+    /**
+     * Store a copy of the final computed inline style so that the node
+     * can be easily restored to the style it had after initialization.
+     */
+    setRestorePoint: function() {
+        this.inlineStyle = $(this.domNode).attr('style');
+    },
+
+    /**
+     * Restore the domNode to the style it had after initialization.
+     * This method is intended as a convenient helper for those writing
+     * JavaScript-based transitions.
+     */
+    restore: function() {
+        $(this.domNode).attr('style', this.inlineStyle);
+    },
+
+    /**
+     * Return an object containing a subset of properties of the private Node object, for use in
+     * the javascript callbacks set up in the horizonal config object.
+     *
+     * @returns {{domNode: *, index: *, staggerOrder: *}}
+     */
+    getPublicObject: function() {
+        return {
+            domNode: this.domNode,
+            index: this.index,
+            staggerOrder: this.staggerOrder,
+            restore: this.restore.bind(this)
+        };
     }
 };
 

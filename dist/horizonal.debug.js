@@ -24,27 +24,32 @@ function Horizonal() {
         rootElement: 'body',
         newPageClass: 'hrz-start-new-page',
         pageHideDelay: 1, // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
-        onResize: noop
+        onResize: noop,
+        onNodeTransition: noop,
+        onPageTransition: noop
     };
 
     function init(_OPTIONS) {
         var currentScroll = $(window).scrollTop();
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-        addCustomCssToHead();
-        if (!_hasBeenInitialized) {
-            ROOT = $(OPTIONS.rootElement);
-            ROOT_CLONE = ROOT.clone();
-            registerEventHandlers();
-            composePage(currentScroll);
-            updatePageCount();
-            _hasBeenInitialized = true;
-        } else {
-            resizeHandler();
-            registerEventHandlers();
-        }
-        if (window.location.hash !== '') {
-            hashChangeHandler();
-        }
+
+        addCustomCssToHead().then(function() {
+            if (!_hasBeenInitialized) {
+                ROOT = $(OPTIONS.rootElement);
+                ROOT_CLONE = ROOT.clone();
+                registerEventHandlers();
+                composePage(currentScroll);
+                updatePageCount();
+                _hasBeenInitialized = true;
+            } else {
+                resizeHandler();
+                registerEventHandlers();
+            }
+            if (window.location.hash !== '') {
+                hashChangeHandler();
+            }
+        });
+
     }
 
     function disable() {
@@ -114,15 +119,35 @@ function Horizonal() {
         $(window).off('hashchange', hashChangeHandler);
     }
 
+    /**
+     * Loads any custom CSS file into an inline <style> tag in the document header. This method is
+     * preferred over simply loading a <link> element, because browser support for detecting the "load"
+     * event of dynamically loaded CSS files is currently very poor and inconsistent. Therefore we use
+     * AJAX to load the CSS file and just put the contents in the head. That way we can guarantee that it
+     * is loaded before continuing, in a cross-browser compatible way.
+     * @returns {*}
+     */
     function addCustomCssToHead() {
         var $customCssElement;
+        var deferred = new $.Deferred();
+
         if (OPTIONS.customCssFile) {
+            $.get(OPTIONS.customCssFile).then(success);
+        } else {
+            $('#hrz-custom-css').remove();
+            deferred.resolve();
+        }
+
+        return deferred.promise();
+
+        function success(data) {
             $customCssElement = $('#hrz-custom-css');
             if (0 < $customCssElement.length) {
-                $customCssElement.attr('href', OPTIONS.customCssFile);
+                $customCssElement.text(data);
             } else {
-                $('head').append('<link rel="stylesheet" id="hrz-custom-css" href="' + OPTIONS.customCssFile + '" type="text/css" />');
+                $('head').append('<style id="hrz-custom-css" type="text/css">' + data + '</style>');
             }
+            deferred.resolve();
         }
     }
 
@@ -352,12 +377,12 @@ Node.prototype = {
         $(this.domNode).addClass('hrz-element ' + zClass);
         this.setCssPosition(parentPage);
         this.setTransitionDelay();
+        this.setRestorePoint();
     },
 
     /**
      * Apply the style rules needed to make the
      * DOM node appear identical to the original form.
-     * @param pageOffset
      */
     applyStyleDiff: function() {
         var styleDiff = this.getStyleDiff();
@@ -381,42 +406,28 @@ Node.prototype = {
     },
 
     setTransitionDelay: function() {
-        var stagger = this.getStaggerDelay() + 's';
-        /*var transition = window.getComputedStyle(this.domNode).transition;
-        var webkitTransition = window.getComputedStyle(this.domNode)['-webkit-transition'];
-
-        transition = replaceDelayValue(transition);
-        webkitTransition = replaceDelayValue(webkitTransition);
-
-        var animation = window.getComputedStyle(this.domNode).animation;
-        var webkitAnimation = window.getComputedStyle(this.domNode)['-webkit-animation'];
-
-        animation = replaceDelayValue(animation);
-        webkitAnimation = replaceDelayValue(webkitAnimation);
-
-        function replaceDelayValue(original) {
-            if (typeof original !== 'undefined') {
-                return original.replace(/(\S+\s[0-9\.]+s\s\S+\s)([0-9\.]+)s/g, function(match, p1, p2) {
-                    var delay = parseInt(p2) + stagger;
-                    return p1 + delay + 's';
+        var stagger = this.getStaggerDelay();
+        if (0 < stagger) {
+            var cssProp = $(this.domNode).css.bind($(this.domNode));
+            var transitionDurationIsDefined = existsAndIsNotZero(cssProp('transition-duration')) || existsAndIsNotZero(cssProp('-webkit-transition-duration'));
+            var animationDurationIsDefined = existsAndIsNotZero(cssProp('animation-duration')) || existsAndIsNotZero(cssProp('-webkit-animation-duration'));
+            if (transitionDurationIsDefined) {
+                $(this.domNode).css({
+                    'transition-delay': stagger + 's',
+                    '-webkit-transition-delay': stagger + 's'
                 });
-            } else {
-                return "";
+            }
+            if (animationDurationIsDefined) {
+                $(this.domNode).css({
+                    'animation-delay': stagger + 's',
+                    '-webkit-animation-delay': stagger + 's'
+                });
             }
         }
 
-        $(this.domNode).css({
-            'transition': transition,
-            '-webkit-transition': webkitTransition,
-            'animation': animation,
-            '-webkit-animation': webkitAnimation
-         });*/
-        $(this.domNode).css({
-            'transition-delay': stagger,
-            '-webkit-transition-delay': stagger,
-            'animation-delay': stagger,
-            '-webkit-animation-delay': stagger
-        });
+        function existsAndIsNotZero(property) {
+            return typeof property !== 'undefined' && property !== '0s';
+        }
     },
 
     /**
@@ -452,14 +463,53 @@ Node.prototype = {
 
     moveToForeground: function() {
         $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
+        OPTIONS.onNodeTransition('toForeground', this.getPublicObject());
     },
 
     moveToBackground: function() {
         $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
+        var self = this;
+       /* setTimeout(function() {
+        OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
+        }, this.getStaggerDelay() * 1000);*/
+        OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
     },
 
     moveToFocus: function() {
         $(this.domNode).removeClass('hrz-fore hrz-back');
+        OPTIONS.onNodeTransition('toFocus', this.getPublicObject());
+    },
+
+    /**
+     * Store a copy of the final computed inline style so that the node
+     * can be easily restored to the style it had after initialization.
+     */
+    setRestorePoint: function() {
+        this.inlineStyle = $(this.domNode).attr('style');
+    },
+
+    /**
+     * Restore the domNode to the style it had after initialization.
+     * This method is intended as a convenient helper for those writing
+     * JavaScript-based transitions.
+     */
+    restore: function() {
+        $(this.domNode).attr('style', this.inlineStyle);
+    },
+
+    /**
+     * Return an object containing a subset of properties of the private Node object, for use in
+     * the javascript callbacks set up in the horizonal config object.
+     *
+     * @returns {{domNode: *, index: *, staggerOrder: *}}
+     */
+    getPublicObject: function() {
+        return {
+            domNode: this.domNode,
+            index: this.index,
+            staggerOrder: this.staggerOrder,
+            restore: this.restore.bind(this)
+        };
     }
 };
 

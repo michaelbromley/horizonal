@@ -23,27 +23,32 @@ function Horizonal() {
         rootElement: 'body',
         newPageClass: 'hrz-start-new-page',
         pageHideDelay: 1, // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
-        onResize: noop
+        onResize: noop,
+        onNodeTransition: noop,
+        onPageTransition: noop
     };
 
     function init(_OPTIONS) {
         var currentScroll = $(window).scrollTop();
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-        addCustomCssToHead();
-        if (!_hasBeenInitialized) {
-            ROOT = $(OPTIONS.rootElement);
-            ROOT_CLONE = ROOT.clone();
-            registerEventHandlers();
-            composePage(currentScroll);
-            updatePageCount();
-            _hasBeenInitialized = true;
-        } else {
-            resizeHandler();
-            registerEventHandlers();
-        }
-        if (window.location.hash !== '') {
-            hashChangeHandler();
-        }
+
+        addCustomCssToHead().then(function() {
+            if (!_hasBeenInitialized) {
+                ROOT = $(OPTIONS.rootElement);
+                ROOT_CLONE = ROOT.clone();
+                registerEventHandlers();
+                composePage(currentScroll);
+                updatePageCount();
+                _hasBeenInitialized = true;
+            } else {
+                resizeHandler();
+                registerEventHandlers();
+            }
+            if (window.location.hash !== '') {
+                hashChangeHandler();
+            }
+        });
+
     }
 
     function disable() {
@@ -113,15 +118,35 @@ function Horizonal() {
         $(window).off('hashchange', hashChangeHandler);
     }
 
+    /**
+     * Loads any custom CSS file into an inline <style> tag in the document header. This method is
+     * preferred over simply loading a <link> element, because browser support for detecting the "load"
+     * event of dynamically loaded CSS files is currently very poor and inconsistent. Therefore we use
+     * AJAX to load the CSS file and just put the contents in the head. That way we can guarantee that it
+     * is loaded before continuing, in a cross-browser compatible way.
+     * @returns {*}
+     */
     function addCustomCssToHead() {
         var $customCssElement;
+        var deferred = new $.Deferred();
+
         if (OPTIONS.customCssFile) {
+            $.get(OPTIONS.customCssFile).then(success);
+        } else {
+            $('#hrz-custom-css').remove();
+            deferred.resolve();
+        }
+
+        return deferred.promise();
+
+        function success(data) {
             $customCssElement = $('#hrz-custom-css');
             if (0 < $customCssElement.length) {
-                $customCssElement.attr('href', OPTIONS.customCssFile);
+                $customCssElement.text(data);
             } else {
-                $('head').append('<link rel="stylesheet" id="hrz-custom-css" href="' + OPTIONS.customCssFile + '" type="text/css" />');
+                $('head').append('<style id="hrz-custom-css" type="text/css">' + data + '</style>');
             }
+            deferred.resolve();
         }
     }
 
