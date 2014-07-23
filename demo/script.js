@@ -15,6 +15,7 @@
 
         $('#theme-selector').on('change', function() {
             initWithSelectedTheme();
+            this.blur();
         });
     });
 

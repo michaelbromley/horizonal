@@ -1,0 +1,8 @@
+.hrz-element {
+    /*
+     Important: existing transitions defined on the elements (such as on the .thumbnail class in Bootstrap 3) can interfere
+     with Javascript-based animations, so we should cancel them.
+     */
+    transition: none;
+    -webkit-transition: none;
+}

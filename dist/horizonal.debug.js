@@ -368,13 +368,7 @@ Node.prototype = {
         $(this.domNode).addClass(parentPage.pageId);
         $('#' + parentPage.pageId).append(this.domNode);
         this.applyStyleDiff();
-        var zClass = "";
-        if (parentPage.pageNumber < PAGE_COLLECTION.currentPage) {
-            zClass = "hrz-back";
-        } else if (PAGE_COLLECTION.currentPage < parentPage.pageNumber) {
-            zClass = "hrz-fore";
-        }
-        $(this.domNode).addClass('hrz-element ' + zClass);
+        $(this.domNode).addClass('hrz-element');
         this.setCssPosition(parentPage);
         this.setTransitionDelay();
         this.setRestorePoint();
@@ -462,12 +456,12 @@ Node.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
+       // $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
         OPTIONS.onNodeTransition('toForeground', this.getPublicObject());
     },
 
     moveToBackground: function() {
-        $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
+       // $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
         var self = this;
        /* setTimeout(function() {
         OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
@@ -476,7 +470,7 @@ Node.prototype = {
     },
 
     moveToFocus: function() {
-        $(this.domNode).removeClass('hrz-fore hrz-back');
+       // $(this.domNode).removeClass('hrz-fore hrz-back');
         OPTIONS.onNodeTransition('toFocus', this.getPublicObject());
     },
 
@@ -680,7 +674,7 @@ Page.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
+        $(this.domNode).removeClass('hrz-back hrz-focus-from-back hrz-focus-from-fore').addClass('hrz-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToForeground();
@@ -688,11 +682,21 @@ Page.prototype = {
     },
 
     moveToBackground: function() {
-        $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
+        $(this.domNode).removeClass('hrz-fore hrz-focus-from-back hrz-focus-from-fore').addClass('hrz-back');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToBackground();
         });
+    },
+
+    moveToFocusFromBackground: function() {
+        $(this.domNode).addClass('hrz-focus-from-back');
+        this.moveToFocus();
+    },
+
+    moveToFocusFromForeground: function() {
+        $(this.domNode).addClass('hrz-focus-from-fore');
+        this.moveToFocus();
     },
 
     moveToFocus: function() {
@@ -816,12 +820,12 @@ var PageCollectionAPI = {
                 for (i = oldPageNumber; i < newPageNumber; i ++) {
                     this.getPage(i).moveToBackground();
                 }
-                this.getPage(newPageNumber).moveToFocus();
+                this.getPage(newPageNumber).moveToFocusFromForeground();
             } else if (newPageNumber < oldPageNumber) {
                 for (i = oldPageNumber; newPageNumber < i; i --) {
                     this.getPage(i).moveToForeground();
                 }
-                this.getPage(newPageNumber).moveToFocus();
+                this.getPage(newPageNumber).moveToFocusFromBackground();
             }
         }
     }

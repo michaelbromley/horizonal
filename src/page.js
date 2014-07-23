@@ -39,7 +39,7 @@ Page.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
+        $(this.domNode).removeClass('hrz-back hrz-focus-from-back hrz-focus-from-fore').addClass('hrz-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToForeground();
@@ -47,11 +47,21 @@ Page.prototype = {
     },
 
     moveToBackground: function() {
-        $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
+        $(this.domNode).removeClass('hrz-fore hrz-focus-from-back hrz-focus-from-fore').addClass('hrz-back');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToBackground();
         });
+    },
+
+    moveToFocusFromBackground: function() {
+        $(this.domNode).addClass('hrz-focus-from-back');
+        this.moveToFocus();
+    },
+
+    moveToFocusFromForeground: function() {
+        $(this.domNode).addClass('hrz-focus-from-fore');
+        this.moveToFocus();
     },
 
     moveToFocus: function() {

@@ -101,12 +101,12 @@ var PageCollectionAPI = {
                 for (i = oldPageNumber; i < newPageNumber; i ++) {
                     this.getPage(i).moveToBackground();
                 }
-                this.getPage(newPageNumber).moveToFocus();
+                this.getPage(newPageNumber).moveToFocusFromForeground();
             } else if (newPageNumber < oldPageNumber) {
                 for (i = oldPageNumber; newPageNumber < i; i --) {
                     this.getPage(i).moveToForeground();
                 }
-                this.getPage(newPageNumber).moveToFocus();
+                this.getPage(newPageNumber).moveToFocusFromBackground();
             }
         }
     }
