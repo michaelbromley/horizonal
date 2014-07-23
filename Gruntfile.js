@@ -34,8 +34,13 @@ module.exports = function(grunt) {
                 // Target-specific options go here.
             },
             files: {
-                src: 'src/<%= pkg.name %>.src.css',
-                dest: 'dist/<%= pkg.name %>.css'
+                expand: true,
+                cwd: 'src/css/',
+                src: ['*.src.css'],
+                dest: 'dist/',
+                rename: function(dest, src) {
+                    return dest + src.replace(/\.src/, "");
+                }
             }
         },
         uglify: {
@@ -66,7 +71,7 @@ module.exports = function(grunt) {
                 tasks: ['jshint', 'concat:build', 'uglify']
             },
             css: {
-                files: ['src/*.css'],
+                files: ['src/css/*.css'],
                 tasks: ['autoprefixer']
             }
         }
