@@ -33,7 +33,7 @@ var NodeCollectionAPI = {
             var node = this[index];
             var pageUpperBound = pageCollection.getLastOffset() + VIEWPORT_HEIGHT;
 
-            var nodeIsTallAndDoesNotFitOnPage = VIEWPORT_HEIGHT / 2 < node.layout.height && pageUpperBound < node.layout.bottom;
+            var nodeIsTallAndDoesNotFitOnPage = this.isNodeTall(node, pageUpperBound);
             if (nodeIsTallAndDoesNotFitOnPage && !node.isClone) {
                 node.isTall = true;
                 var pageOverhang = node.layout.bottom - pageUpperBound;
@@ -54,6 +54,20 @@ var NodeCollectionAPI = {
         }
 
         return pageCollection;
+    },
+
+    isNodeTall: function(node, pageUpperBound) {
+        var isTall = false;
+        if ($(node.domNode).hasClass(OPTIONS.newPageClass)) {
+            if (VIEWPORT_HEIGHT < node.layout.height) {
+                isTall = true;
+            }
+        } else {
+            if (VIEWPORT_HEIGHT / 2 < node.layout.height && pageUpperBound < node.layout.bottom) {
+                isTall = true;
+            }
+        }
+        return isTall;
     },
 
     /**

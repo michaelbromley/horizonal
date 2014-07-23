@@ -32,6 +32,8 @@ Page.prototype = {
             zClass = "hrz-back hrz-hidden";
         } else if (currentPage < this.pageNumber) {
             zClass = "hrz-fore hrz-hidden";
+        } else {
+            zClass = "hrz-focus-from-fore";
         }
         CONTAINER.append('<div class="hrz-page ' + zClass + '" id="' + this.pageId + '" />');
         this.domNode = $('#' + this.pageId)[0];
