@@ -313,8 +313,15 @@ Node.prototype = {
      * @returns {*}
      */
     cloneComputedStyle: function() {
+        var computedStyleClone = document.createElement('div').style;
         var computedStyle = window.getComputedStyle(this.domNode);
-        return $.extend({}, computedStyle);
+        for (var i = 0; i < computedStyle.length; i++) {
+            var name = computedStyle[i];
+            computedStyleClone.setProperty(name,
+                computedStyle.getPropertyValue(name),
+                computedStyle.getPropertyPriority(name));
+        }
+        return computedStyleClone;
     },
 
     /**
@@ -410,6 +417,8 @@ Node.prototype = {
                     'transition-delay': stagger + 's',
                     '-webkit-transition-delay': stagger + 's'
                 });
+                this.domNode.style.transitionDelay = stagger + 's';
+                this.domNode.style.webkitTransitionDelay = stagger + 's';
             }
             if (animationDurationIsDefined) {
                 $(this.domNode).css({
@@ -439,14 +448,20 @@ Node.prototype = {
         var styleDiff = {};
         var newComputedStyles = window.getComputedStyle(this.domNode);
         var self = this;
-        $.each(newComputedStyles, function(index, property) {
-            var camelCasedProperty = property.replace(/\-(\w)/g, function (strMatch, property){
-                return property.toUpperCase();
-            });
-            if (newComputedStyles[property] != self.originalComputedStyle[camelCasedProperty]) {
-                styleDiff[property] = self.originalComputedStyle[camelCasedProperty];
+        for (var i = 0; i < newComputedStyles.length; i++) {
+            var name = newComputedStyles[i];
+            if (newComputedStyles.getPropertyValue(name) != this.originalComputedStyle.getPropertyValue(name)) {
+                styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
             }
-        });
+        }
+        /*$.each(newComputedStyles, function(index, property) {
+         var camelCasedProperty = property.replace(/\-(\w)/g, function (strMatch, property){
+         return property.toUpperCase();
+         });
+         if (newComputedStyles[property] != self.originalComputedStyle[camelCasedProperty]) {
+         styleDiff[property] = self.originalComputedStyle[camelCasedProperty];
+         }
+         });*/
         return styleDiff;
     },
 
@@ -456,30 +471,35 @@ Node.prototype = {
     },
 
     moveToForeground: function() {
-       // $(this.domNode).removeClass('hrz-back').addClass('hrz-fore');
-        OPTIONS.onNodeTransition('toForeground', this.getPublicObject());
+        var self = this;
+        setTimeout(function() {
+            OPTIONS.onNodeTransition('toForeground', self.getPublicObject());
+        }, this.getStaggerDelay() * 1000);
     },
 
     moveToBackground: function() {
-       // $(this.domNode).removeClass('hrz-fore').addClass('hrz-back');
         var self = this;
-       /* setTimeout(function() {
-        OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
-        }, this.getStaggerDelay() * 1000);*/
-        OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
+        setTimeout(function() {
+            OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
+        }, this.getStaggerDelay() * 1000);
     },
 
     moveToFocus: function() {
-       // $(this.domNode).removeClass('hrz-fore hrz-back');
-        OPTIONS.onNodeTransition('toFocus', this.getPublicObject());
+        var self = this;
+        setTimeout(function() {
+            OPTIONS.onNodeTransition('toFocus', self.getPublicObject());
+        }, this.getStaggerDelay() * 1000);
     },
 
     /**
      * Store a copy of the final computed inline style so that the node
      * can be easily restored to the style it had after initialization.
+     * The cloneNode() method is necessary as otherwise we will just
+     * get a reference to the current style, which will change as the
+     * current style changes.
      */
     setRestorePoint: function() {
-        this.inlineStyle = $(this.domNode).attr('style');
+        this.inlineStyle = this.domNode.cloneNode().style;
     },
 
     /**
@@ -488,7 +508,21 @@ Node.prototype = {
      * JavaScript-based transitions.
      */
     restore: function() {
-        $(this.domNode).attr('style', this.inlineStyle);
+        var name, i;
+        // first we need to delete all the style rules
+        // currently defined on the element
+        for (i = this.domNode.style.length; i > 0; i--) {
+            name = this.domNode.style[i];
+            this.domNode.style.removeProperty(name);
+        }
+        // now we loop through the original CSSStyleDeclaration
+        // object and set each property to its original value
+        for (i = this.inlineStyle.length; i > 0; i--) {
+            name = this.inlineStyle[i];
+            this.domNode.style.setProperty(name,
+                this.inlineStyle.getPropertyValue(name),
+                priority = this.inlineStyle.getPropertyPriority(name));
+        }
     },
 
     /**
