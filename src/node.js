@@ -152,21 +152,18 @@ Node.prototype = {
     getStyleDiff: function() {
         var styleDiff = {};
         var newComputedStyles = window.getComputedStyle(this.domNode);
-        var self = this;
         for (var i = 0; i < newComputedStyles.length; i++) {
             var name = newComputedStyles[i];
             if (newComputedStyles.getPropertyValue(name) != this.originalComputedStyle.getPropertyValue(name)) {
+                // Internet Explorer has strange behaviour with its own deprecated prefixed version of transition, animation and
+                // others. This breaks these CSS features in that browser, so the workaround here is to just omit all those
+                // IE-specific prefixes.
+                if ( name.substring(0, 3) == "-ms") {
+                    continue;
+                }
                 styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
             }
         }
-        /*$.each(newComputedStyles, function(index, property) {
-         var camelCasedProperty = property.replace(/\-(\w)/g, function (strMatch, property){
-         return property.toUpperCase();
-         });
-         if (newComputedStyles[property] != self.originalComputedStyle[camelCasedProperty]) {
-         styleDiff[property] = self.originalComputedStyle[camelCasedProperty];
-         }
-         });*/
         return styleDiff;
     },
 
@@ -216,13 +213,13 @@ Node.prototype = {
         var name, i;
         // first we need to delete all the style rules
         // currently defined on the element
-        for (i = this.domNode.style.length; i > 0; i--) {
+        for (i = this.domNode.style.length; i >= 0; i--) {
             name = this.domNode.style[i];
             this.domNode.style.removeProperty(name);
         }
         // now we loop through the original CSSStyleDeclaration
         // object and set each property to its original value
-        for (i = this.inlineStyle.length; i > 0; i--) {
+        for (i = this.inlineStyle.length; i >= 0; i--) {
             name = this.inlineStyle[i];
             this.domNode.style.setProperty(name,
                 this.inlineStyle.getPropertyValue(name),

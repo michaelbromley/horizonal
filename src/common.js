@@ -15,7 +15,7 @@ function composePage(currentScroll) {
     var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
     ROOT.height(documentHeight);
     if (!OPTIONS.displayScrollbar) {
-        ROOT.css('overflow-y', 'hidden');
+        $('body').css('overflow-y', 'hidden');
     }
     renderPageCount();
 }

@@ -54,6 +54,9 @@ function Horizonal() {
     function disable() {
         if (!_disabled) {
             ROOT.replaceWith(ROOT_CLONE.clone());
+            if (!OPTIONS.displayScrollbar) {
+                $('body').css('overflow-y', '');
+            }
             unregisterEventHandlers();
             _disabled = true;
         }
@@ -109,6 +112,10 @@ function Horizonal() {
         $(window).on('keydown', keydownHandler);
         $(window).on('scroll', scrollHandler);
         $(window).on('hashchange', hashChangeHandler);
+        $(window).on('touchstart pointerdown MSPointerDown', touchstartHandler);
+        $(window).on('touchend pointerup MSPointerUp', touchendHandler);
+        $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
+
     }
 
     function unregisterEventHandlers() {
