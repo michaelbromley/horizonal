@@ -1,5 +1,6 @@
 html {
     box-sizing: border-box;
+    touch-action: none; /* required for IE8+ touch interaction to function properly */
 }
 
 .hrz-page-count {

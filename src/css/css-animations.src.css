@@ -82,12 +82,14 @@
     animation: bounceInRight 1s;
     animation-fill-mode: forwards;
     animation-iteration-count: 1;
+    transform: translate3d(2000px, 0, 0);
 }
 
 .hrz-page.hrz-focus-from-back > .hrz-element {
     animation: bounceInLeft 1s;
     animation-fill-mode: forwards;
     animation-iteration-count: 1;
+    transform: translate3d(-2000px, 0, 0);
 }
 
 .hrz-page.hrz-back > .hrz-element {

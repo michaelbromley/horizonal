@@ -197,6 +197,8 @@
             animation-fill-mode: forwards;
     -webkit-animation-iteration-count: 1;
             animation-iteration-count: 1;
+    -webkit-transform: translate3d(2000px, 0, 0);
+            transform: translate3d(2000px, 0, 0);
 }
 
 .hrz-page.hrz-focus-from-back > .hrz-element {
@@ -206,6 +208,8 @@
             animation-fill-mode: forwards;
     -webkit-animation-iteration-count: 1;
             animation-iteration-count: 1;
+    -webkit-transform: translate3d(-2000px, 0, 0);
+            transform: translate3d(-2000px, 0, 0);
 }
 
 .hrz-page.hrz-back > .hrz-element {
