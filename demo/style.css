@@ -1,3 +1,9 @@
+body {
+    font-family: Optima, Segoe, "Segoe UI", Candara, Calibri, Arial, sans-serif;
+}
+img {
+    max-width: 100%;
+}
 #demo-controls {
     width: 100%;
     position: fixed;
@@ -10,6 +16,18 @@
 
 #root {
     margin-top: 10px;
-    overflow: visible;
+}
+
+.poem {
+    font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 50px;
+}
+.poem h2 {
+    font-size: 40px;
+    font-style: italic;}
+.poem em {
+    font-style: italic;
 }
 

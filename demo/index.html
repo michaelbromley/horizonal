@@ -9,7 +9,7 @@
 <body>
 
 <div id="demo-controls">
-    <label for="theme-selector">Loaded theme:</label>
+    <label for="theme-selector">Current theme:</label>
     <select id="theme-selector">
 
     </select>
@@ -19,17 +19,12 @@
         <div class="col-sm-10 col-sm-push-1">
             <div class="jumbotron text-center h">
                 <h1>Horizonal.js</h1>
-                <h1><small>Add a new <a href="#final-paragraph">dimension</a>  to your HTML</small></h1>
+                <h1><small>Strapline - to be announced...</small></h1>
             </div>
-
-            <p class="lead">
-                Horizonal.js takes a regular HTML document and chops it up into a series of screen-sized pages, providing you with hooks
-                with which you can define how the pages transition. Use CSS transforms, CSS animations, or JavaScript functions.
-            </p>
             <h2>scroll down or use <code>&darr;</code></h2>
 
-            <div class="h hrz-start-new-page poem">
-                <h2>I Saw a Man Pursuing the Horizon</h2>
+            <div class="poem">
+                <h2 class="hrz-start-new-page" id="poem">I Saw a Man Pursuing the Horizon</h2>
                 <p>I saw a man pursuing the horizon;</p>
                 <p>Round and round they sped.</p>
                 <p>I was disturbed at this;</p>
@@ -43,7 +38,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/5366078166_027c226f5a_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/rejik/5366078166/" />
+                    <img class="thumbnail hrz-start-new-page" src="assets/5366078166_027c226f5a_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/rejik/5366078166/" />
                 </div>
                 <div class="col-xs-6 col-md-3">
                     <img class="thumbnail" src="assets/12205212124_abda6a0a2c_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/halfrain/12205212124/" />
@@ -67,16 +62,35 @@
                     <img class="thumbnail" src="assets/6143615821_03f301925e_q%20(1).jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/donkeyhotey/6143615821/" />
                 </div>
             </div>
-            <p>Chew iPad power cord intently sniff hand yet stand in front of the computer screen for burrow under covers and chase mice run in circles. Claw drapes. Run in circles give attitude. Hopped up on goofballs. Intently stare at the same spot climb leg. Hopped up on goofballs lick butt, and stand in front of the computer screen or nap all day so need to chase tail. Make muffins give attitude for claw drapes, for destroy couch destroy couch but chew foot but make muffins. Chew foot. Intently stare at the same spot destroy couch yet all of a sudden go crazy yet intrigued by the shower hunt anything that moves stretch for stare at ceiling. Stare at ceiling intently stare at the same spot but under the bed, stick butt in face yet chew iPad power cord leave dead animals as gifts destroy couch. Chase imaginary bugs leave hair everywhere intently sniff hand but sleep on keyboard and cat snacks sun bathe. Missing until dinner time. Sleep on keyboard hunt anything that moves but mark territory swat at dog. Destroy couch sun bathe. Chase mice flop over yet all of a sudden go crazy. Inspect anything brought into the house nap all day use lap as chair attack feet for attack feet so mark territory. Behind the couch nap all day, run in circles nap all day so intently sniff hand hide when guests come over.
+            <h2 class="hrz-start-new-page">What is it?</h2>
+            <p>
+                Horizonal.js takes any static HTML document and transform it into a series of discrete "pages". The
+                transitions between one page an the next can then be programmed via CSS transforms, CSS animations, JavaScript, or any combination of
+                these.
             </p>
-            <h2 id="final-paragraph">Final paragraph</h2>
-            <p>Behind the couch. Use lap as chair climb leg attack feet stick butt in face. Sun bathe climb leg or under the bed so intently sniff hand. Stick butt in face rub face on everything. Swat at dog stretch attack feet, hopped up on goofballs yet claw drapes so leave hair everywhere. All of a sudden go crazy hide when guests come over or chew iPad power cord so nap all day swat at dog nap all day. Chew iPad power cord intently stare at the same spot make muffins, for intently sniff hand rub face on everything and mark territory. Chew iPad power cord swat at dog nap all day, yet chase imaginary bugs hide when guests come over or destroy couch. Why must they do that stand in front of the computer screen. Stare at ceiling sleep on keyboard use lap as chair.
+            <h2>How?</h2>
+            <p>
+                You specify which elements you wish to display via the familiar jQuery selector syntax. Horizonal will then traverse the document,
+                splitting it up into a series of pages, and figuring out which element should go where.
             </p>
+            <h2 id="final-paragraph">Features</h2>
+            <ul>
+                <li>Fully customizable - limited only by your imagination (and JavaScript & CSS chops)</li>
+                <li>Can handle URL fragments - e.g. <a href="#poem">go to that poem</a></li>
+                <li>Can handle large elements that span multiple pages - e.g. <a href="#burj-khalifa">this huge photo</a></li>
+            </ul>
+            <h2 id="burj-khalifa">Multi-page spanning</h2>
+            <p>
+                Finally, to demonstrate multi-page spanning of large element, please enjoy this photo of the massive Burj Khalifa.
+            </p>
+            <div class="text-center">
+                <img src="assets/Burj_Khalifa.jpg" title="'Burj Khalifa' by Donaldytong - commons:File:Burj Khalifa.jpg. Via Wikipedia - http://en.wikipedia.org/wiki/File:Burj_Khalifa.jpg#mediaviewer/File:Burj_Khalifa.jpg" />
+            </div>
         </div>
     </div>
 </div>
 
-<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="vendor/jquery.min.js"></script>
 <script src="../dist/horizonal.debug.js"></script>
 <script src="themes/themes.js"></script>
 <script src="script.js"></script>

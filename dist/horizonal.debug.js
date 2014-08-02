@@ -55,6 +55,9 @@ function Horizonal() {
     function disable() {
         if (!_disabled) {
             ROOT.replaceWith(ROOT_CLONE.clone());
+            if (!OPTIONS.displayScrollbar) {
+                $('body').css('overflow-y', '');
+            }
             unregisterEventHandlers();
             _disabled = true;
         }
@@ -110,6 +113,10 @@ function Horizonal() {
         $(window).on('keydown', keydownHandler);
         $(window).on('scroll', scrollHandler);
         $(window).on('hashchange', hashChangeHandler);
+        $(window).on('touchstart pointerdown MSPointerDown', touchstartHandler);
+        $(window).on('touchend pointerup MSPointerUp', touchendHandler);
+        $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
+
     }
 
     function unregisterEventHandlers() {
@@ -183,7 +190,7 @@ function composePage(currentScroll) {
     var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
     ROOT.height(documentHeight);
     if (!OPTIONS.displayScrollbar) {
-        ROOT.css('overflow-y', 'hidden');
+        $('body').css('overflow-y', 'hidden');
     }
     renderPageCount();
 }
@@ -241,7 +248,7 @@ function debounce(fun, mil){
     return function(){
         clearTimeout(timer);
         timer = setTimeout(function(){
-            fun();
+            fun.apply(null, arguments);
         }, mil);
     };
 }
@@ -292,6 +299,131 @@ function hashChangeHandler() {
         $(window).scrollTop(PAGE_COLLECTION.getCurrent().midPoint);
         updatePageCount();
     }
+}
+
+var _touchStartPos;
+var _touchStartTime;
+function touchstartHandler(e) {
+    if (isValidTouchEvent(e)) {
+        _touchStartPos =  {
+            x: getTouchX(e),
+            y: getTouchY(e)
+        };
+        _touchStartTime = new Date().getTime();
+    }
+}
+
+function touchmoveHandler(e) {
+    if (isValidTouchEvent(e)) {
+        e.preventDefault();
+    }
+}
+
+function touchendHandler(e) {
+    if (isValidTouchEvent(e)) {
+        var scrollTo;
+        var touchEndPos = {
+            x: getTouchX(e),
+            y: getTouchY(e)
+        };
+        var touchEndTime = new Date().getTime();
+
+        if (isValidSwipe(_touchStartTime, touchEndTime, _touchStartPos, touchEndPos)) {
+            var direction = getSwipeDirection(_touchStartPos, touchEndPos);
+            if (direction === "down" || direction === "right") {
+                // down or right swipe
+                if (PAGE_COLLECTION.currentPage === 2) {
+                    scrollTo = 0;
+                } else if (1 < PAGE_COLLECTION.currentPage) {
+                    scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
+                }
+            } else {
+                // up or left swipe
+                if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
+                    scrollTo = PAGE_COLLECTION.getNext().midPoint;
+                }
+            }
+            console.log('swipe direction: ' + direction);
+            $(window).scrollTop(scrollTo);
+        }
+    }
+}
+
+/**
+ * Internet Explorer uses the Pointer Events model for both touch and mouse events. Therefore, when we bind to the
+ * 'pointerdown', 'pointerup' etc. events, they will also be fired when the mouse is clicked, which we do not want.
+ * Therefore we filter out the events that are triggered by mouse.
+ * @param e
+ * @returns {boolean}
+ */
+function isValidTouchEvent(e) {
+    if (e.originalEvent.hasOwnProperty('pointerType')) {
+        if (e.originalEvent.pointerType === 'mouse') {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * To be valid, a swipe must travel a sufficient distance across the screen (to distinguish from sloppy
+ * clicks), and must be fairly fast (to distinguish from highlighting text attempts)
+ * @param startTime
+ * @param endTime
+ * @param startPos
+ * @param endPos
+ */
+function isValidSwipe(startTime, endTime, startPos, endPos) {
+    var MAX_INTERVAL = 700;
+    var MIN_DISTANCE = 75;
+    var timeInterval = endTime - startTime;
+    var dX = endPos.x - startPos.x;
+    var dY = endPos.y - startPos.y;
+    var swipeDistance = Math.sqrt(dX * dX + dY * dY);
+
+    if (MAX_INTERVAL < timeInterval ||
+        swipeDistance < MIN_DISTANCE) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function getSwipeDirection(startPos, endPos) {
+    var dX = endPos.x - startPos.x;
+    var dY = endPos.y - startPos.y;
+    var angle = Math.atan2(dY, dX);
+    var direction;
+    if (-Math.PI/4 < angle && angle <= Math.PI/4) {
+        direction = "right";
+    } else if (-3/4*Math.PI < angle && angle <= -Math.PI/4) {
+        direction = "up";
+    } else if (3/4*Math.PI < angle || angle < -3/4*Math.PI) {
+        direction = "left";
+    } else {
+        direction = "down";
+    }
+    return direction;
+}
+
+function getTouchX(e) {
+    var x;
+    if (e.originalEvent.hasOwnProperty('changedTouches')) {
+        x = e.originalEvent.changedTouches[0].clientX;
+    } else {
+        x = e.originalEvent.clientX;
+    }
+    return x;
+}
+
+function getTouchY(e) {
+    var y;
+    if (e.originalEvent.hasOwnProperty('changedTouches')) {
+        y = e.originalEvent.changedTouches[0].clientY;
+    } else {
+        y = e.originalEvent.clientY;
+    }
+    return y;
 }
 function Node(domNode, index) {
     this.domNode = domNode;
@@ -447,21 +579,18 @@ Node.prototype = {
     getStyleDiff: function() {
         var styleDiff = {};
         var newComputedStyles = window.getComputedStyle(this.domNode);
-        var self = this;
         for (var i = 0; i < newComputedStyles.length; i++) {
             var name = newComputedStyles[i];
             if (newComputedStyles.getPropertyValue(name) != this.originalComputedStyle.getPropertyValue(name)) {
+                // Internet Explorer has strange behaviour with its own deprecated prefixed version of transition, animation and
+                // others. This breaks these CSS features in that browser, so the workaround here is to just omit all those
+                // IE-specific prefixes.
+                if ( name.substring(0, 3) == "-ms") {
+                    continue;
+                }
                 styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
             }
         }
-        /*$.each(newComputedStyles, function(index, property) {
-         var camelCasedProperty = property.replace(/\-(\w)/g, function (strMatch, property){
-         return property.toUpperCase();
-         });
-         if (newComputedStyles[property] != self.originalComputedStyle[camelCasedProperty]) {
-         styleDiff[property] = self.originalComputedStyle[camelCasedProperty];
-         }
-         });*/
         return styleDiff;
     },
 
@@ -511,13 +640,13 @@ Node.prototype = {
         var name, i;
         // first we need to delete all the style rules
         // currently defined on the element
-        for (i = this.domNode.style.length; i > 0; i--) {
+        for (i = this.domNode.style.length; i >= 0; i--) {
             name = this.domNode.style[i];
             this.domNode.style.removeProperty(name);
         }
         // now we loop through the original CSSStyleDeclaration
         // object and set each property to its original value
-        for (i = this.inlineStyle.length; i > 0; i--) {
+        for (i = this.inlineStyle.length; i >= 0; i--) {
             name = this.inlineStyle[i];
             this.domNode.style.setProperty(name,
                 this.inlineStyle.getPropertyValue(name),
@@ -724,7 +853,7 @@ Page.prototype = {
     },
 
     moveToForeground: function() {
-        $(this.domNode).removeClass('hrz-back hrz-focus-from-back hrz-focus-from-fore').addClass('hrz-fore');
+        $(this.domNode).addClass('hrz-fore').removeClass('hrz-back hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToForeground();
@@ -732,7 +861,7 @@ Page.prototype = {
     },
 
     moveToBackground: function() {
-        $(this.domNode).removeClass('hrz-fore hrz-focus-from-back hrz-focus-from-fore').addClass('hrz-back');
+        $(this.domNode).addClass('hrz-back').removeClass('hrz-fore hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
             node.moveToBackground();

@@ -1,33 +1,32 @@
 var themes = {
-    "Default": {
+    "Basic CSS Transitions": {
         options: {
-            customCssFile: 'themes/base-theme.css',
+            customCssFile: '../dist/css-transitions.css',
             stagger: 'sequence',
             staggerDelay: 0.04,
-            displayScrollbar: true,
             scrollStep: 2,
-            selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail',
+            selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
             displayPageCount: true,
             rootElement: '#root'
         }
     },
-    "CSS animations": {
+    "Basic CSS Animations": {
         options: {
-            customCssFile: 'themes/css-animations.css',
+            customCssFile: '../dist/css-animations.css',
             stagger: 'sequence',
             staggerDelay: 0.05,
             scrollStep: 2,
-            selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail',
+            selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
             rootElement: '#root'
         }
     },
-    "Javascript callbacks": {
+    "Basic Javascript Callbacks": {
         options: {
-            customCssFile: 'themes/javascript-animation.css',
+            customCssFile: '../dist/javascript-animation.css',
             stagger: 'sequence',
-            staggerDelay: 0.1,
+            staggerDelay: 0.03,
             scrollStep: 2,
-            selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail',
+            selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
             rootElement: '#root',
             pageHideDelay: 1,
             onNodeTransition: function(type, node) {
@@ -64,17 +63,18 @@ var themes = {
                             requestAnimationFrame(tick);
                         } else {
                             node.restore();
+                            $node.css('opacity', '0');
                         }
                     });
                 }
 
                 function fallUp(node, duration) {
                     var $node = $(node.domNode);
+                    $node.css('opacity', 1);
                     var start = null;
                     var finalY = parseInt($node.css('top'));
                     var finalX = parseInt($node.css('left'));
                     var startingX = finalX;
-                    //var startingY = Math.random() * 100 + $(window).height();
                     var startingY = -300;
                     var deltaX = finalX - startingX;
                     var deltaY = finalY - startingY;
@@ -87,7 +87,6 @@ var themes = {
                         if (start === null) start = timestamp;
                         progress = timestamp - start;
 
-                        //var y = startingY + progress / duration * deltaY;
                         var totalIterations = Math.round(duration / 1000 * 60);
                         var currentIteration = Math.round(progress / 1000 * 60);
                         var y = easeOutCubic(currentIteration, startingY, deltaY, totalIterations);
@@ -99,6 +98,7 @@ var themes = {
                             requestAnimationFrame(tick);
                         } else {
                             node.restore();
+                            $node.css('opacity', 1);
                         }
                     });
                 }
