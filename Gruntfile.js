@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         concat: {
-            build: {
+            core: {
                 src: [
                     'src/prefix.js',
                     'src/horizonal.js',
@@ -16,6 +16,12 @@ module.exports = function(grunt) {
                     'src/suffix.js'
                 ],
                 dest: 'dist/horizonal.debug.js'
+            },
+            themes: {
+                src: [
+                    'src/demo-themes/*.js',
+                ],
+                dest: 'demo/themes/themes.js'
             }
         },
         copy: {
@@ -30,14 +36,21 @@ module.exports = function(grunt) {
             }
         },
         autoprefixer: {
-            options: {
-
-            },
-            files: {
+            core: {
                 expand: true,
-                cwd: 'src/css/',
+                cwd: 'src/',
                 src: ['*.src.css'],
                 dest: 'dist/',
+                rename: function(dest, src) {
+                    return dest + src.replace(/\.src/, "");
+                }
+
+            },
+            themes: {
+                expand: true,
+                cwd: 'src/demo-themes/',
+                src: ['*.src.css'],
+                dest: 'demo/themes/',
                 rename: function(dest, src) {
                     return dest + src.replace(/\.src/, "");
                 }
@@ -68,7 +81,7 @@ module.exports = function(grunt) {
         watch: {
             js: {
                 files: ['src/*.js'],
-                tasks: ['jshint', 'concat:build', 'uglify']
+                tasks: ['jshint', 'concat', 'uglify']
             },
             css: {
                 files: ['src/css/*.css'],
@@ -84,6 +97,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
-    grunt.registerTask('default', ['jshint', 'concat:build', 'uglify', 'autoprefixer']);
+    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'autoprefixer']);
 
 };

@@ -4,18 +4,17 @@
         populateThemesSelect();
         initWithSelectedTheme();
 
-        $(window).on('keypress', function(e) {
-            if (e.which === 101) {
-                horizonal.enable();
-            }
-            if (e.which === 100) {
-                horizonal.disable();
-            }
-        });
-
         $('#theme-selector').on('change', function() {
             initWithSelectedTheme();
             this.blur();
+        });
+
+        $('#switch').on('change', function() {
+            if ($('#switch').is(':checked')) {
+                horizonal.enable();
+            } else {
+                horizonal.disable();
+            }
         });
     });
 
