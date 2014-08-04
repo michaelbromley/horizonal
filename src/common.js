@@ -1,3 +1,7 @@
+/**
+ * This is the main method that converts the document to a collection of pages.
+ * @param currentScroll
+ */
 function composePage(currentScroll) {
     ROOT = $(OPTIONS.rootElement);
     ROOT.wrapInner('<div id="hrz-container"></div>');
@@ -30,6 +34,10 @@ function renderPageCount() {
             pageCountDiv.addClass('hidden');
         }
     }
+}
+
+function hidePageCount() {
+    $('.hrz-page-count').remove();
 }
 
 function updatePageCount() {

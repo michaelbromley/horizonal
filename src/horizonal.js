@@ -13,8 +13,8 @@ function Horizonal() {
 
     var defaults = {
         selector: 'h1, h2, h3, h4, h5, h6, p, li, img, table',
-        stagger: 'random',
         staggerDelay: 0.1,
+        stagger: 'random',
         customCssFile: false,
         displayScrollbar: true,
         scrollbarShortenRatio: 2, // long scrolling between pages can be a pain, so a higher value here will shorten the scroll distance between pages
@@ -24,8 +24,7 @@ function Horizonal() {
         newPageClass: 'hrz-start-new-page',
         pageHideDelay: 1, // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
         onResize: noop,
-        onNodeTransition: noop,
-        onPageTransition: noop
+        onNodeTransition: noop
     };
 
     function init(_OPTIONS) {
@@ -58,6 +57,7 @@ function Horizonal() {
                 $('body').css('overflow-y', '');
             }
             unregisterEventHandlers();
+            hidePageCount();
             _disabled = true;
         }
     }
@@ -115,7 +115,6 @@ function Horizonal() {
         $(window).on('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).on('touchend pointerup MSPointerUp', touchendHandler);
         $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
-
     }
 
     function unregisterEventHandlers() {
@@ -123,6 +122,9 @@ function Horizonal() {
         $(window).off('keydown', keydownHandler);
         $(window).off('scroll', scrollHandler);
         $(window).off('hashchange', hashChangeHandler);
+        $(window).off('touchstart pointerdown MSPointerDown', touchstartHandler);
+        $(window).off('touchend pointerup MSPointerUp', touchendHandler);
+        $(window).off('touchmove pointermove MSPointerMove', touchmoveHandler);
     }
 
     /**
@@ -143,7 +145,6 @@ function Horizonal() {
             $('#hrz-custom-css').remove();
             deferred.resolve();
         }
-
         return deferred.promise();
 
         function success(data) {
@@ -162,8 +163,8 @@ function Horizonal() {
      */
     return {
         init: init,
-        enable: enable,
         disable: disable,
+        enable: enable,
         goTo: goTo,
         next: next,
         previous: previous

@@ -118,7 +118,6 @@ function touchendHandler(e) {
                     scrollTo = PAGE_COLLECTION.getNext().midPoint;
                 }
             }
-            console.log('swipe direction: ' + direction);
             $(window).scrollTop(scrollTo);
         }
     }
