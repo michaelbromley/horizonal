@@ -30,15 +30,15 @@ function Horizonal() {
     function init(_OPTIONS) {
         var currentScroll = $(window).scrollTop();
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-
         addCustomCssToHead().then(function() {
             if (!_hasBeenInitialized) {
                 ROOT = $(OPTIONS.rootElement);
                 ROOT_CLONE = ROOT.clone();
                 registerEventHandlers();
-                composePage(currentScroll);
-                updatePageCount();
-                _hasBeenInitialized = true;
+                composePage(currentScroll).then(function() {
+                    updatePageCount();
+                    _hasBeenInitialized = true;
+                });
             } else {
                 resizeHandler();
                 registerEventHandlers();
@@ -47,7 +47,6 @@ function Horizonal() {
                 hashChangeHandler();
             }
         });
-
     }
 
     function disable() {
@@ -57,7 +56,7 @@ function Horizonal() {
                 $('body').css('overflow-y', '');
             }
             unregisterEventHandlers();
-            hidePageCount();
+            removePageCount();
             _disabled = true;
         }
     }

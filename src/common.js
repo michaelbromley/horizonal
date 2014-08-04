@@ -1,27 +1,59 @@
 /**
- * This is the main method that converts the document to a collection of pages.
+ * This is the main method that converts the document to a collection of pages. Since this method can be slow (depending
+ * on the number of DOM elements in the document), it runs async and returns a promise.
  * @param currentScroll
  */
 function composePage(currentScroll) {
+    var deferred = new $.Deferred();
     ROOT = $(OPTIONS.rootElement);
     ROOT.wrapInner('<div id="hrz-container"></div>');
     CONTAINER = $('#hrz-container');
     CONTAINER.width(ROOT.width());
     VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
-    var allNodes = new NodeCollection(OPTIONS.selector);
 
-    PAGE_COLLECTION = allNodes.splitIntoPages();
-    PAGE_COLLECTION.renderToDom(currentScroll);
-    // remove any DOM nodes that are not included in the selector,
-    // since they will just be left floating around in the wrong place.
-    CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+    displayLoadingIndicator().then(function() {
+        // a setTimeout is used to force async execution and allow the loadingIndicator to display before the
+        // heavy computations of composePage() are begun.
+        setTimeout(function() {
+            var allNodes = new NodeCollection(OPTIONS.selector);
 
-    var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
-    ROOT.height(documentHeight);
-    if (!OPTIONS.displayScrollbar) {
-        $('body').css('overflow-y', 'hidden');
+            PAGE_COLLECTION = allNodes.splitIntoPages();
+            PAGE_COLLECTION.renderToDom(currentScroll);
+            // remove any DOM nodes that are not included in the selector,
+            // since they will just be left floating around in the wrong place.
+            CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+
+            var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
+            ROOT.height(documentHeight);
+            if (!OPTIONS.displayScrollbar) {
+                $('body').css('overflow-y', 'hidden');
+            }
+            renderPageCount();
+            removeLoadingIndicator();
+            deferred.resolve();
+        }, 500);
+    });
+
+    return deferred.promise();
+}
+
+function displayLoadingIndicator() {
+    var deferred = new $.Deferred();
+    if ($('#loadingIndicator').length === 0) {
+        $('body').append('<div id="loadingIndicator" style="display:none;"><p class="loading">Loading...</p></div>');
+        $('#loadingIndicator').fadeIn(500, function() {
+            deferred.resolve();
+        });
     }
-    renderPageCount();
+    return deferred.promise();
+}
+
+function removeLoadingIndicator() {
+    setTimeout(function() {
+        $('#loadingIndicator').fadeOut(500, function() {
+            $(this).remove();
+        });
+    }, 300);
 }
 
 function renderPageCount() {
@@ -36,7 +68,7 @@ function renderPageCount() {
     }
 }
 
-function hidePageCount() {
+function removePageCount() {
     $('.hrz-page-count').remove();
 }
 

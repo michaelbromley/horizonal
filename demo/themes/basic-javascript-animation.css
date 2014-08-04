@@ -1,0 +1,29 @@
+.hrz-element {
+    /*
+     Important: existing transitions defined on the elements (such as on the .thumbnail class in Bootstrap 3) can interfere
+     with Javascript-based animations, so we should cancel them.
+     */
+    -webkit-transition-property: opacity;
+            transition-property: opacity;
+    -webkit-transition-duration: 1s;
+            transition-duration: 1s;
+    opacity: 0;
+}
+
+.hrz-page {
+    opacity: 1;
+    -webkit-transition: opacity 0.3s;
+            transition: opacity 0.3s;
+}
+
+.hrz-page.hrz-fore {
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease 1s;
+            transition: opacity 0.3s ease 1s;
+}
+
+.hrz-page.hrz-back {
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease 1s;
+            transition: opacity 0.3s ease 1s;
+}

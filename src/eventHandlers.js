@@ -6,10 +6,11 @@
 function resizeHandler() {
     var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollbarShortenRatio;
     ROOT.replaceWith(ROOT_CLONE.clone());
-    composePage(currentScroll);
-    $(window).scrollTop(currentScroll);
-    updatePageCount();
-    OPTIONS.onResize();
+    composePage(currentScroll).then(function() {
+        $(window).scrollTop(currentScroll);
+        updatePageCount();
+        OPTIONS.onResize();
+    });
 }
 
 /**

@@ -9,7 +9,7 @@ var NodeCollectionAPI = {
 
     fromSelector: function(selector) {
         var self = this;
-        var allNodes = $(selector).filter(':visible');
+        var allNodes = ROOT.find(selector).filter(':visible');
 
         var topLevelNodes = $([]);
         allNodes.each(function(index, domNode) {
