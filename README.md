@@ -4,6 +4,8 @@ Horizonal.js takes any static HTML document and transform it into a collection o
 transitions between one page an the next can then be programmed via CSS transforms, CSS animations, JavaScript, or any combination of
 these.
 
+![What Horizonal.js Does](/demo/assets/how-it-works.png?raw=true)
+
 ## Demo
 
 ### [Check out Horizonal in action here](http://www.michaelbromley.co.uk/horizonal/demo/).
