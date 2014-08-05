@@ -44,7 +44,7 @@ Page.prototype = {
         $(this.domNode).addClass('hrz-fore').removeClass('hrz-back hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
-            node.moveToForeground();
+            node.moveTo('toForeground');
         });
     },
 
@@ -52,28 +52,28 @@ Page.prototype = {
         $(this.domNode).addClass('hrz-back').removeClass('hrz-fore hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
-            node.moveToBackground();
+            node.moveTo('toBackground');
         });
     },
 
     moveToFocusFromBackground: function() {
         $(this.domNode).addClass('hrz-focus-from-back');
-        this.moveToFocus();
+        this._moveToFocus('toFocusFromBack');
     },
 
     moveToFocusFromForeground: function() {
         $(this.domNode).addClass('hrz-focus-from-fore');
-        this.moveToFocus();
+        this._moveToFocus('toFocusFromFore');
     },
 
-    moveToFocus: function() {
+    _moveToFocus: function(type) {
         $(this.domNode).removeClass('hrz-fore hrz-back hrz-hidden');
         if (this.hideTimer !== null) {
             clearTimeout(this.hideTimer);
             this.hideTimer = null;
         }
         this.nodes.forEach(function(node) {
-            node.moveToFocus();
+            node.moveTo(type);
         });
     },
 

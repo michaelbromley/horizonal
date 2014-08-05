@@ -1,3 +1,9 @@
+/**
+ * A Node object represents a DOM element. An actual reference to the HTMLElement object is contained in the 'domNode' property.
+ * @param domNode
+ * @param index
+ * @constructor
+ */
 function Node(domNode, index) {
     this.domNode = domNode;
     this.index = index;
@@ -111,22 +117,25 @@ Node.prototype = {
         });
     },
 
+    /**
+     * If the staggerDelay option is set, then we check to see if this node has either a CSS transition or CSS animation
+     * style rule applied to it. If so, we dynamically set the transition-delay or animation-delay value to give the
+     * stagger effect.
+     */
     setTransitionDelay: function() {
         var stagger = this.getStaggerDelay();
         if (0 < stagger) {
-            var cssProp = $(this.domNode).css.bind($(this.domNode));
-            var transitionDurationIsDefined = existsAndIsNotZero(cssProp('transition-duration')) || existsAndIsNotZero(cssProp('-webkit-transition-duration'));
-            var animationDurationIsDefined = existsAndIsNotZero(cssProp('animation-duration')) || existsAndIsNotZero(cssProp('-webkit-animation-duration'));
+            var css = $(this.domNode).css.bind($(this.domNode));
+            var transitionDurationIsDefined = existsAndIsNotZero(css('transition-duration')) || existsAndIsNotZero(css('-webkit-transition-duration'));
+            var animationDurationIsDefined = existsAndIsNotZero(css('animation-duration')) || existsAndIsNotZero(css('-webkit-animation-duration'));
             if (transitionDurationIsDefined) {
-                $(this.domNode).css({
+                css({
                     'transition-delay': stagger + 's',
                     '-webkit-transition-delay': stagger + 's'
                 });
-                this.domNode.style.transitionDelay = stagger + 's';
-                this.domNode.style.webkitTransitionDelay = stagger + 's';
             }
             if (animationDurationIsDefined) {
-                $(this.domNode).css({
+                css({
                     'animation-delay': stagger + 's',
                     '-webkit-animation-delay': stagger + 's'
                 });
@@ -136,6 +145,11 @@ Node.prototype = {
         function existsAndIsNotZero(property) {
             return typeof property !== 'undefined' && property !== '0s';
         }
+    },
+
+    getStaggerDelay: function() {
+        var delay = OPTIONS.staggerDelay * this.staggerOrder;
+        return Math.round(delay * 100) / 100;
     },
 
     /**
@@ -167,29 +181,18 @@ Node.prototype = {
         return styleDiff;
     },
 
-    getStaggerDelay: function() {
-        var delay = OPTIONS.staggerDelay * this.staggerOrder;
-        return Math.round(delay * 100) / 100;
-    },
-
-    moveToForeground: function() {
+    /**
+     * Trigger the onNodeTransition callback and pass this node and the type of transition:
+     * - toForeground
+     * - toBackground
+     * - toFocusFromFore
+     * - toFocusFromBack
+     * @param type
+     */
+    moveTo: function(type) {
         var self = this;
         setTimeout(function() {
-            OPTIONS.onNodeTransition('toForeground', self.getPublicObject());
-        }, this.getStaggerDelay() * 1000);
-    },
-
-    moveToBackground: function() {
-        var self = this;
-        setTimeout(function() {
-            OPTIONS.onNodeTransition('toBackground', self.getPublicObject());
-        }, this.getStaggerDelay() * 1000);
-    },
-
-    moveToFocus: function() {
-        var self = this;
-        setTimeout(function() {
-            OPTIONS.onNodeTransition('toFocus', self.getPublicObject());
+            OPTIONS.onNodeTransition(type, self.getPublicObject());
         }, this.getStaggerDelay() * 1000);
     },
 

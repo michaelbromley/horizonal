@@ -94,7 +94,7 @@ var PageCollectionAPI = {
         var newPageNumber = this.currentPage;
 
         if (oldPageNumber === 0) {
-            this.getPage(newPageNumber).moveToFocus();
+            this.getPage(newPageNumber)._moveToFocus();
         } else {
             var i;
             if (oldPageNumber < newPageNumber) {
