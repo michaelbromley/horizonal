@@ -1,6 +1,6 @@
 /**
  * When the window is re-sized, we need to re-calculate the layout of the all the elements.
- * To ensure that we get the same results as the initial load, we simple purge the entire <body> element
+ * To ensure that we get the same results as the initial load, we simple purge the entire ROOT element
  * and replace it with the clone that we made right at the start of the init() method.
  */
 function resizeHandler() {
@@ -66,6 +66,10 @@ function scrollHandler() {
     }
 }
 
+/**
+ * To allow URL fragments (#) to work, we need to find the location of the element with the ID
+ * matching the fragment, figure out what page it is on, and then go to that page.
+ */
 function hashChangeHandler() {
     var hash = window.location.hash;
     if (hash !== "") {
@@ -79,6 +83,11 @@ function hashChangeHandler() {
 
 var _touchStartPos;
 var _touchStartTime;
+/**
+ * At the start of a touch we simply need to record the time and position of the touch,
+ * to use later in working out how to handle it.
+ * @param e
+ */
 function touchstartHandler(e) {
     if (isValidTouchEvent(e)) {
         _touchStartPos =  {
@@ -89,12 +98,23 @@ function touchstartHandler(e) {
     }
 }
 
+/**
+ * We prevent the default touchmove behaviour because we don't want the page to scroll naturally - we
+ * want to control the scrolling programmatically to ensure only one page is advanced per swipe.
+ * @param e
+ */
 function touchmoveHandler(e) {
     if (isValidTouchEvent(e)) {
         e.preventDefault();
     }
 }
 
+/**
+ * At the end of the touch, we again record the time and position, and then use these data to figure out
+ * if we should treat this as a "swipe", and if so, in what direction the swipe was. Then we can
+ * move to the next or previous page as appropriate.
+ * @param e
+ */
 function touchendHandler(e) {
     if (isValidTouchEvent(e)) {
         var scrollTo;
@@ -164,6 +184,14 @@ function isValidSwipe(startTime, endTime, startPos, endPos) {
     }
 }
 
+/**
+ * Given a pair of coordinates corresponding to the start and end positions of the swipe, we can
+ * calculate a vector and its angle relative to the x-axis. Using this information we can figure
+ * out the direction of the swipe (up, down, left or right).
+ * @param startPos
+ * @param endPos
+ * @returns {*}
+ */
 function getSwipeDirection(startPos, endPos) {
     var dX = endPos.x - startPos.x;
     var dY = endPos.y - startPos.y;
@@ -181,6 +209,12 @@ function getSwipeDirection(startPos, endPos) {
     return direction;
 }
 
+/**
+ * Internet Explorer uses a different model for touch events from Webkit browsers and others,
+ * so we need to do a small check to get the correct positions of touch events.
+ * @param e
+ * @returns {*}
+ */
 function getTouchX(e) {
     var x;
     if (e.originalEvent.hasOwnProperty('changedTouches')) {

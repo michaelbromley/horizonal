@@ -81,7 +81,37 @@ For more information and examples of CSS-based transitions, see the advanced sec
 
 ### JavaScript
 
-Using the config object, you can specify a JavaScript callback which will be invoked on each page element whenever a page transition occurs.
+Using the config object, you can specify a JavaScript callback which will be invoked on each page element whenever a page transition occurs:
+
+```JavaScript
+horizonal.init({
+    onNodeTransition: function(type, node) {
+        // Use whatever JavaScript you like to transform the node
+    }
+});
+```
+
+The callback function that you define will be passed two arguments:
+
+#### `type`
+This is a string containing one of four values which indicate what type of transition this node is performing:
+
+* `toForeground`
+* `toBackground`
+* `toFocusFromFore`
+* `toFocusFromBack`
+
+#### `node`
+This is an object representing an individual HTML element which is affected by the page transition (it is either moving into focus or out of focus,
+according to the `type` value above). It has the following properties and methods:
+
+* `domNode [HTMLElement]` This is the actual [HTMLElement object](https://developer.mozilla.org/en/docs/Web/API/HTMLElement).
+* `index [int]` This is the index of this element relative to the entire document.
+* `staggerOrder [int]` This a number representing the sequence in which this element appears if there is a staggerDelay applied in the config.
+* `restore() [function]` This method will restore any inline style which has been applied to this element. Basically a helper method to easily reset the element's state if
+you have done some manipulations that need to be undone at the end of the transition.
+
+For examples of how to use these, please see the JavaScript source in the [demo themes folder](https://github.com/michaelbromley/horizonal/tree/master/src/demo-themes)
 
 ## API
 
