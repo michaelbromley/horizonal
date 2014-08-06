@@ -19,7 +19,9 @@ module.exports = function(grunt) {
             },
             themes: {
                 src: [
-                    'src/demo-themes/*.js',
+                    'src/demo-themes/basic-css-transitions/*.js',
+                    'src/demo-themes/basic-css-animations/*.js',
+                    'src/demo-themes/basic-javascript-animation/*.js'
                 ],
                 dest: 'demo/themes/themes.js'
             }
@@ -49,10 +51,14 @@ module.exports = function(grunt) {
             themes: {
                 expand: true,
                 cwd: 'src/demo-themes/',
-                src: ['*.src.css'],
+                src: ['**/*.src.css'],
                 dest: 'demo/themes/',
                 rename: function(dest, src) {
-                    return dest + src.replace(/\.src/, "");
+                    var fileName = dest + src.replace(/\.src/, "");
+
+                    var replaced =  fileName.replace(/(demo\/themes\/)[^\/]*\//, "$1");
+                    console.log(replaced);
+                    return replaced;
                 }
             }
         },
@@ -84,7 +90,7 @@ module.exports = function(grunt) {
                 tasks: ['jshint', 'concat', 'uglify']
             },
             css: {
-                files: ['src/css/*.css'],
+                files: ['src/**/*.css'],
                 tasks: ['autoprefixer']
             }
         }
