@@ -4,13 +4,15 @@
  * and replace it with the clone that we made right at the start of the init() method.
  */
 function resizeHandler() {
-    var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollbarShortenRatio;
-    ROOT.replaceWith(ROOT_CLONE.clone());
-    composePage(currentScroll).then(function() {
-        $(window).scrollTop(currentScroll);
-        updatePageCount();
-        OPTIONS.onResize();
-    });
+    debounce(function() {
+        var currentScroll = PAGE_COLLECTION.getCurrent().nodes[0].layout.top / OPTIONS.scrollbarShortenRatio;
+        ROOT.replaceWith(ROOT_CLONE.clone());
+        composePage(currentScroll).then(function() {
+            $(window).scrollTop(currentScroll);
+            updatePageCount();
+            OPTIONS.onResize();
+        });
+    }, 250)();
 }
 
 /**

@@ -107,7 +107,7 @@ function Horizonal() {
     }
 
     function registerEventHandlers() {
-        $(window).on('resize', debounce(resizeHandler, 250));
+        $(window).on('resize', resizeHandler);
         $(window).on('keydown', keydownHandler);
         $(window).on('scroll', scrollHandler);
         $(window).on('hashchange', hashChangeHandler);
@@ -117,7 +117,7 @@ function Horizonal() {
     }
 
     function unregisterEventHandlers() {
-        $(window).off('resize', debounce(resizeHandler, 250));
+        $(window).off('resize', resizeHandler);
         $(window).off('keydown', keydownHandler);
         $(window).off('scroll', scrollHandler);
         $(window).off('hashchange', hashChangeHandler);
