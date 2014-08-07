@@ -10,11 +10,11 @@
 
 <div id="demo-controls">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-md-3 col-sm-4 col-xs-8">
             <!--<label for="theme-selector">Current theme:</label>-->
             <select id="theme-selector"></select>
         </div>
-        <div class="col-sm-9">
+        <div class="col-md-6 col-sm-5 col-xs-4">
             <div class="onoffswitch">
                 <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="switch" checked>
                 <label class="onoffswitch-label" for="switch">
@@ -23,109 +23,129 @@
                 </label>
             </div>
         </div>
+        <div class="col-md-3 col-sm-3 hidden-xs text-right">
+            <iframe src="http://ghbtns.com/github-btn.html?user=michaelbromley&repo=horizonal&type=watch&count=true"
+                                      allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+        </div>
     </div>
 
 </div>
-<div class="container" id="root">
-    <div class="row">
-        <div class="col-sm-10 col-sm-push-1">
-            <div class="jumbotron text-center h">
-                <h1>Horizonal.js</h1>
-                <h1><small>Strapline - to be announced...</small></h1>
-            </div>
-            <h2>scroll down, swipe or use the <code>&darr;</code> key</h2>
+<div id="root">
+    <div class="h splash">
+        <h1>Horizonal.js</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-10 col-sm-push-1">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-5 col-sm-push-1 text-center h">
+                        <a class="cta" href="https://github.com/michaelbromley/horizonal/raw/master/dist/horizonal.zip">
+                            Download
+                            <small>~6k min & zip</small>
+                        </a>
+                    </div>
+                    <div class="col-xs-6 col-sm-5 col-sm-push-1 text-center h">
+                        <a class="cta" href="https://github.com/michaelbromley/horizonal">
+                            View Project on GitHub
+                        </a>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h1>scroll down, swipe or use the <code>&darr;</code> key</h1>
+                </div>
+                <div class="poem">
+                    <h2 class="hrz-start-new-page" id="poem">I Saw a Man Pursuing the Horizon</h2>
+                    <p>I saw a man pursuing the horizon;</p>
+                    <p>Round and round they sped.</p>
+                    <p>I was disturbed at this;</p>
+                    <p>I accosted the man.</p>
+                    <p>"It is futile," I said,</p>
+                    <p>"You can never &mdash;"
+                        <br></p>
+                    <p>"You lie," he cried,</p>
+                    <p>And ran on.</p>
+                    <em>&mdash; Stephen Crane</em>
+                </div>
+                <h2 class="hrz-start-new-page">What is it?</h2>
+                <p>
+                    Horizonal.js takes any static HTML document and transform it into a series of discrete "pages". The
+                    transitions between one page an the next can then be programmed via CSS transforms, CSS animations, JavaScript, or any combination of
+                    these.
+                </p>
+                <p>
+                    Disable Horizonal with the switch above and you'll see that this is just a regular old HTML document. Try out some of the
+                    themes to get a taste of the kind of effects that can be achieved.
+                </p>
+                <h2>How?</h2>
+                <p>
+                    You specify which elements you wish to display via the familiar jQuery selector syntax. Horizonal will then traverse the document,
+                    splitting it up into a series of pages, and figuring out which element should go where.
+                </p>
+                <p>
+                    When you move from one page to the next, Horizonal alters the elements' class, allowing you to specify CSS-based transition
+                    effects. It also provides hooks for triggering Javascript callbacks, allowing for even more sophisticated effects.
+                </p>
+                <h2>Features</h2>
+                <ul>
+                    <li>Fully customizable - limited only by your imagination (and JavaScript & CSS chops)</li>
+                    <li>Touch-enabled: page through the document by swiping.</li>
+                    <li>Can handle URL fragments - e.g. <a href="#poem">go to that poem</a></li>
+                    <li>Can handle large elements that span multiple pages - e.g. <a href="#burj-khalifa">this huge photo</a></li>
+                </ul>
+                <h2>Quick Start</h2>
+                <ol>
+                    <li>Requires jQuery <= 1.8, so make sure you have included that on your page.</li>
+                    <li>Include the <code>horizonal.min.js</code> after jQuery.</li>
+                    <li>Include the <code>horizonal.css</code> file in your document head.</li>
+                    <li>Run <code>horizonal.init();</code></li>
+                </ol>
+                <h2>Documentation</h2>
+                <p>
+                    The above describes only the most basic usage. To get some cool transitions going, you'll want to experiment with both
+                    the CSS style definitions, and the Horizonal config. Both are described in more detail in the GitHub repo, and there you can
+                    also take a look at the CSS and configuration behind each of the example themes.
+                </p>
+                <div class="row">
+                    <h2>Gallery of Horizons</h2>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/5366078166_027c226f5a_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/rejik/5366078166/" />
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/12205212124_abda6a0a2c_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/halfrain/12205212124/" />
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/2170875891_6caa4182cc_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/ehsank/2170875891/" />
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/7831711764_72db60a31d_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/chrisschoenbohm/7831711764/" />
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/14646922666_6c9e814d46_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/panduadnyana/14646922666/" />
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/5890474955_29f879d5ec_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/nasamarshall/5890474955/" />
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/1125471764_1f26f271e2_q%20(1).jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/generalnoir/1125471764/" />
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img class="thumbnail" src="assets/6143615821_03f301925e_q%20(1).jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/donkeyhotey/6143615821/" />
+                    </div>
+                </div>
+                <h2 id="burj-khalifa">Multi-page spanning</h2>
+                <p>
+                    Finally, to demonstrate multi-page spanning of large element, please enjoy this photo of the massive Burj Khalifa.
+                </p>
+                <div class="text-center">
+                    <img src="assets/Burj_Khalifa.jpg" title="'Burj Khalifa' by Donaldytong - commons:File:Burj Khalifa.jpg. Via Wikipedia - http://en.wikipedia.org/wiki/File:Burj_Khalifa.jpg#mediaviewer/File:Burj_Khalifa.jpg" />
+                </div>
 
-            <div class="poem">
-                <h2 class="hrz-start-new-page" id="poem">I Saw a Man Pursuing the Horizon</h2>
-                <p>I saw a man pursuing the horizon;</p>
-                <p>Round and round they sped.</p>
-                <p>I was disturbed at this;</p>
-                <p>I accosted the man.</p>
-                <p>"It is futile," I said,</p>
-                <p>"You can never &mdash;"
-                    <br></p>
-                <p>"You lie," he cried,</p>
-                <p>And ran on.</p>
-                <em>&mdash; Stephen Crane</em>
-            </div>
-            <h2 class="hrz-start-new-page">What is it?</h2>
-            <p>
-                Horizonal.js takes any static HTML document and transform it into a series of discrete "pages". The
-                transitions between one page an the next can then be programmed via CSS transforms, CSS animations, JavaScript, or any combination of
-                these.
-            </p>
-            <p>
-                Disable Horizonal with the switch above and you'll see that this is just a regular old HTML document. Try out some of the
-                themes to get a taste of the kind of effects that can be achieved.
-            </p>
-            <h2>How?</h2>
-            <p>
-                You specify which elements you wish to display via the familiar jQuery selector syntax. Horizonal will then traverse the document,
-                splitting it up into a series of pages, and figuring out which element should go where.
-            </p>
-            <p>
-                When you move from one page to the next, Horizonal alters the elements' class, allowing you to specify CSS-based transition
-                effects. It also provides hooks for triggering Javascript callbacks, allowing for even more sophisticated effects.
-            </p>
-            <h2>Features</h2>
-            <ul>
-                <li>Fully customizable - limited only by your imagination (and JavaScript & CSS chops)</li>
-                <li>Touch-enabled: page through the document by swiping.</li>
-                <li>Can handle URL fragments - e.g. <a href="#poem">go to that poem</a></li>
-                <li>Can handle large elements that span multiple pages - e.g. <a href="#burj-khalifa">this huge photo</a></li>
-            </ul>
-            <h2>Quick Start</h2>
-            <ol>
-                <li>Requires jQuery <= 1.8, so make sure you have included that on your page.</li>
-                <li>Include the <code>horizonal.min.js</code> after jQuery.</li>
-                <li>Include the <code>horizonal.css</code> file in your document head.</li>
-                <li>Run <code>horizonal.init();</code></li>
-            </ol>
-            <h2>Documentation</h2>
-            <p>
-                The above describes only the most basic usage. To get some cool transitions going, you'll want to experiment with both
-                the CSS style definitions, and the Horizonal config. Both are described in more detail in the GitHub repo, and there you can
-                also take a look at the CSS and configuration behind each of the example themes.
-            </p>
-            <div class="row">
-                <h2>Gallery of Horizons</h2>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/5366078166_027c226f5a_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/rejik/5366078166/" />
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/12205212124_abda6a0a2c_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/halfrain/12205212124/" />
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/2170875891_6caa4182cc_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/ehsank/2170875891/" />
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/7831711764_72db60a31d_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/chrisschoenbohm/7831711764/" />
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/14646922666_6c9e814d46_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/panduadnyana/14646922666/" />
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/5890474955_29f879d5ec_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/nasamarshall/5890474955/" />
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/1125471764_1f26f271e2_q%20(1).jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/generalnoir/1125471764/" />
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <img class="thumbnail" src="assets/6143615821_03f301925e_q%20(1).jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/donkeyhotey/6143615821/" />
-                </div>
-            </div>
-            <h2 id="burj-khalifa">Multi-page spanning</h2>
-            <p>
-                Finally, to demonstrate multi-page spanning of large element, please enjoy this photo of the massive Burj Khalifa.
-            </p>
-            <div class="text-center">
-                <img src="assets/Burj_Khalifa.jpg" title="'Burj Khalifa' by Donaldytong - commons:File:Burj Khalifa.jpg. Via Wikipedia - http://en.wikipedia.org/wiki/File:Burj_Khalifa.jpg#mediaviewer/File:Burj_Khalifa.jpg" />
             </div>
         </div>
     </div>
 </div>
 
-<script src="vendor/jquery.min.js"></script>
+<script src="vendor/jquery-1.11.1.min.js"></script>
 <script src="../dist/horizonal.debug.js"></script>
 <script src="themes/themes.js"></script>
 <script src="script.js"></script>

@@ -1,9 +1,35 @@
 body {
     font-family: Optima, Segoe, "Segoe UI", Candara, Calibri, Arial, sans-serif;
 }
+
 img {
     max-width: 100%;
 }
+
+code {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    color: #191d66;
+}
+
+p {
+    font-size: 16px;
+}
+
+.cta {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #6673be;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.cta:hover {
+    background-color: #6bb5ff;
+    text-decoration: none;
+    color: #fff;
+}
+
 #demo-controls {
     width: 100%;
     position: fixed;
@@ -13,11 +39,12 @@ img {
     background-color: rgba(255, 255, 255, 0.4);
     border-bottom: 2px solid #efefef;
     z-index: 100;
+    min-height: 35px;
 }
 
 #theme-selector {
     height: 30px;
-    border: 2px solid #999999;
+    border: 1px solid #999999;
     text-transform: uppercase;
     font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
     border-radius: 5px;
@@ -32,7 +59,7 @@ img {
 }
 .onoffswitch-label {
     display: block; overflow: hidden; cursor: pointer;
-    border: 2px solid #999999; border-radius: 5px;
+    border: 1px solid #999999; border-radius: 5px;
 }
 .onoffswitch-inner {
     display: block; width: 200%; margin-left: -100%;
@@ -47,7 +74,7 @@ img {
 .onoffswitch-inner:before {
     content: "ENABLED";
     padding-left: 5px;
-    background-color: #65C452; color: #FFFFFF;
+    background-color: #55598a; color: #FFFFFF;
 }
 .onoffswitch-inner:after {
     content: "DISABLED";
@@ -70,15 +97,39 @@ img {
     right: 0px;
 }
 
-#root {
-    margin-top: 10px;
+.splash {
+    position: relative;
+    text-align: center;
+    padding-bottom: 0;
+}
+
+.splash h1 {
+    bottom: 0;
+    margin-bottom: 10px;
+    margin-top: 0;
+    font-size: 16vw;
+    min-width: 400px;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(31, 72, 133, 0.80);
+    padding-top: 22vh;
+    background: #425cbc; /* Old browsers */
+    background: -moz-linear-gradient(top,  #425cbc 0%, #93d5ff 47%, #ffffff 87%, #ffffff 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#425cbc), color-stop(47%,#93d5ff), color-stop(87%,#ffffff), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #425cbc 0%,#93d5ff 47%,#ffffff 87%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #425cbc 0%,#93d5ff 47%,#ffffff 87%,#ffffff 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #425cbc 0%,#93d5ff 47%,#ffffff 87%,#ffffff 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #425cbc 0%,#93d5ff 47%,#ffffff 87%,#ffffff 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#425cbc', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+
 }
 
 .poem {
     font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
     text-align: center;
-    font-size: 24px;
     margin-bottom: 50px;
+}
+.poem p {
+    font-size: 24px;
 }
 .poem h2 {
     font-size: 40px;
