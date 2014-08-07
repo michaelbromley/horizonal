@@ -84,14 +84,34 @@ module.exports = function(grunt) {
                 }
             }
         },
+        compress: {
+            main: {
+                options: {
+                    mode: 'zip',
+                    archive: 'dist/horizonal.zip'
+                },
+                expand: true,
+                cwd: 'dist/',
+                src: ['*.js', '*.css'],
+                flatten: true
+            }
+        },
         watch: {
-            js: {
-                files: ['src/**/*.js'],
-                tasks: ['jshint', 'concat', 'uglify']
+            coreJs: {
+                files: ['src/*.js'],
+                tasks: ['jshint', 'concat:core', 'uglify', 'compress']
             },
-            css: {
-                files: ['src/**/*.css'],
-                tasks: ['autoprefixer']
+            themeJs: {
+                files: ['src/demo-themes/**/*.js'],
+                tasks: ['jshint', 'concat:themes']
+            },
+            coreCss: {
+                files: ['src/horizonal.src.css'],
+                tasks: ['autoprefixer:core', 'compress']
+            },
+            themeCss: {
+                files: ['src/demo-themes/**/*.css'],
+                tasks: ['autoprefixer:themes']
             }
         }
     });
@@ -102,7 +122,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-autoprefixer');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-compress');
 
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'autoprefixer']);
+    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'autoprefixer', 'compress']);
 
 };
