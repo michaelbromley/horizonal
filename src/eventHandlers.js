@@ -58,13 +58,15 @@ function keydownHandler(e) {
  * where that page would have been in a regular scrolling HTML page.
  */
 function scrollHandler() {
-    var scrollTop = $(window).scrollTop();
-    var currentPageNumber = PAGE_COLLECTION.currentPage;
+    if (typeof PAGE_COLLECTION !== 'undefined') {
+        var scrollTop = $(window).scrollTop();
+        var currentPageNumber = PAGE_COLLECTION.currentPage;
 
-    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollbarShortenRatio).pageNumber;
-    if (newPageNumber !== currentPageNumber) {
-        PAGE_COLLECTION.showPage(newPageNumber);
-        updatePageCount();
+        var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollbarShortenRatio).pageNumber;
+        if (newPageNumber !== currentPageNumber) {
+            PAGE_COLLECTION.showPage(newPageNumber);
+            updatePageCount();
+        }
     }
 }
 
@@ -74,12 +76,29 @@ function scrollHandler() {
  */
 function hashChangeHandler() {
     var hash = window.location.hash;
-    if (hash !== "") {
+    if (hash !== '') {
         var page = $(hash).closest('.hrz-page');
         var pageNumber = parseInt(page.attr('id').replace(/^\D+/g, ''));
+        console.log('hash change: going to page ' + pageNumber);
         PAGE_COLLECTION.showPage(pageNumber);
         $(window).scrollTop(PAGE_COLLECTION.getCurrent().midPoint);
         updatePageCount();
+    }
+}
+
+/**
+ * This event handler is for the particular scenario of when a link to a URL fragment in this document is clicked,
+ * but that fragment is already in the hash part of the window.location. In this case, the hash will not change so
+ * we need to manually trigger the hashchange event to simulate the expected behaviour.
+ */
+function linkHandler() {
+    var hash = window.location.hash;
+    if (hash !== '') {
+        var url = $(this).attr('href');
+        if (url.substr(0, 1) === '#') {
+            hashChangeHandler();
+            return false;
+        }
     }
 }
 

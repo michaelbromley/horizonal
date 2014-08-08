@@ -34,17 +34,17 @@ function Horizonal() {
             if (!_hasBeenInitialized) {
                 ROOT = $(OPTIONS.rootElement);
                 ROOT_CLONE = ROOT.clone();
-                registerEventHandlers();
                 composePage(currentScroll).then(function() {
                     updatePageCount();
+                    registerEventHandlers();
+                    if (window.location.hash !== '') {
+                        hashChangeHandler();
+                    }
                     _hasBeenInitialized = true;
                 });
             } else {
                 resizeHandler();
-                registerEventHandlers();
-            }
-            if (window.location.hash !== '') {
-                hashChangeHandler();
+                //registerEventHandlers();
             }
         });
     }
@@ -65,9 +65,6 @@ function Horizonal() {
         if (_disabled) {
             resizeHandler();
             registerEventHandlers();
-            if (window.location.hash !== '') {
-                hashChangeHandler();
-            }
             _disabled = false;
         }
     }
@@ -114,6 +111,7 @@ function Horizonal() {
         $(window).on('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).on('touchend pointerup MSPointerUp', touchendHandler);
         $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
+        $('a').on('click', linkHandler);
     }
 
     function unregisterEventHandlers() {
@@ -124,6 +122,7 @@ function Horizonal() {
         $(window).off('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).off('touchend pointerup MSPointerUp', touchendHandler);
         $(window).off('touchmove pointermove MSPointerMove', touchmoveHandler);
+        $('a').off('click', linkHandler);
     }
 
     /**

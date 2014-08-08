@@ -35,17 +35,17 @@ function Horizonal() {
             if (!_hasBeenInitialized) {
                 ROOT = $(OPTIONS.rootElement);
                 ROOT_CLONE = ROOT.clone();
-                registerEventHandlers();
                 composePage(currentScroll).then(function() {
                     updatePageCount();
+                    registerEventHandlers();
+                    if (window.location.hash !== '') {
+                        hashChangeHandler();
+                    }
                     _hasBeenInitialized = true;
                 });
             } else {
                 resizeHandler();
-                registerEventHandlers();
-            }
-            if (window.location.hash !== '') {
-                hashChangeHandler();
+                //registerEventHandlers();
             }
         });
     }
@@ -66,9 +66,6 @@ function Horizonal() {
         if (_disabled) {
             resizeHandler();
             registerEventHandlers();
-            if (window.location.hash !== '') {
-                hashChangeHandler();
-            }
             _disabled = false;
         }
     }
@@ -115,6 +112,7 @@ function Horizonal() {
         $(window).on('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).on('touchend pointerup MSPointerUp', touchendHandler);
         $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
+        $('a').on('click', linkHandler);
     }
 
     function unregisterEventHandlers() {
@@ -125,6 +123,7 @@ function Horizonal() {
         $(window).off('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).off('touchend pointerup MSPointerUp', touchendHandler);
         $(window).off('touchmove pointermove MSPointerMove', touchmoveHandler);
+        $('a').off('click', linkHandler);
     }
 
     /**
@@ -323,13 +322,15 @@ function keydownHandler(e) {
  * where that page would have been in a regular scrolling HTML page.
  */
 function scrollHandler() {
-    var scrollTop = $(window).scrollTop();
-    var currentPageNumber = PAGE_COLLECTION.currentPage;
+    if (typeof PAGE_COLLECTION !== 'undefined') {
+        var scrollTop = $(window).scrollTop();
+        var currentPageNumber = PAGE_COLLECTION.currentPage;
 
-    var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollbarShortenRatio).pageNumber;
-    if (newPageNumber !== currentPageNumber) {
-        PAGE_COLLECTION.showPage(newPageNumber);
-        updatePageCount();
+        var newPageNumber = PAGE_COLLECTION.getPageAtOffset(scrollTop * OPTIONS.scrollbarShortenRatio).pageNumber;
+        if (newPageNumber !== currentPageNumber) {
+            PAGE_COLLECTION.showPage(newPageNumber);
+            updatePageCount();
+        }
     }
 }
 
@@ -339,12 +340,29 @@ function scrollHandler() {
  */
 function hashChangeHandler() {
     var hash = window.location.hash;
-    if (hash !== "") {
+    if (hash !== '') {
         var page = $(hash).closest('.hrz-page');
         var pageNumber = parseInt(page.attr('id').replace(/^\D+/g, ''));
+        console.log('hash change: going to page ' + pageNumber);
         PAGE_COLLECTION.showPage(pageNumber);
         $(window).scrollTop(PAGE_COLLECTION.getCurrent().midPoint);
         updatePageCount();
+    }
+}
+
+/**
+ * This event handler is for the particular scenario of when a link to a URL fragment in this document is clicked,
+ * but that fragment is already in the hash part of the window.location. In this case, the hash will not change so
+ * we need to manually trigger the hashchange event to simulate the expected behaviour.
+ */
+function linkHandler() {
+    var hash = window.location.hash;
+    if (hash !== '') {
+        var url = $(this).attr('href');
+        if (url.substr(0, 1) === '#') {
+            hashChangeHandler();
+            return false;
+        }
     }
 }
 
@@ -678,7 +696,9 @@ Node.prototype = {
                 if ( name.substring(0, 3) == "-ms") {
                     continue;
                 }
-                styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
+                if (this.originalComputedStyle.getPropertyValue(name) !== null) {
+                    styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
+                }
             }
         }
         return styleDiff;
