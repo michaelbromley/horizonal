@@ -24,8 +24,8 @@
             </div>
         </div>
         <div class="col-md-3 col-sm-3 hidden-xs text-right">
-            <iframe src="http://ghbtns.com/github-btn.html?user=michaelbromley&repo=horizonal&type=watch&count=true"
-                                      allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+           <!-- <iframe src="http://ghbtns.com/github-btn.html?user=michaelbromley&repo=horizonal&type=watch&count=true"
+                                      allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>-->
         </div>
     </div>
 
@@ -68,7 +68,7 @@
                 </div>
                 <h2 class="hrz-start-new-page">What is it?</h2>
                 <p>
-                    Horizonal.js takes any static HTML document and transform it into a series of discrete "pages". The
+                    Horizonal.js takes any static HTML document and transform it into a collection of discrete "pages". The
                     transitions between one page an the next can then be programmed via CSS transforms, CSS animations, JavaScript, or any combination of
                     these.
                 </p>
@@ -76,14 +76,11 @@
                     Disable Horizonal with the switch above and you'll see that this is just a regular old HTML document. Try out some of the
                     themes to get a taste of the kind of effects that can be achieved.
                 </p>
-                <h2>How?</h2>
+                <h2>What's It For?</h2>
                 <p>
-                    You specify which elements you wish to display via the familiar jQuery selector syntax. Horizonal will then traverse the document,
-                    splitting it up into a series of pages, and figuring out which element should go where.
-                </p>
-                <p>
-                    When you move from one page to the next, Horizonal alters the elements' class, allowing you to specify CSS-based transition
-                    effects. It also provides hooks for triggering Javascript callbacks, allowing for even more sophisticated effects.
+                    Horizonal.js grew out of some simple experimentation with CSS transforms and animations, and if nothing else it is a showcase for
+                    the cool visual effects that can be achieved through these technologies. Other use cases could be slides for presentations, image
+                    galleries, portfolios, marketing websites, or whatever else you can think of.
                 </p>
                 <h2>Features</h2>
                 <ul>
@@ -92,18 +89,11 @@
                     <li>Can handle URL fragments - e.g. <a href="#poem">go to that poem</a></li>
                     <li>Can handle large elements that span multiple pages - e.g. <a href="#burj-khalifa">this huge photo</a></li>
                 </ul>
-                <h2>Quick Start</h2>
-                <ol>
-                    <li>Requires jQuery <= 1.8, so make sure you have included that on your page.</li>
-                    <li>Include the <code>horizonal.min.js</code> after jQuery.</li>
-                    <li>Include the <code>horizonal.css</code> file in your document head.</li>
-                    <li>Run <code>horizonal.init();</code></li>
-                </ol>
-                <h2>Documentation</h2>
+                <h2>Try It Out</h2>
                 <p>
-                    The above describes only the most basic usage. To get some cool transitions going, you'll want to experiment with both
-                    the CSS style definitions, and the Horizonal config. Both are described in more detail in the GitHub repo, and there you can
-                    also take a look at the CSS and configuration behind each of the example themes.
+                    <a class="cta" href="http://plnkr.co/edit/OxlWVuxXwEf2bhDAss9p?p=preview">
+                        Horizonal Playground on Plunker
+                    </a>
                 </p>
                 <div class="row">
                     <h2>Gallery of Horizons</h2>
@@ -145,7 +135,7 @@
     </div>
 </div>
 
-<script src="vendor/jquery-1.11.1.min.js"></script>
+<script src="vendor/jquery.min.js"></script>
 <script src="../dist/horizonal.debug.js"></script>
 <script src="themes/themes.js"></script>
 <script src="script.js"></script>
