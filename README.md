@@ -182,7 +182,7 @@ var defaults = {
 Paging forward and backward through the collection can be controlled by the following methods:
 
 1. Scrolling via mouse wheel or by using the browser's scroll bar (unless the scroll bar is disabled in the config options)
-2. Keyboard arrow keys: `&darr;` or `&rarr` page forward; `&;uarr` or `&larr;` page backward.
+2. Keyboard arrow keys: &darr; or &rarr; page forward; &uarr; or &larr; page backward.
 3. For touch enabled devices, swiping up or left pages forward; swiping down or right pages backward.
 
 You can of course program your own controls by using the built-in API methods listed above.
