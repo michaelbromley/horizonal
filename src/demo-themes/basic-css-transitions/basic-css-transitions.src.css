@@ -1,6 +1,4 @@
 .hrz-page {
-    transform-style: preserve-3d;
-    transform-origin: center center;
     perspective: 500px;
     transition: opacity 0s;
     opacity: 1;
@@ -16,6 +14,7 @@
 }
 
 .hrz-page > .hrz-element {
+    transform-style: preserve-3d;
     opacity: 1;
     transition: transform 0.5s, opacity 0.2s 0.3s;
     transform: translateZ(0px);
@@ -23,10 +22,10 @@
 
 .hrz-page.hrz-back > .hrz-element {
     opacity: 0;
-    transform: translateZ(-3000px);
+    transform: translateZ(-3000px) rotate(30deg);
 }
 
 .hrz-page.hrz-fore > .hrz-element {
     opacity: 0;
-    transform: translateZ(1000px);
+    transform: translateZ(1000px) rotate(-30deg);
 }

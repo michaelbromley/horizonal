@@ -47,22 +47,4 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    transform-style: preserve-3d;
-    transform-origin: center center;
-    perspective: 500px;
-}
-
-.hrz-page.hrz-fore {
-}
-
-.hrz-page.hrz-back {
-}
-
-.hrz-element {
-}
-
-.hrz-element.hrz-back {
-}
-
-.hrz-element.hrz-fore {
 }

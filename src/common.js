@@ -41,7 +41,7 @@ function displayLoadingIndicator() {
     var deferred = new $.Deferred();
     if ($('#loadingIndicator').length === 0) {
         $('body').append('<div id="loadingIndicator" style="display:none;"><p class="loading">Loading...</p></div>');
-        $('#loadingIndicator').fadeIn(500, function() {
+        $('#loadingIndicator').fadeIn(200, function() {
             deferred.resolve();
         });
     }

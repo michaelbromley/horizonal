@@ -50,26 +50,4 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    -webkit-transform-style: preserve-3d;
-            transform-style: preserve-3d;
-    -webkit-transform-origin: center center;
-        -ms-transform-origin: center center;
-            transform-origin: center center;
-    -webkit-perspective: 500px;
-            perspective: 500px;
-}
-
-.hrz-page.hrz-fore {
-}
-
-.hrz-page.hrz-back {
-}
-
-.hrz-element {
-}
-
-.hrz-element.hrz-back {
-}
-
-.hrz-element.hrz-fore {
 }

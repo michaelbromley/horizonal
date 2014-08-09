@@ -1,15 +1,11 @@
 .hrz-page {
-    -webkit-transform-style: preserve-3d;
-            transform-style: preserve-3d;
-    -webkit-transform-origin: center center;
-        -ms-transform-origin: center center;
-            transform-origin: center center;
     -webkit-perspective: 500px;
             perspective: 500px;
     -webkit-transition: opacity 0s;
             transition: opacity 0s;
     opacity: 1;
     background-color: transparent;
+    /*transform-origin: left top !important;*/
 }
 
 .hrz-page.hrz-fore {
@@ -21,6 +17,8 @@
 }
 
 .hrz-page > .hrz-element {
+    -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
     opacity: 1;
     -webkit-transition: -webkit-transform 0.5s, opacity 0.2s 0.3s;
             transition: transform 0.5s, opacity 0.2s 0.3s;
@@ -30,12 +28,12 @@
 
 .hrz-page.hrz-back > .hrz-element {
     opacity: 0;
-    -webkit-transform: translateZ(-3000px);
-            transform: translateZ(-3000px);
+    -webkit-transform: translateZ(-3000px) rotate(30deg);
+            transform: translateZ(-3000px) rotate(30deg);
 }
 
 .hrz-page.hrz-fore > .hrz-element {
     opacity: 0;
-    -webkit-transform: translateZ(1000px);
-            transform: translateZ(1000px);
+    -webkit-transform: translateZ(1000px) rotate(-30deg);
+            transform: translateZ(1000px) rotate(-30deg);
 }

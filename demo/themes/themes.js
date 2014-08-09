@@ -12,7 +12,6 @@ themes["Basic CSS Transitions"] = {
     }
 };
 var themes = themes || {};
-
 themes["Basic CSS Animations"] = {
     options: {
         customCssFile: 'themes/basic-css-animations.css',

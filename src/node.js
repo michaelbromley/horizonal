@@ -175,7 +175,9 @@ Node.prototype = {
                 if ( name.substring(0, 3) == "-ms") {
                     continue;
                 }
-                styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
+                if (this.originalComputedStyle.getPropertyValue(name) !== null) {
+                    styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
+                }
             }
         }
         return styleDiff;
