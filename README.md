@@ -12,7 +12,7 @@ these.
 
 ## Dependencies
 
-Horizonal.js requires jQuery. Tested with jQuery 2.x, but should work with 1.8+.
+Horizonal.js requires jQuery. Tested with 1.11.1 and 2.1.1.
 
 ## Installation
 
@@ -20,7 +20,7 @@ Horizonal.js requires jQuery. Tested with jQuery 2.x, but should work with 1.8+.
  2. Include the style rules from horizonal.css either by directly referencing the .css file, or copying the rules to
  your existing stylesheet.
  3. Initialize Horizonal by calling `horizonal.init()`. Ideally this should be done in jQuery's `$(window).load()` method so that any
- images get loaded first. Optionally pass a config object as the argument of the `init()` method (see below for available options).
+ images get loaded first. Pass a config object as the argument of the `init()` method (see below for available options).
  4. Create transitions by defining CSS style rules in your stylesheet and/or a JavaScript callback in the config object (see below for
  example of these).
 
@@ -177,3 +177,16 @@ var defaults = {
 | onResize       | function | Specify a callback that will be invoked whenever the page is resized.
 | onNodeTransition|function | Specify a callback that will be invoked for each individual DOM element whenever a page transition occurs. Used to define JavaScript-based transitions.
 
+## Controls
+
+Paging forward and backward through the collection can be controlled by the following methods:
+
+1. Scrolling via mouse wheel or by using the browser's scroll bar (unless the scroll bar is disabled in the config options)
+2. Keyboard arrow keys: `&darr;` or `&rarr` page forward; `&;uarr` or `&larr;` page backward.
+3. For touch enabled devices, swiping up or left pages forward; swiping down or right pages backward.
+
+You can of course program your own controls by using the built-in API methods listed above.
+
+## Licence
+
+Horizonal.js is made available under the MIT licence.
