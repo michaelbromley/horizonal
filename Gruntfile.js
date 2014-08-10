@@ -9,6 +9,7 @@ module.exports = function(grunt) {
                     'src/horizonal.js',
                     'src/common.js',
                     'src/eventHandlers.js',
+                    'src/animator.js',
                     'src/node.js',
                     'src/nodeCollection.js',
                     'src/page.js',
