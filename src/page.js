@@ -41,6 +41,7 @@ Page.prototype = {
     },
 
     moveToForeground: function() {
+        OPTIONS.onPageTransition('toForeground', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-fore').removeClass('hrz-back hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
@@ -49,6 +50,7 @@ Page.prototype = {
     },
 
     moveToBackground: function() {
+        OPTIONS.onPageTransition('toBackground', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-back').removeClass('hrz-fore hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
@@ -57,11 +59,13 @@ Page.prototype = {
     },
 
     moveToFocusFromBackground: function() {
+        OPTIONS.onPageTransition('toFocusFromBack', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-focus-from-back');
         this._moveToFocus('toFocusFromBack');
     },
 
     moveToFocusFromForeground: function() {
+        OPTIONS.onPageTransition('toFocusFromFore', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-focus-from-fore');
         this._moveToFocus('toFocusFromFore');
     },
@@ -82,5 +86,18 @@ Page.prototype = {
         this.hideTimer = setTimeout( function() {
             $thisNode.addClass('hrz-hidden');
         }, OPTIONS.pageHideDelay * 1000);
+    },
+
+    /**
+     * Return an object containing a subset of properties of the private Page object, for use in
+     * the javascript callbacks set up in the horizonal config object.
+     *
+     * @returns {{domNode: *, index: *, staggerOrder: *}}
+     */
+    getPublicObject: function() {
+        return {
+            domNode: this.domNode,
+            pageNumber: this.pageNumber
+        };
     }
 };

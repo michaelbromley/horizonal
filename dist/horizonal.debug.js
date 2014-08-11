@@ -25,7 +25,8 @@ function Horizonal() {
         newPageClass: 'hrz-start-new-page',
         pageHideDelay: 1, // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
         onResize: noop,
-        onNodeTransition: noop
+        onNodeTransition: noop,
+        onPageTransition: noop
     };
 
     function init(_OPTIONS) {
@@ -520,6 +521,38 @@ function getTouchY(e) {
     return y;
 }
 /**
+ * A helper service for JavaScript-based transition animations. Using this service ensures that only a single
+ * requestAnimationFrame loop is created, and all animation functions are executed within this single loop.
+ *
+ * The `animator` object is passed as an argument to the callback functions defined in the config object.
+ */
+var animator = function() {
+    var module = {};
+    var animationFunctions = [];
+
+    module.start = function(fn) {
+        animationFunctions.push(fn);
+        if (animationFunctions.length === 1) {
+            window.requestAnimationFrame(tick);
+        }
+    };
+
+    module.stop = function(fn) {
+        animationFunctions.splice(animationFunctions.indexOf(fn), 1);
+    };
+
+    function tick(timestamp) {
+        animationFunctions.forEach(function(fn) {
+            fn.call(fn, timestamp);
+        });
+        if (0 < animationFunctions.length) {
+            window.requestAnimationFrame(tick);
+        }
+    }
+
+    return module;
+}();
+/**
  * A Node object represents a DOM element. An actual reference to the HTMLElement object is contained in the 'domNode' property.
  * @param domNode
  * @param index
@@ -715,7 +748,7 @@ Node.prototype = {
     moveTo: function(type) {
         var self = this;
         setTimeout(function() {
-            OPTIONS.onNodeTransition(type, self.getPublicObject());
+            OPTIONS.onNodeTransition(type, self.getPublicObject(), animator);
         }, this.getStaggerDelay() * 1000);
     },
 
@@ -952,6 +985,7 @@ Page.prototype = {
     },
 
     moveToForeground: function() {
+        OPTIONS.onPageTransition('toForeground', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-fore').removeClass('hrz-back hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
@@ -960,6 +994,7 @@ Page.prototype = {
     },
 
     moveToBackground: function() {
+        OPTIONS.onPageTransition('toBackground', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-back').removeClass('hrz-fore hrz-focus-from-back hrz-focus-from-fore');
         this.hideAfterDelay();
         this.nodes.forEach(function(node) {
@@ -968,11 +1003,13 @@ Page.prototype = {
     },
 
     moveToFocusFromBackground: function() {
+        OPTIONS.onPageTransition('toFocusFromBack', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-focus-from-back');
         this._moveToFocus('toFocusFromBack');
     },
 
     moveToFocusFromForeground: function() {
+        OPTIONS.onPageTransition('toFocusFromFore', this.getPublicObject(), animator);
         $(this.domNode).addClass('hrz-focus-from-fore');
         this._moveToFocus('toFocusFromFore');
     },
@@ -993,6 +1030,19 @@ Page.prototype = {
         this.hideTimer = setTimeout( function() {
             $thisNode.addClass('hrz-hidden');
         }, OPTIONS.pageHideDelay * 1000);
+    },
+
+    /**
+     * Return an object containing a subset of properties of the private Page object, for use in
+     * the javascript callbacks set up in the horizonal config object.
+     *
+     * @returns {{domNode: *, index: *, staggerOrder: *}}
+     */
+    getPublicObject: function() {
+        return {
+            domNode: this.domNode,
+            pageNumber: this.pageNumber
+        };
     }
 };
 function PageCollection() {
@@ -1099,6 +1149,7 @@ var PageCollectionAPI = {
                     this.getPage(i).moveToBackground();
                 }
                 this.getPage(newPageNumber).moveToFocusFromForeground();
+                OPTIONS.onPageTransition('toBackground', this.getPage(newPageNumber), animator);
             } else if (newPageNumber < oldPageNumber) {
                 for (i = oldPageNumber; newPageNumber < i; i --) {
                     this.getPage(i).moveToForeground();

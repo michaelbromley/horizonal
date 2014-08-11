@@ -24,7 +24,8 @@ function Horizonal() {
         newPageClass: 'hrz-start-new-page',
         pageHideDelay: 1, // seconds before the 'hrz-hidden' class gets added to a page the is not in focus
         onResize: noop,
-        onNodeTransition: noop
+        onNodeTransition: noop,
+        onPageTransition: noop
     };
 
     function init(_OPTIONS) {

@@ -194,7 +194,7 @@ Node.prototype = {
     moveTo: function(type) {
         var self = this;
         setTimeout(function() {
-            OPTIONS.onNodeTransition(type, self.getPublicObject());
+            OPTIONS.onNodeTransition(type, self.getPublicObject(), animator);
         }, this.getStaggerDelay() * 1000);
     },
 
