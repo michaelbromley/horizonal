@@ -48,7 +48,7 @@ container
      |----> ...
 ```
 
-One page, and all its child element, will be displayed at a time. Horizonal includes scroll, keyboard and touch event handlers to
+One page, and all its child elements, will be displayed at a time. Horizonal includes scroll, keyboard and touch event handlers to
 allow intuitive paging through the collection. It also enables programmable transitions from one page to the next via two methods: CSS and JavaScript.
 
 ### CSS
@@ -79,21 +79,24 @@ individual element on the page by defining CSS rules:
 }
 ```
 
-For more information and examples of CSS-based transitions, see the advanced section later in this document.
+For more information and examples of CSS-based transitions, see the [Writing CSS Transitions guide](https://github.com/michaelbromley/horizonal/wiki/Writing-CSS-Transitions).
 
 ### JavaScript
 
-Using the config object, you can specify a JavaScript callback which will be invoked on each page element whenever a page transition occurs:
+Using the config object, you can specify a JavaScript callback which will be invoked on each page and/or page element whenever a page transition occurs:
 
 ```JavaScript
 horizonal.init({
-    onNodeTransition: function(type, node) {
+    onPageTransition: function(type, page, animator) {
+        // Use whatever JavaScript you like to transform the node
+    }
+    onNodeTransition: function(type, node, animator) {
         // Use whatever JavaScript you like to transform the node
     }
 });
 ```
 
-The callback function that you define will be passed two arguments:
+The callback functions that you define will be passed the following arguments:
 
 #### `type`
 This is a string containing one of four values which indicate what type of transition this node is performing:
@@ -103,20 +106,35 @@ This is a string containing one of four values which indicate what type of trans
 * `toFocusFromFore`
 * `toFocusFromBack`
 
+#### `page`
+Passed to the `onPageTransition` callback only. This is an object representing the page which is affected by the transition (it is either moving into focus or out of focus,
+according to the `type` value above). It has the following properties:
+
+* `domNode [HTMLElement]` This is the actual [HTMLElement object](https://developer.mozilla.org/en/docs/Web/API/HTMLElement) of the page container div which contains the individual page elements.
+* `pageNumber [int]` The sequential number of this page.
+
+
 #### `node`
-This is an object representing an individual HTML element which is affected by the page transition (it is either moving into focus or out of focus,
+Passed to the `onNodeTransition` callback only. This is an object representing an individual HTML element which is affected by the page transition (it is either moving into focus or out of focus,
 according to the `type` value above). It has the following properties and methods:
 
-* `domNode [HTMLElement]` This is the actual [HTMLElement object](https://developer.mozilla.org/en/docs/Web/API/HTMLElement).
+* `domNode [HTMLElement]` This is the actual [HTMLElement object](https://developer.mozilla.org/en/docs/Web/API/HTMLElement) of the particular element in question.
 * `index [int]` This is the index of this element relative to the entire document.
 * `staggerOrder [int]` This a number representing the sequence in which this element appears if there is a staggerDelay applied in the config.
 * `restore() [function]` This method will restore any inline style which has been applied to this element. Basically a helper method to easily reset the element's state if
 you have done some manipulations that need to be undone at the end of the transition.
 
-For examples of how to use these, please see the JavaScript source in the [demo themes folder](https://github.com/michaelbromley/horizonal/tree/master/src/demo-themes)
+#### `animator`
+This is a helper object which provides a simple API for writing efficient JavaScript animations. It allows you to specify animation functions without worrying about managing
+an animation loop. It has two methods:
+
+* `start([function])`
+* `stop([function])`
+
+For instructions on how to use the animator API, as well as examples of putting all the above elements together,
+please see the [Writing JavaScript Transitions guide](https://github.com/michaelbromley/horizonal/wiki/Writing-JavaScript-Transitions).
 
 ## API
-
 The `horizonal` object has the following methods:
 
 ### `init([object] config)`
@@ -157,7 +175,8 @@ var defaults = {
     newPageClass: 'hrz-start-new-page',
     pageHideDelay: 1,
     onResize: noop,
-    onNodeTransition: noop
+    onNodeTransition: noop,
+    onPageTransition: noop
 };
 ```
 
@@ -176,6 +195,7 @@ var defaults = {
 | pageHideDelay  | number   | When a page more from focus into the fore-or background, it will be hidden (i.e. moved out of the viewport) after this number of seconds.
 | onResize       | function | Specify a callback that will be invoked whenever the page is resized.
 | onNodeTransition|function | Specify a callback that will be invoked for each individual DOM element whenever a page transition occurs. Used to define JavaScript-based transitions.
+| onPageTransition|function | Specify a callback that will be invoked for each affected page whenever a transition occurs. Used to define JavaScript-based transitions.
 
 ## Controls
 
