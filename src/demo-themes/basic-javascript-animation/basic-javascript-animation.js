@@ -3,14 +3,19 @@ var themes = themes || {};
 themes["Basic JavaScript  Animations"] = {
     options: {
         customCssFile: 'themes/basic-javascript-animation.css',
-        stagger: 'sequence',
+        stagger: 'random',
         staggerDelay: 0.03,
         scrollStep: 2,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         rootElement: '#root',
         pageHideDelay: 1,
-        onNodeTransition: function(type, node) {
-            if (type !== 'toFocus' ) {
+        onPageTransition: function(type, page, animator) {
+            if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
+                $(page.domNode).hide().delay(500).fadeIn(100);
+            }
+        },
+        onNodeTransition: function(type, node, animator) {
+            if (type !== 'toFocusFromFore' && type !== 'toFocusFromBack' ) {
                 fallAway(node, 1100);
             } else {
                 fallUp(node, 1000);
@@ -26,7 +31,7 @@ themes["Basic JavaScript  Animations"] = {
                 var vY = (Math.random() - 1) * 20;
                 var G = 2;
 
-                requestAnimationFrame(function tick(timestamp) {
+                animator.start(function (timestamp) {
 
                     var progress;
                     if (start === null) start = timestamp;
@@ -34,35 +39,32 @@ themes["Basic JavaScript  Animations"] = {
 
                     y = y + vY;
                     $node.css('top', y + 'px');
+                    $node.css('top', y + 'px');
                     x = x + vX;
                     $node.css('left', x + 'px');
 
                     vY += G;
 
-                    if (progress < duration) {
-                        requestAnimationFrame(tick);
-                    } else {
+                    if (duration < progress) {
+                        animator.stop(this);
                         node.restore();
-                        $node.css('opacity', '0');
                     }
                 });
             }
 
             function fallUp(node, duration) {
                 var $node = $(node.domNode);
-                $node.css('opacity', 1);
                 var start = null;
                 var finalY = parseInt($node.css('top'));
                 var finalX = parseInt($node.css('left'));
-                var startingX = finalX;
-                var startingY = -300;
+                var startingX = (Math.random() - 0.5) * document.documentElement.clientWidth * 2;
+                var startingY = 1500;
                 var deltaX = finalX - startingX;
                 var deltaY = finalY - startingY;
                 $node.css('top', startingY);
                 $node.css('left', startingX);
 
-                requestAnimationFrame(function tick(timestamp) {
-
+                animator.start(function (timestamp) {
                     var progress;
                     if (start === null) start = timestamp;
                     progress = timestamp - start;
@@ -74,11 +76,9 @@ themes["Basic JavaScript  Animations"] = {
                     var x = easeOutCubic(currentIteration, startingX, deltaX, totalIterations);
                     $node.css('left', x + 'px');
 
-                    if (progress < duration) {
-                        requestAnimationFrame(tick);
-                    } else {
+                    if (duration < progress) {
+                        animator.stop(this);
                         node.restore();
-                        $node.css('opacity', 1);
                     }
                 });
             }

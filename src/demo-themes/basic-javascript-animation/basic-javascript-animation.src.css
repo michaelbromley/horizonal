@@ -3,22 +3,5 @@
      Important: existing transitions defined on the elements (such as on the .thumbnail class in Bootstrap 3) can interfere
      with Javascript-based animations, so we should cancel them.
      */
-    transition-property: opacity;
-    transition-duration: 1s;
-    opacity: 0;
-}
-
-.hrz-page {
-    opacity: 1;
-    transition: opacity 0.3s;
-}
-
-.hrz-page.hrz-fore {
-    opacity: 0;
-    transition: opacity 0.3s ease 1s;
-}
-
-.hrz-page.hrz-back {
-    opacity: 0;
-    transition: opacity 0.3s ease 1s;
+    transition: none;
 }
