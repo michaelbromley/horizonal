@@ -102,7 +102,6 @@ var PageCollectionAPI = {
                     this.getPage(i).moveToBackground();
                 }
                 this.getPage(newPageNumber).moveToFocusFromForeground();
-                OPTIONS.onPageTransition('toBackground', this.getPage(newPageNumber), animator);
             } else if (newPageNumber < oldPageNumber) {
                 for (i = oldPageNumber; newPageNumber < i; i --) {
                     this.getPage(i).moveToForeground();
