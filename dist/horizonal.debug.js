@@ -356,13 +356,15 @@ function hashChangeHandler() {
  * but that fragment is already in the hash part of the window.location. In this case, the hash will not change so
  * we need to manually trigger the hashchange event to simulate the expected behaviour.
  */
-function linkHandler() {
-    var hash = window.location.hash;
-    if (hash !== '') {
+function linkHandler(e) {
+    var currentHash = window.location.hash;
+    if (currentHash !== '') {
         var url = $(this).attr('href');
         if (url.substr(0, 1) === '#') {
-            hashChangeHandler();
-            return false;
+            if (url === currentHash) {
+                hashChangeHandler();
+                return false;
+            }
         }
     }
 }
@@ -1149,7 +1151,6 @@ var PageCollectionAPI = {
                     this.getPage(i).moveToBackground();
                 }
                 this.getPage(newPageNumber).moveToFocusFromForeground();
-                OPTIONS.onPageTransition('toBackground', this.getPage(newPageNumber), animator);
             } else if (newPageNumber < oldPageNumber) {
                 for (i = oldPageNumber; newPageNumber < i; i --) {
                     this.getPage(i).moveToForeground();

@@ -4,7 +4,7 @@ themes["Basic JavaScript  Animations"] = {
     options: {
         customCssFile: 'themes/basic-javascript-animation.css',
         stagger: 'random',
-        staggerDelay: 0.03,
+        staggerDelay: 0,
         scrollStep: 2,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         rootElement: '#root',
@@ -15,27 +15,27 @@ themes["Basic JavaScript  Animations"] = {
             }
         },
         onNodeTransition: function(type, node, animator) {
+            var start, elapsed;
+            var $node = $(node.domNode);
+
             if (type !== 'toFocusFromFore' && type !== 'toFocusFromBack' ) {
-                fallAway(node, 1100);
+                fallAway(1100);
             } else {
-                fallUp(node, 1000);
+                fallUp(1000);
             }
 
-            function fallAway(node, duration) {
+            function fallAway(duration) {
                 node.restore();
-                var $node = $(node.domNode);
-                var start = null;
                 var y = parseInt($node.css('top'));
                 var x = parseInt($node.css('left'));
                 var vX = (Math.random() - 0.5) * 15;
-                var vY = (Math.random() - 1) * 20;
+                var vY = (Math.random() - 1) * 25;
                 var G = 2;
 
                 animator.start(function (timestamp) {
 
-                    var progress;
-                    if (start === null) start = timestamp;
-                    progress = timestamp - start;
+                    if (typeof start === 'undefined') start = timestamp;
+                    elapsed = timestamp - start;
 
                     y = y + vY;
                     $node.css('top', y + 'px');
@@ -45,16 +45,14 @@ themes["Basic JavaScript  Animations"] = {
 
                     vY += G;
 
-                    if (duration < progress) {
+                    if (duration < elapsed) {
                         animator.stop(this);
                         node.restore();
                     }
                 });
             }
 
-            function fallUp(node, duration) {
-                var $node = $(node.domNode);
-                var start = null;
+            function fallUp(duration) {
                 var finalY = parseInt($node.css('top'));
                 var finalX = parseInt($node.css('left'));
                 var startingX = (Math.random() - 0.5) * document.documentElement.clientWidth * 2;
@@ -65,18 +63,17 @@ themes["Basic JavaScript  Animations"] = {
                 $node.css('left', startingX);
 
                 animator.start(function (timestamp) {
-                    var progress;
-                    if (start === null) start = timestamp;
-                    progress = timestamp - start;
+                    if (typeof start === 'undefined') start = timestamp;
+                    elapsed = timestamp - start;
 
                     var totalIterations = Math.round(duration / 1000 * 60);
-                    var currentIteration = Math.round(progress / 1000 * 60);
+                    var currentIteration = Math.round(elapsed / 1000 * 60);
                     var y = easeOutCubic(currentIteration, startingY, deltaY, totalIterations);
                     $node.css('top', y + 'px');
                     var x = easeOutCubic(currentIteration, startingX, deltaX, totalIterations);
                     $node.css('left', x + 'px');
 
-                    if (duration < progress) {
+                    if (duration < elapsed) {
                         animator.stop(this);
                         node.restore();
                     }
