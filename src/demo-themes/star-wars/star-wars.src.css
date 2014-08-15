@@ -1,0 +1,41 @@
+#hrz-container {
+    perspective: 800px;
+    background-image: linear-gradient(to bottom, #1d1e25 0%, #000000 100%);
+}
+
+.hrz-page {
+    opacity: 1;
+    transform: rotateX(35deg);
+    transition: transform 2s linear, opacity 0.3s 1.5s;
+    overflow: hidden;
+}
+
+.hrz-page.hrz-back {
+    transform: rotateX(35deg) translateY(-1000px);
+    opacity: 0;
+}
+.hrz-page.hrz-fore {
+    transform: rotateX(35deg) translateY(1000px);
+    opacity: 0;
+}
+
+.hrz-page.hrz-focus-from-back, .hrz-page.hrz-focus-from-fore {
+    transition: transform 2s linear, opacity 0.3s;
+}
+
+.hrz-element {
+    color: yellow !important;
+}
+
+/* custom styling of known page elements */
+.hrz-element.splash h1 {
+    background: transparent;
+    border-radius: 6px;
+    border: 2px solid yellow;
+    color: #222;
+    text-shadow:
+       -1px -1px 0 yellow,
+        1px -1px 0 yellow,
+        -1px 1px 0 yellow,
+         1px 1px 0 yellow;
+}

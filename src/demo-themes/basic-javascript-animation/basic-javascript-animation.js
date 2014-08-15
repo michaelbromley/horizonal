@@ -3,12 +3,8 @@ var themes = themes || {};
 themes["Basic JavaScript  Animations"] = {
     options: {
         customCssFile: 'themes/basic-javascript-animation.css',
-        stagger: 'random',
-        staggerDelay: 0,
-        scrollStep: 2,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         rootElement: '#root',
-        pageHideDelay: 1,
         onPageTransition: function(type, page, animator) {
             if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
                 $(page.domNode).hide().delay(500).fadeIn(100);

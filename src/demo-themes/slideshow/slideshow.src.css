@@ -1,0 +1,94 @@
+@keyframes slideOutTop {
+    50% {
+        transform: perspective(1000px) translate3d(0, 0, -400px);
+    }
+
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: perspective(1000px) translate3d(-200px, -200px, -400px);
+    }
+}
+
+@keyframes slideOutBottom {
+    0% {
+        transform: perspective(1000px) translate3d(0, 0, 0);
+    }
+    50% {
+        opacity: 1;
+        transform: perspective(1000px) translate3d(100px, 100px, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: perspective(1000px) translate3d(200px, 200px, 500px);
+    }
+}
+
+@keyframes slideInBottom {
+    0% {
+        opacity: 0;
+        transform: perspective(1000px) translate3d(200px, 200px, 500px);
+    }
+    20% {
+        opacity: 0;
+        transform: perspective(1000px) translate3d(200px, 200px, 500px);
+    }
+    50% {
+        opacity: 1;
+        transform: perspective(1000px) translate3d(200px, 200px, 0);
+    }
+    100% {
+        transform: perspective(1000px) translate3d(0, 0, 0);
+    }
+}
+@keyframes slideInTop {
+    0% {
+        opacity: 0;
+        transform: perspective(1000px) translate3d(-200px, -200px, -300px);
+    }
+    10% {
+        opacity: 0;
+        transform: perspective(1000px) translate3d(-200px, -200px, -300px);
+    }
+    50% {
+        opacity: 1;
+        transform: perspective(1000px) translate3d(0, 0, -300px);
+    }
+    100% {
+        transform: perspective(1000px) translate3d(0, 0, 0);
+    }
+}
+
+
+
+#hrz-container {
+    transform-origin: 20% 20%;
+    background-image: linear-gradient(to bottom, #565961 0%, #000000 100%);
+}
+
+.hrz-page {
+    background-color: #fff;
+    outline: 10px solid #3f3f3f;
+    overflow: hidden;
+    transform-origin: 20% 20%;
+    transform-style: preserve-3d;
+}
+
+.hrz-page.hrz-back {
+    animation: slideOutTop 1s;
+    animation-fill-mode: forwards;
+}
+.hrz-page.hrz-fore {
+    animation: slideOutBottom 1s;
+    animation-fill-mode: forwards;
+}
+.hrz-page.hrz-focus-from-fore {
+    animation: slideInBottom 1s;
+    animation-fill-mode: forwards;
+}
+.hrz-page.hrz-focus-from-back {
+    animation: slideInTop 1s;
+    animation-fill-mode: forwards;
+}

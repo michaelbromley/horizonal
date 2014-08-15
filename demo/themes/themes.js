@@ -5,9 +5,7 @@ themes["Basic CSS Transitions"] = {
         customCssFile: 'themes/basic-css-transitions.css',
         stagger: 'random',
         staggerDelay: 0.04,
-        scrollStep: 2,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, ul, ol, pre',
-        displayPageCount: true,
         rootElement: '#root'
     }
 };
@@ -18,7 +16,6 @@ themes["Basic CSS Animations"] = {
         customCssFile: 'themes/basic-css-animations.css',
         stagger: 'sequence',
         staggerDelay: 0.05,
-        scrollStep: 2,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         rootElement: '#root'
     }
@@ -28,12 +25,8 @@ var themes = themes || {};
 themes["Basic JavaScript  Animations"] = {
     options: {
         customCssFile: 'themes/basic-javascript-animation.css',
-        stagger: 'random',
-        staggerDelay: 0,
-        scrollStep: 2,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         rootElement: '#root',
-        pageHideDelay: 1,
         onPageTransition: function(type, page, animator) {
             if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
                 $(page.domNode).hide().delay(500).fadeIn(100);
@@ -109,5 +102,29 @@ themes["Basic JavaScript  Animations"] = {
                 return changeInValue * (Math.pow(currentIteration / totalIterations - 1, 3) + 1) + startValue;
             }
         }
+    }
+};
+var themes = themes || {};
+
+themes["Slide Show"] = {
+    options: {
+        customCssFile: 'themes/slideshow.css',
+        stagger: 'random',
+        staggerDelay: 0,
+        selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
+        rootElement: '#root',
+        pageHideDelay: 3
+    }
+};
+var themes = themes || {};
+
+themes["Star Wars"] = {
+    options: {
+        customCssFile: 'themes/star-wars.css',
+        stagger: 'random',
+        staggerDelay: 0,
+        selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
+        rootElement: '#root',
+        pageHideDelay: 3
     }
 };

@@ -1,0 +1,49 @@
+#hrz-container {
+    -webkit-perspective: 800px;
+            perspective: 800px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#1d1e25), to(#000000));
+    background-image: -webkit-linear-gradient(top, #1d1e25 0%, #000000 100%);
+    background-image: linear-gradient(to bottom, #1d1e25 0%, #000000 100%);
+}
+
+.hrz-page {
+    opacity: 1;
+    -webkit-transform: rotateX(35deg);
+            transform: rotateX(35deg);
+    -webkit-transition: -webkit-transform 2s linear, opacity 0.3s 1.5s;
+            transition: transform 2s linear, opacity 0.3s 1.5s;
+    overflow: hidden;
+}
+
+.hrz-page.hrz-back {
+    -webkit-transform: rotateX(35deg) translateY(-1000px);
+            transform: rotateX(35deg) translateY(-1000px);
+    opacity: 0;
+}
+.hrz-page.hrz-fore {
+    -webkit-transform: rotateX(35deg) translateY(1000px);
+            transform: rotateX(35deg) translateY(1000px);
+    opacity: 0;
+}
+
+.hrz-page.hrz-focus-from-back, .hrz-page.hrz-focus-from-fore {
+    -webkit-transition: -webkit-transform 2s linear, opacity 0.3s;
+            transition: transform 2s linear, opacity 0.3s;
+}
+
+.hrz-element {
+    color: yellow !important;
+}
+
+/* custom styling of known page elements */
+.hrz-element.splash h1 {
+    background: transparent;
+    border-radius: 6px;
+    border: 2px solid yellow;
+    color: #222;
+    text-shadow:
+       -1px -1px 0 yellow,
+        1px -1px 0 yellow,
+        -1px 1px 0 yellow,
+         1px 1px 0 yellow;
+}
