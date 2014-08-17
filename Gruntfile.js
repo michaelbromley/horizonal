@@ -6,6 +6,7 @@ module.exports = function(grunt) {
             core: {
                 src: [
                     'src/prefix.js',
+                    'src/pageCollectionGenerator.js',
                     'src/horizonal.js',
                     'src/common.js',
                     'src/eventHandlers.js',

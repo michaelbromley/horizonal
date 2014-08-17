@@ -17,7 +17,7 @@ function composePage(currentScroll) {
         setTimeout(function() {
             var allNodes = new NodeCollection(OPTIONS.selector);
 
-            PAGE_COLLECTION = allNodes.splitIntoPages();
+            PAGE_COLLECTION = pageCollectionGenerator.fromNodeCollection(allNodes);
             PAGE_COLLECTION.renderToDom(currentScroll);
             // remove any DOM nodes that are not included in the selector,
             // since they will just be left floating around in the wrong place.
