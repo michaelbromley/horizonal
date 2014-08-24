@@ -138,6 +138,7 @@ function Horizonal() {
             if (!_hasBeenInitialized) {
                 ROOT = $(OPTIONS.rootElement);
                 ROOT_CLONE = ROOT.clone();
+                //composePage(currentScroll).then(function() {
                 composePage(currentScroll).then(function() {
                     updatePageCount();
                     registerEventHandlers();
@@ -281,12 +282,15 @@ window.horizonal = new Horizonal();
  * @param currentScroll
  */
 function composePage(currentScroll) {
+    var start = new Date().getTime(); // profiling performance for optimization
+
     var deferred = new $.Deferred();
     ROOT = $(OPTIONS.rootElement);
-    ROOT.wrapInner('<div id="hrz-container"></div>');
-    CONTAINER = $('#hrz-container');
-    CONTAINER.width(ROOT.width());
-    VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
+    var fragment = createDocumentFragment();
+    CONTAINER = $(fragment.querySelector('#hrz-container'));
+    CONTAINER.css('display', 'none'); // setting display:none considerably speeds up rendering
+
+    VIEWPORT_HEIGHT = $(window).height() - OPTIONS.pageMargin * 2;
 
     displayLoadingIndicator().then(function() {
         // a setTimeout is used to force async execution and allow the loadingIndicator to display before the
@@ -295,10 +299,22 @@ function composePage(currentScroll) {
             var allNodes = new NodeCollection(OPTIONS.selector);
 
             PAGE_COLLECTION = pageCollectionGenerator.fromNodeCollection(allNodes);
-            PAGE_COLLECTION.renderToDom(currentScroll);
+            PAGE_COLLECTION.appendToDom(currentScroll);
+
             // remove any DOM nodes that are not included in the selector,
             // since they will just be left floating around in the wrong place.
             CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+            ROOT.empty().append(fragment);
+
+            PAGE_COLLECTION.forEach(function(page) {
+                page.nodes.forEach(function(node) {
+                   node.renderStyles(page);
+                });
+            });
+
+            CONTAINER.css('display', '');
+
+            console.log('style loop called: ' + window.called);
 
             var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
             ROOT.height(documentHeight);
@@ -308,17 +324,33 @@ function composePage(currentScroll) {
             renderPageCount();
             removeLoadingIndicator();
             deferred.resolve();
-        }, 500);
+
+            var end = new Date().getTime();
+            console.log('Time to execute composePage(): ' + (end - start));
+        }, 0);
     });
 
     return deferred.promise();
+}
+
+/**
+ * Building up a documentFragment and then appending it all at once to the DOM
+ * is done to improve performance.
+ * @returns {*}
+ */
+function createDocumentFragment() {
+    var fragment = document.createDocumentFragment();
+    var containerDiv = document.createElement('div');
+    containerDiv.id = 'hrz-container';
+    fragment.appendChild(containerDiv);
+    return fragment;
 }
 
 function displayLoadingIndicator() {
     var deferred = new $.Deferred();
     if ($('#loadingIndicator').length === 0) {
         $('body').append('<div id="loadingIndicator" style="display:none;"><p class="loading">Loading...</p></div>');
-        $('#loadingIndicator').fadeIn(200, function() {
+        $('#loadingIndicator').fadeIn(50, function() {
             deferred.resolve();
         });
     }
@@ -327,7 +359,7 @@ function displayLoadingIndicator() {
 
 function removeLoadingIndicator() {
     setTimeout(function() {
-        $('#loadingIndicator').fadeOut(500, function() {
+        $('#loadingIndicator').fadeOut(50, function() {
             $(this).remove();
         });
     }, 300);
@@ -737,12 +769,20 @@ Node.prototype = {
     },
 
     /**
-     * Append the DOM node to the correct page div and apply the positioning and CSS style diff rules.
+     * Append the DOM node to the correct page div
      * @param parentPage
      */
-    renderToDom: function(parentPage) {
+    appendToDom: function(parentPage) {
         $(this.domNode).addClass(parentPage.pageId);
-        $('#' + parentPage.pageId).append(this.domNode);
+        CONTAINER.find('#' + parentPage.pageId).append(this.domNode);
+    },
+
+    /**
+     * Apply the CSS styles that ensure the node looks the same as it did in the
+     * original document.
+     * @param parentPage
+     */
+    renderStyles: function(parentPage) {
         this.applyStyleDiff();
         $(this.domNode).addClass('hrz-element');
         this.setCssPosition(parentPage);
@@ -824,20 +864,24 @@ Node.prototype = {
     getStyleDiff: function() {
         var styleDiff = {};
         var newComputedStyles = window.getComputedStyle(this.domNode);
+
         for (var i = 0; i < newComputedStyles.length; i++) {
             var name = newComputedStyles[i];
-            if (newComputedStyles.getPropertyValue(name) != this.originalComputedStyle.getPropertyValue(name)) {
+            var oldPropertyValue = this.originalComputedStyle.getPropertyValue(name);
+
+            if (newComputedStyles.getPropertyValue(name) != oldPropertyValue) {
                 // Internet Explorer has strange behaviour with its own deprecated prefixed version of transition, animation and
                 // others. This breaks these CSS features in that browser, so the workaround here is to just omit all those
                 // IE-specific prefixes.
                 if ( name.substring(0, 3) == "-ms") {
                     continue;
                 }
-                if (this.originalComputedStyle.getPropertyValue(name) !== null) {
-                    styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
+                if (oldPropertyValue !== null) {
+                    styleDiff[newComputedStyles[i]] = oldPropertyValue;
                 }
             }
         }
+
         return styleDiff;
     },
 
@@ -933,7 +977,7 @@ var NodeCollectionAPI = {
         });
     },
 
-    renderToDom: function(parentPage) {
+    appendToDom: function(parentPage) {
         // at this stage we can assign an appropriate staggerOrder to
         // the nodes, since we now know how many are on each page.
         var staggerOrder = [];
@@ -946,7 +990,7 @@ var NodeCollectionAPI = {
 
         this.forEach(function(node, index) {
             node.staggerOrder = staggerOrder[index];
-            node.renderToDom(parentPage);
+            node.appendToDom(parentPage);
         });
     }
 };
@@ -982,7 +1026,7 @@ Page.prototype = {
         this.nodes.push(node);
     },
 
-    renderToDom: function(currentPage) {
+    appendToDom: function(currentPage) {
         var zClass = "";
         if (this.pageNumber < currentPage) {
             zClass = "hrz-back hrz-hidden";
@@ -992,8 +1036,8 @@ Page.prototype = {
             zClass = "hrz-focus-from-fore";
         }
         CONTAINER.append('<div class="hrz-page ' + zClass + '" id="' + this.pageId + '" />');
-        this.domNode = $('#' + this.pageId)[0];
-        this.nodes.renderToDom(this);
+        this.domNode = CONTAINER.find('#' + this.pageId)[0];
+        this.nodes.appendToDom(this);
     },
 
     moveToForeground: function() {
@@ -1130,12 +1174,16 @@ var PageCollectionAPI = {
         })[0] || this[0];
     },
 
-    renderToDom: function(currentScroll) {
+    /**
+     * Appends all the pages and page elements to the documentFragment referenced by CONTAINER
+     * @param currentScroll
+     */
+    appendToDom: function(currentScroll) {
         var self = this;
         currentScroll = currentScroll || 0;
         this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollbarShortenRatio).pageNumber;
         this.forEach(function(page) {
-            page.renderToDom(self.currentPage);
+            page.appendToDom(self.currentPage);
         });
     },
 

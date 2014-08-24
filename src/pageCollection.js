@@ -71,12 +71,16 @@ var PageCollectionAPI = {
         })[0] || this[0];
     },
 
-    renderToDom: function(currentScroll) {
+    /**
+     * Appends all the pages and page elements to the documentFragment referenced by CONTAINER
+     * @param currentScroll
+     */
+    appendToDom: function(currentScroll) {
         var self = this;
         currentScroll = currentScroll || 0;
         this.currentPage = this.getPageAtOffset(currentScroll * OPTIONS.scrollbarShortenRatio).pageNumber;
         this.forEach(function(page) {
-            page.renderToDom(self.currentPage);
+            page.appendToDom(self.currentPage);
         });
     },
 

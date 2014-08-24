@@ -4,12 +4,15 @@
  * @param currentScroll
  */
 function composePage(currentScroll) {
+    var start = new Date().getTime(); // profiling performance for optimization
+
     var deferred = new $.Deferred();
     ROOT = $(OPTIONS.rootElement);
-    ROOT.wrapInner('<div id="hrz-container"></div>');
-    CONTAINER = $('#hrz-container');
-    CONTAINER.width(ROOT.width());
-    VIEWPORT_HEIGHT =  $(window).height() - OPTIONS.pageMargin * 2;
+    var fragment = createDocumentFragment();
+    CONTAINER = $(fragment.querySelector('#hrz-container'));
+    CONTAINER.css('display', 'none'); // setting display:none considerably speeds up rendering
+
+    VIEWPORT_HEIGHT = $(window).height() - OPTIONS.pageMargin * 2;
 
     displayLoadingIndicator().then(function() {
         // a setTimeout is used to force async execution and allow the loadingIndicator to display before the
@@ -18,10 +21,22 @@ function composePage(currentScroll) {
             var allNodes = new NodeCollection(OPTIONS.selector);
 
             PAGE_COLLECTION = pageCollectionGenerator.fromNodeCollection(allNodes);
-            PAGE_COLLECTION.renderToDom(currentScroll);
+            PAGE_COLLECTION.appendToDom(currentScroll);
+
             // remove any DOM nodes that are not included in the selector,
             // since they will just be left floating around in the wrong place.
             CONTAINER.children().not('.hrz-page').filter(':visible').remove();
+            ROOT.empty().append(fragment);
+
+            PAGE_COLLECTION.forEach(function(page) {
+                page.nodes.forEach(function(node) {
+                   node.renderStyles(page);
+                });
+            });
+
+            CONTAINER.css('display', '');
+
+            console.log('style loop called: ' + window.called);
 
             var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
             ROOT.height(documentHeight);
@@ -31,17 +46,33 @@ function composePage(currentScroll) {
             renderPageCount();
             removeLoadingIndicator();
             deferred.resolve();
-        }, 500);
+
+            var end = new Date().getTime();
+            console.log('Time to execute composePage(): ' + (end - start));
+        }, 0);
     });
 
     return deferred.promise();
+}
+
+/**
+ * Building up a documentFragment and then appending it all at once to the DOM
+ * is done to improve performance.
+ * @returns {*}
+ */
+function createDocumentFragment() {
+    var fragment = document.createDocumentFragment();
+    var containerDiv = document.createElement('div');
+    containerDiv.id = 'hrz-container';
+    fragment.appendChild(containerDiv);
+    return fragment;
 }
 
 function displayLoadingIndicator() {
     var deferred = new $.Deferred();
     if ($('#loadingIndicator').length === 0) {
         $('body').append('<div id="loadingIndicator" style="display:none;"><p class="loading">Loading...</p></div>');
-        $('#loadingIndicator').fadeIn(200, function() {
+        $('#loadingIndicator').fadeIn(50, function() {
             deferred.resolve();
         });
     }
@@ -50,7 +81,7 @@ function displayLoadingIndicator() {
 
 function removeLoadingIndicator() {
     setTimeout(function() {
-        $('#loadingIndicator').fadeOut(500, function() {
+        $('#loadingIndicator').fadeOut(50, function() {
             $(this).remove();
         });
     }, 300);

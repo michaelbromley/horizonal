@@ -26,7 +26,7 @@ Page.prototype = {
         this.nodes.push(node);
     },
 
-    renderToDom: function(currentPage) {
+    appendToDom: function(currentPage) {
         var zClass = "";
         if (this.pageNumber < currentPage) {
             zClass = "hrz-back hrz-hidden";
@@ -36,8 +36,8 @@ Page.prototype = {
             zClass = "hrz-focus-from-fore";
         }
         CONTAINER.append('<div class="hrz-page ' + zClass + '" id="' + this.pageId + '" />');
-        this.domNode = $('#' + this.pageId)[0];
-        this.nodes.renderToDom(this);
+        this.domNode = CONTAINER.find('#' + this.pageId)[0];
+        this.nodes.appendToDom(this);
     },
 
     moveToForeground: function() {

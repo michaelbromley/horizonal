@@ -35,6 +35,7 @@ function Horizonal() {
             if (!_hasBeenInitialized) {
                 ROOT = $(OPTIONS.rootElement);
                 ROOT_CLONE = ROOT.clone();
+                //composePage(currentScroll).then(function() {
                 composePage(currentScroll).then(function() {
                     updatePageCount();
                     registerEventHandlers();

@@ -24,7 +24,7 @@ var NodeCollectionAPI = {
         });
     },
 
-    renderToDom: function(parentPage) {
+    appendToDom: function(parentPage) {
         // at this stage we can assign an appropriate staggerOrder to
         // the nodes, since we now know how many are on each page.
         var staggerOrder = [];
@@ -37,7 +37,7 @@ var NodeCollectionAPI = {
 
         this.forEach(function(node, index) {
             node.staggerOrder = staggerOrder[index];
-            node.renderToDom(parentPage);
+            node.appendToDom(parentPage);
         });
     }
 };

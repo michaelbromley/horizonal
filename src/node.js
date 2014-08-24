@@ -79,12 +79,20 @@ Node.prototype = {
     },
 
     /**
-     * Append the DOM node to the correct page div and apply the positioning and CSS style diff rules.
+     * Append the DOM node to the correct page div
      * @param parentPage
      */
-    renderToDom: function(parentPage) {
+    appendToDom: function(parentPage) {
         $(this.domNode).addClass(parentPage.pageId);
-        $('#' + parentPage.pageId).append(this.domNode);
+        CONTAINER.find('#' + parentPage.pageId).append(this.domNode);
+    },
+
+    /**
+     * Apply the CSS styles that ensure the node looks the same as it did in the
+     * original document.
+     * @param parentPage
+     */
+    renderStyles: function(parentPage) {
         this.applyStyleDiff();
         $(this.domNode).addClass('hrz-element');
         this.setCssPosition(parentPage);
@@ -166,20 +174,24 @@ Node.prototype = {
     getStyleDiff: function() {
         var styleDiff = {};
         var newComputedStyles = window.getComputedStyle(this.domNode);
+
         for (var i = 0; i < newComputedStyles.length; i++) {
             var name = newComputedStyles[i];
-            if (newComputedStyles.getPropertyValue(name) != this.originalComputedStyle.getPropertyValue(name)) {
+            var oldPropertyValue = this.originalComputedStyle.getPropertyValue(name);
+
+            if (newComputedStyles.getPropertyValue(name) != oldPropertyValue) {
                 // Internet Explorer has strange behaviour with its own deprecated prefixed version of transition, animation and
                 // others. This breaks these CSS features in that browser, so the workaround here is to just omit all those
                 // IE-specific prefixes.
                 if ( name.substring(0, 3) == "-ms") {
                     continue;
                 }
-                if (this.originalComputedStyle.getPropertyValue(name) !== null) {
-                    styleDiff[newComputedStyles[i]] = this.originalComputedStyle.getPropertyValue(name);
+                if (oldPropertyValue !== null) {
+                    styleDiff[newComputedStyles[i]] = oldPropertyValue;
                 }
             }
         }
+
         return styleDiff;
     },
 
