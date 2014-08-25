@@ -120,6 +120,10 @@ h2 {
     }
 }
 
+#hrz-container {
+    padding-top: 40px;
+}
+
 .splash {
     position: relative;
     text-align: center;
@@ -158,5 +162,11 @@ h2 {
     font-style: italic;}
 .poem em {
     font-style: italic;
+}
+
+@media (min-width: 768px) {
+    .diagrams img {
+        margin-bottom: 150px;
+    }
 }
 

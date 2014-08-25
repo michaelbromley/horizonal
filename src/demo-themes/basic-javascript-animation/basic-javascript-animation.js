@@ -3,7 +3,9 @@ var themes = themes || {};
 themes["Basic JavaScript  Animations"] = {
     options: {
         customCssFile: 'themes/basic-javascript-animation.css',
+        pageMargin: 40,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
+        staggerDelay: 0,
         rootElement: '#root',
         onPageTransition: function(type, page, animator) {
             if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {

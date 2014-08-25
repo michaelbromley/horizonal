@@ -1,6 +1,15 @@
 @keyframes slideOutTop {
+    30% {
+        transform: perspective(1000px) translate3d(70px, 70px, -100px);
+        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
+    40% {
+        transform: perspective(1000px) translate3d(40px, 40px, -100px);
+        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
     50% {
-        transform: perspective(1000px) translate3d(0, 0, -400px);
+        transform: perspective(1000px) translate3d(50px, 50px, -100px);
+        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
     }
 
     75% {
@@ -8,7 +17,8 @@
     }
     100% {
         opacity: 0;
-        transform: perspective(1000px) translate3d(-200px, -200px, -400px);
+        transform: perspective(1000px) translate3d(-100px, -100px, -400px);
+        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
     }
 }
 

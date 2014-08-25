@@ -3,6 +3,7 @@ var themes = themes || {};
 themes["Basic CSS Transitions"] = {
     options: {
         customCssFile: 'themes/basic-css-transitions.css',
+        pageMargin: 40,
         stagger: 'random',
         staggerDelay: 0.04,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, ul, ol, pre',
@@ -14,6 +15,7 @@ var themes = themes || {};
 themes["Basic CSS Animations"] = {
     options: {
         customCssFile: 'themes/basic-css-animations.css',
+        pageMargin: 40,
         stagger: 'sequence',
         staggerDelay: 0.05,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
@@ -25,7 +27,9 @@ var themes = themes || {};
 themes["Basic JavaScript  Animations"] = {
     options: {
         customCssFile: 'themes/basic-javascript-animation.css',
+        pageMargin: 40,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
+        staggerDelay: 0,
         rootElement: '#root',
         onPageTransition: function(type, page, animator) {
             if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
@@ -109,6 +113,7 @@ var themes = themes || {};
 themes["Slide Show"] = {
     options: {
         customCssFile: 'themes/slideshow.css',
+        pageMargin: 40,
         stagger: 'random',
         staggerDelay: 0,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
