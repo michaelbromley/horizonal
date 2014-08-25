@@ -31,7 +31,9 @@ var pageCollectionGenerator = function() {
                 }
             }
             lastPage = calculateLastPageAndPageOffset(node, pageCollection, lastPage);
-            pageCollection.getPage(lastPage).addNode(node);
+
+            var pageToAddTo = node.isClone ? lastPage : pageCollection.getPageAtOffset(node.layout.top).pageNumber;
+            pageCollection.getPage(pageToAddTo).addNode(node);
         }
 
         return pageCollection;
