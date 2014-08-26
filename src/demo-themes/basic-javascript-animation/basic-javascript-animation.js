@@ -1,6 +1,6 @@
 var themes = themes || {};
 
-themes["Basic JavaScript  Animations"] = {
+themes["Basic JavaScript Animations"] = {
     options: {
         customCssFile: 'themes/basic-javascript-animation.css',
         pageMargin: 40,

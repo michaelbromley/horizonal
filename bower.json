@@ -1,10 +1,10 @@
 {
   "name": "horizonal",
-  "version": "0.0.0",
+  "version": "0.1.1",
   "authors": [
     "Michael Bromley <michael@michaelbromley.co.uk>"
   ],
-  "description": "Transform your HTML document into a series of 3D transitioning pages.",
+  "description": "Transform a static HTML document into a collection of pages with programmable transitions.",
   "main": "dist/horizonal.js",
   "moduleType": [
     "globals"
