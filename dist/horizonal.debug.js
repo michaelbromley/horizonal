@@ -33,7 +33,7 @@ var pageCollectionGenerator = function() {
             }
             lastPage = calculateLastPageAndPageOffset(node, pageCollection, lastPage);
 
-            var pageToAddTo = node.isClone ? lastPage : pageCollection.getPageAtOffset(node.layout.top).pageNumber;
+            var pageToAddTo = node.isClone || node.newPage ? lastPage : pageCollection.getPageAtOffset(node.layout.top).pageNumber;
             pageCollection.getPage(pageToAddTo).addNode(node);
         }
 
@@ -64,6 +64,7 @@ var pageCollectionGenerator = function() {
     function calculateLastPageAndPageOffset(node, pageCollection, lastPage) {
         if ($(node.domNode).hasClass(OPTIONS.newPageClass)) {
             lastPage ++;
+            node.newPage = true;
         }
         if (pageCollection[lastPage - 1] !== undefined) {
             var page = pageCollection.getPage(lastPage);
