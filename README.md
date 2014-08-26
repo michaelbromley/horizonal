@@ -79,7 +79,7 @@ individual element on the page by defining CSS rules:
 }
 ```
 
-For more information and examples of CSS-based transitions, see the [Writing CSS Transitions guide](https://github.com/michaelbromley/horizonal/wiki/Writing-CSS-Transitions).
+**For more information and examples of CSS-based transitions, see the [Writing CSS Transitions guide](https://github.com/michaelbromley/horizonal/wiki/Writing-CSS-Transitions).**
 
 ### JavaScript
 
@@ -111,7 +111,7 @@ Passed to the `onPageTransition` callback only. This is an object representing t
 according to the `type` value above). It has the following properties:
 
 * `domNode [HTMLElement]` This is the actual [HTMLElement object](https://developer.mozilla.org/en/docs/Web/API/HTMLElement) of the page container div which contains the individual page elements.
-* `pageNumber [int]` The sequential number of this page.
+* `pageNumber [int]` The ordinal number of this page.
 
 
 #### `node`
@@ -131,8 +131,8 @@ an animation loop. It has two methods:
 * `start([function])`
 * `stop([function])`
 
-For instructions on how to use the animator API, as well as examples of putting all the above elements together,
-please see the [Writing JavaScript Transitions guide](https://github.com/michaelbromley/horizonal/wiki/Writing-JavaScript-Transitions).
+**For instructions on how to use the animator API, as well as examples of putting all the above elements together,
+please see the [Writing JavaScript Transitions guide](https://github.com/michaelbromley/horizonal/wiki/Writing-JavaScript-Transitions).**
 
 ## API
 The `horizonal` object has the following methods:
@@ -206,6 +206,16 @@ Paging forward and backward through the collection can be controlled by the foll
 3. For touch enabled devices, swiping up or left pages forward; swiping down or right pages backward.
 
 You can of course program your own controls by using the built-in API methods listed above.
+
+## Browser Compatibility
+
+Horizonal uses some ES5 features which means it will not work on IE8 or below.
+
+I have tested it in the latest versions of Chrome (36), Firefox (31) and IE (11) in Windows and IE10 on Windows Phone 8.
+
+IE seems to have problems with CSS 3D transition that use the z-axis. Expect unexpected results.
+
+Since I don't have a Mac or an iPhone, I've not been able to do much testing on those. Bug reports welcome!
 
 ## Licence
 
