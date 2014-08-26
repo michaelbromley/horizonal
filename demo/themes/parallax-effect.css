@@ -1,0 +1,23 @@
+.hrz-page.hidden {
+    visibility: hidden;
+}
+
+.hrz-back > .hrz-element {
+    -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000), top 1s 0.5s;
+            transition: transform 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000), top 1s 0.5s;
+}
+
+.hrz-fore > .hrz-element {
+    -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000), top 1s 0.5s;
+            transition: transform 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000), top 1s 0.5s;
+}
+
+.hrz-focus-from-fore > .hrz-element, .hrz-focus-from-back > .hrz-element {
+    -webkit-transition: -webkit-transform 0s, top 0s;
+            transition: transform 0s, top 0s;
+}
+
+.hrz-focus-from-fore > .hrz-element.transition, .hrz-focus-from-back > .hrz-element.transition {
+    -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000), top 1s, opacity 0.3s;
+            transition: transform 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000), top 1s, opacity 0.3s;
+}
