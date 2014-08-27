@@ -33,7 +33,14 @@ var pageCollectionGenerator = function() {
             }
             lastPage = calculateLastPageAndPageOffset(node, pageCollection, lastPage);
 
-            var pageToAddTo = node.isClone || node.newPage ? lastPage : pageCollection.getPageAtOffset(node.layout.top).pageNumber;
+            var pageToAddTo;
+            var nodeIsBottomMostElement = pageCollection.last().bottom === node.layout.bottom;
+            if (nodeIsBottomMostElement || node.isClone || node.newPage) {
+                pageToAddTo = lastPage;
+            } else {
+                pageToAddTo = pageCollection.getPageAtOffset(node.layout.top).pageNumber;
+            }
+
             pageCollection.getPage(pageToAddTo).addNode(node);
         }
 
@@ -452,6 +459,7 @@ function keydownHandler(e) {
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
+        e.preventDefault();
     }
 }
 

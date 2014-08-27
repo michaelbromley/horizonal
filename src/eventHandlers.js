@@ -50,6 +50,7 @@ function keydownHandler(e) {
     }
     if (scrollTo !== undefined) {
         $(window).scrollTop(scrollTo);
+        e.preventDefault();
     }
 }
 
