@@ -70,9 +70,9 @@ function createDocumentFragment() {
 
 function displayLoadingIndicator() {
     var deferred = new $.Deferred();
-    if ($('#loadingIndicator').length === 0) {
-        $('body').append('<div id="loadingIndicator" style="display:none;"><p class="loading">Loading...</p></div>');
-        $('#loadingIndicator').fadeIn(50, function() {
+    if ($('.hrz-loading-indicator').length === 0) {
+        $('body').append('<div class="hrz-loading-indicator" style="display:none;"><p class="hrz-loading-indicator">Loading...</p></div>');
+        $('div.hrz-loading-indicator').fadeIn(50, function() {
             deferred.resolve();
         });
     }
@@ -81,7 +81,7 @@ function displayLoadingIndicator() {
 
 function removeLoadingIndicator() {
     setTimeout(function() {
-        $('#loadingIndicator').fadeOut(50, function() {
+        $('div.hrz-loading-indicator').fadeOut(50, function() {
             $(this).remove();
         });
     }, 300);

@@ -2,7 +2,7 @@ html {
     box-sizing: border-box;
 }
 
-#loadingIndicator {
+div.hrz-loading-indicator {
     position: fixed;
     display: table;
     top: 0;
@@ -13,7 +13,7 @@ html {
     text-align: center;
 }
 
-#loadingIndicator .loading {
+p.hrz-loading-indicator {
     font-size: 50px;
     display: table-cell;
     vertical-align: middle;
@@ -24,6 +24,9 @@ html {
     padding: 10px;
     bottom: 20px;
     right: 20px;
+    background-color: rgba(235,235,235,0.4);
+    border: 1px solid rgba(200,200,200,0.5);
+    border-radius: 5px;
 }
 
 .hrz-page-count.hidden {

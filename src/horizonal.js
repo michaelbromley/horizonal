@@ -46,7 +46,6 @@ function Horizonal() {
                 });
             } else {
                 resizeHandler();
-                //registerEventHandlers();
             }
         });
     }

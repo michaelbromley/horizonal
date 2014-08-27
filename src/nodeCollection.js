@@ -9,7 +9,7 @@ var NodeCollectionAPI = {
 
     fromSelector: function(selector) {
         var self = this;
-        var allNodes = ROOT.find(selector).filter(':visible');
+        var allNodes = ROOT.find(selector).filter(':visible').not('.hrz-loading-indicator');
 
         var topLevelNodes = $([]);
         allNodes.each(function(index, domNode) {
