@@ -213,9 +213,19 @@ Horizonal uses some ES5 features which means it will not work on IE8 or below.
 
 I have tested it in the latest versions of Chrome (36), Firefox (31) and IE (11) in Windows and IE10 on Windows Phone 8.
 
-IE seems to have problems with CSS 3D transition that use the z-axis. Expect unexpected results.
+CSS transforms are not yet mature and as a result, support and behaviour across browsers can be unreliable. Typically, writing a
+theme will involve a lot of testing in different browsers and making tweaks to get around various quirks.
+
+IE in particular seems to have problems with CSS 3D transforms that use the z-axis. Expect unexpected results here.
 
 Since I don't have a Mac or an iPhone, I've not been able to do much testing on those. Bug reports welcome!
+
+## Contribution
+
+This is an experimental project and has much scope for refinement. Pull requests are welcome.
+
+If you write a cool theme that you think should be included on the demo page, send in a pull requests and ideally include a
+link to a working demo (use the [Horizonal playground](http://plnkr.co/edit/OxlWVuxXwEf2bhDAss9p?p=info) on Plunker).
 
 ## Licence
 
