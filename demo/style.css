@@ -134,9 +134,9 @@ h2 {
     bottom: 0;
     margin-bottom: 10px;
     margin-top: 0;
-    font-size: 16vw;
-    color: #fff;
-    text-shadow: 0 0 15px rgba(31, 72, 133, 0.80);
+    font-size: 19vw;
+    color: white;
+    text-shadow: 0 0 15px rgba(27, 45, 255, 0.21);
     padding-top: 22vh;
     background: #425cbc; /* Old browsers */
     background: -moz-linear-gradient(top,  #425cbc 0%, #93d5ff 47%, #ffffff 87%, #ffffff 100%); /* FF3.6+ */
