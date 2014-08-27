@@ -5,3 +5,8 @@
      */
     transition: none;
 }
+
+.hrz-page.hrz-hidden > .hrz-element {
+    display: none;
+}
+

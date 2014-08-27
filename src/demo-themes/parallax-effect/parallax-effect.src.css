@@ -2,6 +2,10 @@
     visibility: hidden;
 }
 
+.hrz-page.hrz-hidden > .hrz-element {
+    display: none;
+}
+
 .hrz-back > .hrz-element {
     transition: transform 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000), top 1s 0.5s;
 }

@@ -6,7 +6,7 @@ themes["Parallax Effect"] = {
         pageMargin: 40,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         staggerDelay: 0,
-        pageHideDelay: 4,
+        pageHideDelay: 2,
         rootElement: '#root',
         onPageTransition: function(type, page, animator) {
             if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
@@ -22,13 +22,13 @@ themes["Parallax Effect"] = {
             if (type == 'toBackground') {
 
                 z = getRandomZ();
-                node.domNode.style.transform = 'translate3d(0, 0, -' + z + 'px)';
+                node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
                 node.domNode.style.top = (parseInt(node.domNode.style.top) - 1500) + 'px';
 
             } else if (type == 'toForeground') {
 
                 z = getRandomZ();
-                node.domNode.style.transform = 'translate3d(0, 0, -' + z + 'px)';
+                node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
                 node.domNode.style.top = (parseInt(node.domNode.style.top) + 1500) + 'px';
 
             } else if (type == 'toFocusFromFore') {
@@ -56,7 +56,7 @@ themes["Parallax Effect"] = {
                 node.domNode.style.top = startingTop;
                 node.domNode.style.opacity = '0';
                 window.setTimeout(function() {
-                    node.domNode.style.transform = 'translate3d(0, 0, -' + z + 'px)';
+                    node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
                 }, 1);
                 window.setTimeout(function() {
                     node.domNode.classList.add('transition');
@@ -70,7 +70,7 @@ themes["Parallax Effect"] = {
 
             function getRandomZ() {
                 if (node.domNode.style.transform === '' || node.domNode.style.transform === 'translate3d(0px, 0px, 0px)') {
-                    return Math.round((Math.random() + 0.05) * 500);
+                    return Math.round((Math.random() - 0.9) * 500);
                 } else{
                     return z;
                 }
