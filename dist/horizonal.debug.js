@@ -851,7 +851,7 @@ Node.prototype = {
     setCssPosition: function(parentPage) {
         var pageMargin = parentPage.pageNumber === 1 ? 0 : OPTIONS.pageMargin;
         $(this.domNode).css({
-            'position': 'fixed',
+            'position': 'absolute',
             'top' : this.layout.top - parentPage.top + pageMargin + 'px',
             'left' : this.layout.left + 'px',
             'width' : this.layout.width + 'px',
