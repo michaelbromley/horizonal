@@ -9,7 +9,11 @@ function composePage(currentScroll) {
     ROOT = $(OPTIONS.rootElement);
     var fragment = createDocumentFragment();
     CONTAINER = $(fragment.querySelector('#hrz-container'));
-    CONTAINER.css('display', 'none'); // setting display:none considerably speeds up rendering
+    CONTAINER.css({
+        'display': 'none', // setting display:none considerably speeds up rendering
+        'top': 0,
+        'left': 0
+    });
     VIEWPORT_HEIGHT = $(window).height() - OPTIONS.pageMargin * 2;
 
     displayLoadingIndicator().then(function() {
@@ -25,6 +29,10 @@ function composePage(currentScroll) {
             // since they will just be left floating around in the wrong place.
             CONTAINER.children().not('.hrz-page').filter(':visible').remove();
             ROOT.empty().append(fragment);
+
+            // add the theme's custom CSS to the document now so that it can be
+            // used in calculating the elements' styles.
+            addCustomCssToDocument();
 
             PAGE_COLLECTION.forEach(function(page) {
                 page.nodes.forEach(function(node) {
@@ -46,6 +54,18 @@ function composePage(currentScroll) {
     });
 
     return deferred.promise();
+}
+
+/**
+ * Add the CSS text loaded by loadCustomCss() into the document head.
+ */
+function addCustomCssToDocument() {
+    var $customCssElement = $('#hrz-custom-css');
+    if (0 < $customCssElement.length) {
+        $customCssElement.text(CUSTOM_CSS);
+    } else {
+        $('head').append('<style id="hrz-custom-css" type="text/css">' + CUSTOM_CSS + '</style>');
+    }
 }
 
 /**

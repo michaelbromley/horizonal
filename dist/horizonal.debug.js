@@ -117,13 +117,13 @@ var CONTAINER;
 var ROOT;
 var ROOT_CLONE;
 var VIEWPORT_HEIGHT;
+var CUSTOM_CSS;
 
 
 function Horizonal() {
 
     var _hasBeenInitialized = false;
     var _disabled = false;
-
     var defaults = {
         selector: 'h1, h2, h3, h4, h5, h6, p, li, img, table',
         staggerDelay: 0.1,
@@ -144,19 +144,19 @@ function Horizonal() {
     function init(_OPTIONS) {
         var currentScroll = $(window).scrollTop();
         OPTIONS = $.extend( {}, defaults, _OPTIONS);
-        addCustomCssToHead().then(function() {
+        loadCustomCss().then(function() {
             if (!_hasBeenInitialized) {
                 ROOT = $(OPTIONS.rootElement);
                 ROOT_CLONE = ROOT.clone();
-                //composePage(currentScroll).then(function() {
-                composePage(currentScroll).then(function() {
-                    updatePageCount();
-                    registerEventHandlers();
-                    if (window.location.hash !== '') {
-                        hashChangeHandler();
-                    }
-                    _hasBeenInitialized = true;
-                });
+                composePage(currentScroll)
+                    .then(function() {
+                        updatePageCount();
+                        registerEventHandlers();
+                        if (window.location.hash !== '') {
+                            hashChangeHandler();
+                        }
+                        _hasBeenInitialized = true;
+                    });
             } else {
                 resizeHandler();
             }
@@ -247,8 +247,8 @@ function Horizonal() {
      * is loaded before continuing, in a cross-browser compatible way.
      * @returns {*}
      */
-    function addCustomCssToHead() {
-        var $customCssElement;
+    function loadCustomCss() {
+
         var deferred = new $.Deferred();
 
         if (OPTIONS.customCssFile) {
@@ -260,12 +260,7 @@ function Horizonal() {
         return deferred.promise();
 
         function success(data) {
-            $customCssElement = $('#hrz-custom-css');
-            if (0 < $customCssElement.length) {
-                $customCssElement.text(data);
-            } else {
-                $('head').append('<style id="hrz-custom-css" type="text/css">' + data + '</style>');
-            }
+            CUSTOM_CSS = data;
             deferred.resolve();
         }
     }
@@ -296,7 +291,11 @@ function composePage(currentScroll) {
     ROOT = $(OPTIONS.rootElement);
     var fragment = createDocumentFragment();
     CONTAINER = $(fragment.querySelector('#hrz-container'));
-    CONTAINER.css('display', 'none'); // setting display:none considerably speeds up rendering
+    CONTAINER.css({
+        'display': 'none', // setting display:none considerably speeds up rendering
+        'top': 0,
+        'left': 0
+    });
     VIEWPORT_HEIGHT = $(window).height() - OPTIONS.pageMargin * 2;
 
     displayLoadingIndicator().then(function() {
@@ -312,6 +311,10 @@ function composePage(currentScroll) {
             // since they will just be left floating around in the wrong place.
             CONTAINER.children().not('.hrz-page').filter(':visible').remove();
             ROOT.empty().append(fragment);
+
+            // add the theme's custom CSS to the document now so that it can be
+            // used in calculating the elements' styles.
+            addCustomCssToDocument();
 
             PAGE_COLLECTION.forEach(function(page) {
                 page.nodes.forEach(function(node) {
@@ -333,6 +336,18 @@ function composePage(currentScroll) {
     });
 
     return deferred.promise();
+}
+
+/**
+ * Add the CSS text loaded by loadCustomCss() into the document head.
+ */
+function addCustomCssToDocument() {
+    var $customCssElement = $('#hrz-custom-css');
+    if (0 < $customCssElement.length) {
+        $customCssElement.text(CUSTOM_CSS);
+    } else {
+        $('head').append('<style id="hrz-custom-css" type="text/css">' + CUSTOM_CSS + '</style>');
+    }
 }
 
 /**
