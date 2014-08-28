@@ -4,14 +4,12 @@
  * @param currentScroll
  */
 function composePage(currentScroll) {
-    var start = new Date().getTime(); // profiling performance for optimization
 
     var deferred = new $.Deferred();
     ROOT = $(OPTIONS.rootElement);
     var fragment = createDocumentFragment();
     CONTAINER = $(fragment.querySelector('#hrz-container'));
     CONTAINER.css('display', 'none'); // setting display:none considerably speeds up rendering
-
     VIEWPORT_HEIGHT = $(window).height() - OPTIONS.pageMargin * 2;
 
     displayLoadingIndicator().then(function() {
@@ -36,8 +34,6 @@ function composePage(currentScroll) {
 
             CONTAINER.css('display', '');
 
-            console.log('style loop called: ' + window.called);
-
             var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
             ROOT.height(documentHeight);
             if (!OPTIONS.displayScrollbar) {
@@ -46,9 +42,6 @@ function composePage(currentScroll) {
             renderPageCount();
             removeLoadingIndicator();
             deferred.resolve();
-
-            var end = new Date().getTime();
-            console.log('Time to execute composePage(): ' + (end - start));
         }, 0);
     });
 

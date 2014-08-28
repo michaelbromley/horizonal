@@ -80,7 +80,6 @@ function hashChangeHandler() {
     if (hash !== '') {
         var page = $(hash).closest('.hrz-page');
         var pageNumber = parseInt(page.attr('id').replace(/^\D+/g, ''));
-        console.log('hash change: going to page ' + pageNumber);
         PAGE_COLLECTION.showPage(pageNumber);
         $(window).scrollTop(PAGE_COLLECTION.getCurrent().midPoint);
         updatePageCount();
@@ -138,7 +137,6 @@ function touchmoveHandler(e) {
         var touchEndTime = new Date().getTime();
 
         if (isValidSwipe(_touchStartTime, touchEndTime, _touchStartPos, touchEndPos)) {
-            console.log('swiping');
             var direction = getSwipeDirection(_touchStartPos, touchEndPos);
             switch (direction) {
                 case 'up':
