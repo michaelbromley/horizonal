@@ -12,14 +12,23 @@ these.
 
 ## Dependencies
 
-Horizonal.js requires jQuery. Tested with 1.11.1 and 2.1.1.
+Horizonal.js requires jQuery. Tested with 1.11.1 and 2.1.1. 2.x is recommended since it is smaller, and Horizonal uses ES5 features that make it incompatible with
+older browsers (IE8 and lower), so there is no reason to use 1.x unless you already use it in your project.
 
 ## Installation
 
- 1. Download `horizonal.min.js` and include it in your document *after* jQuery.
+You can install Horizonal by:
+
+* Using Bower: `bower install horizonal`. This will automatically pull in jQuery if you don't already have it.
+* Download the [zip archive](https://github.com/michaelbromley/horizonal/blob/master/dist/horizonal.zip?raw=true) of the necessary files.
+* Download the individual files: [`horizonal.min.js`](https://raw.githubusercontent.com/michaelbromley/horizonal/master/dist/horizonal.min.js)/[`horizonal.debug.js`](https://raw.githubusercontent.com/michaelbromley/horizonal/master/dist/horizonal.debug.js) (the former is minified, the latter not) and [`horizonal.css`](https://raw.githubusercontent.com/michaelbromley/horizonal/master/dist/horizonal.css)
+
+## Setup
+
+ 1. Include Horizonal *after* jQuery in your document.
  2. Include the style rules from horizonal.css either by directly referencing the .css file, or copying the rules to
  your existing stylesheet.
- 3. Initialize Horizonal by calling `horizonal.init()`. Ideally this should be done in jQuery's `$(window).load()` method so that any
+ 3. Initialize Horizonal by calling `horizonal.init()`. This should be done inside jQuery's `$(window).load()` method so that any
  images get loaded first. Pass a config object as the argument of the `init()` method (see below for available options).
  4. Create transitions by defining CSS style rules in your stylesheet and/or a JavaScript callback in the config object (see below for
  example of these).
