@@ -1,28 +1,31 @@
 {
-  "name": "horizonal",
-  "version": "0.0.1",
-  "authors": [
-    "Michael Bromley <michael@michaelbromley.co.uk>"
-  ],
-  "description": "Transform a static HTML document into a collection of pages with programmable transitions.",
-  "main": "dist/horizonal.js",
-  "moduleType": [
-    "globals"
-  ],
-  "keywords": [
-    "css",
-    "3d",
-    "transforms",
-    "paging",
-    "jquery"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "demo",
-    "src"
-  ],
-  "dependencies": {
-    "jquery": "~2.1.1"
-  }
+    "name": "horizonal",
+    "version": "0.0.1",
+    "authors": [
+        "Michael Bromley <michael@michaelbromley.co.uk>"
+    ],
+    "description": "Transform a static HTML document into a collection of pages with programmable transitions.",
+    "main": "dist/horizonal.js",
+    "moduleType": [
+        "globals"
+    ],
+    "keywords": [
+        "css",
+        "3d",
+        "transforms",
+        "paging",
+        "jquery"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "demo",
+        "src",
+        "dist/horizonal.zip",
+        "package.json",
+        "Gruntfile.js"
+    ],
+    "dependencies": {
+        "jquery": "~2.1.1"
+    }
 }
