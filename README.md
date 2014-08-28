@@ -12,7 +12,9 @@ these.
 
 ## Dependencies
 
-Horizonal.js requires jQuery. Tested with 1.11.1 and 2.1.1. 2.x is recommended since it is smaller, and Horizonal uses ES5 features that make it incompatible with
+Horizonal.js requires jQuery. Tested with 1.11.1 and 2.1.1. 
+
+2.x is recommended since it is smaller, and Horizonal uses ES5 features that make it incompatible with
 older browsers (IE8 and lower), so there is no reason to use 1.x unless you already use it in your project.
 
 ## Installation
