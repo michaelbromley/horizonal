@@ -538,6 +538,31 @@ function touchstartHandler(e) {
 function touchmoveHandler(e) {
     if (isValidTouchEvent(e)) {
         e.preventDefault();
+
+        var touchEndPos = {
+            x: getTouchX(e),
+            y: getTouchY(e)
+        };
+        var touchEndTime = new Date().getTime();
+
+        if (isValidSwipe(_touchStartTime, touchEndTime, _touchStartPos, touchEndPos)) {
+            console.log('swiping');
+            var direction = getSwipeDirection(_touchStartPos, touchEndPos);
+            switch (direction) {
+                case 'up':
+                    CONTAINER.css('top', '-30px');
+                    break;
+                case 'down':
+                    CONTAINER.css('top', '30px');
+                    break;
+                case 'left':
+                    CONTAINER.css('left', '-30px');
+                    break;
+                case 'right':
+                    CONTAINER.css('left', '30px');
+                    break;
+            }
+        }
     }
 }
 
@@ -555,6 +580,9 @@ function touchendHandler(e) {
             y: getTouchY(e)
         };
         var touchEndTime = new Date().getTime();
+
+        CONTAINER.css('top', '0px');
+        CONTAINER.css('left', '0px');
 
         if (isValidSwipe(_touchStartTime, touchEndTime, _touchStartPos, touchEndPos)) {
             var direction = getSwipeDirection(_touchStartPos, touchEndPos);
