@@ -1,0 +1,52 @@
+#hrz-container {
+    -webkit-perspective: 3500px;
+            perspective: 3500px;
+}
+
+.hrz-page {
+    -webkit-transform-origin: left center;
+        -ms-transform-origin: left center;
+            transform-origin: left center;
+    -webkit-transition: -webkit-transform 1.2s;
+            transition: transform 1.2s;
+    -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+    background-color: white;
+}
+
+.hrz-page.hrz-back {
+    -webkit-transform: rotateY(-180deg);
+            transform: rotateY(-180deg);
+    -webkit-box-shadow: 60px 0px 150px -3px rgba(50, 50, 50, 0.47);
+            box-shadow: 60px 0px 150px -3px rgba(50, 50, 50, 0.47);
+}
+
+.hrz-page.hrz-focus-from-fore {
+    z-index: -1;
+}
+
+.hrz-page.hrz-fore {
+    z-index: -2;
+}
+
+.hrz-page.hrz-focus-from-back {
+    z-index: 1;
+    -webkit-box-shadow: 60px 0 150px -3px rgba(50, 50, 50, 0.47);
+            box-shadow: 60px 0 150px -3px rgba(50, 50, 50, 0.47);
+}
+
+.shadow-overlay {
+    width: 100%;
+    height: 100%;
+    background: -webkit-gradient(linear, right top, left top, from(rgba(200,200,200,0.2)), color-stop(15%, rgba(143, 147, 147, 0.3)), to(rgba(255,255,255,0)));
+    background: -webkit-linear-gradient(right, rgba(200,200,200,0.2) 0%, rgba(143, 147, 147, 0.3) 15%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(to left, rgba(200,200,200,0.2) 0%, rgba(143, 147, 147, 0.3) 15%, rgba(255,255,255,0) 100%);
+    display: none;
+    z-index: 100;
+    position: relative;
+}
+
+.hrz-page.hrz-hidden {
+
+    
+}

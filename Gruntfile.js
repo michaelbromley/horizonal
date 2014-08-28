@@ -26,7 +26,8 @@ module.exports = function(grunt) {
                     'src/demo-themes/basic-javascript-animation/*.js',
                     'src/demo-themes/slideshow/*.js',
                     'src/demo-themes/star-wars/*.js',
-                    'src/demo-themes/parallax-effect/*.js'
+                    'src/demo-themes/parallax-effect/*.js',
+                    'src/demo-themes/book-pages/*.js'
                 ],
                 dest: 'demo/themes/themes.js'
             }
