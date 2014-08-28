@@ -70,7 +70,10 @@
 <h2>What's It For?</h2>
 <p>
     Horizonal.js grew out of some simple experimentation with CSS transforms and animations, and if nothing else it is a showcase for
-    the cool visual effects that can be achieved through these technologies. Other use cases could be slides for presentations, image
+    the cool visual effects that can be achieved through these technologies.
+</p>
+<p>
+    Other use cases could be slides for presentations, image
     galleries, portfolios, marketing websites, or whatever else you can think of. Note that this is very much an experimental
     project, so be careful and test well before using in production!
 </p>
@@ -78,12 +81,25 @@
 <ul>
     <li>Fully customizable - limited only by your imagination (and JavaScript & CSS chops)</li>
     <li>Touch-enabled: page through the document by swiping.</li>
+    <li>Keyboard control with arrow keys.</li>
     <li>Can handle URL fragments - e.g. <a href="#poem">go to that poem</a></li>
     <li>Can handle large elements that span multiple pages - e.g. <a href="#burj-khalifa">this huge photo</a></li>
-    <li><a href="https://github.com/michaelbromley/horizonal#api">Rich API</a> allowing programmatic control of paging.<li>
+    <li><a href="https://github.com/michaelbromley/horizonal#api">Rich API</a> allowing programmatic control of paging.</li>
+    <li>Faithfully reproduces even complex layouts using grid systems.</li>
 </ul>
+<h2>Performance</h2>
+<p>
+    The demos on this page make use of some pretty new features of CSS, and as a result, browser support can be inconsistent at times.
+    Internet Explorer in particular has trouble with the 3D-type transitions.
+</p>
+<p>
+    Also to note is that the initial calculation of the page layouts is fairly processor-intensive, so on mobile devices in particular,
+    a little delay in loading is to be expected. Depending on the complexity of the transition effect, your device may exhibit a little
+    choppiness if it does not have the power to keep up.
+</p>
 <h2>Try It Out</h2>
 <p>
+    If you know some CSS and JavaScript, try out the interactive playground on Plunker:
     <a class="cta" href="http://plnkr.co/edit/OxlWVuxXwEf2bhDAss9p?p=preview">
         Horizonal Playground on Plunker
     </a>
@@ -103,7 +119,9 @@
 </div>
 
 <div class="row">
-    <h2 class="hrz-start-new-page">The Horizon</h2>
+    <div class="col-xs-12">
+        <h2 class="hrz-start-new-page">The Horizon</h2>
+    </div>
     <div class="col-xs-6 col-md-3">
         <img class="thumbnail" src="assets/5366078166_027c226f5a_q.jpg" title="Creative Commons Attribution: https://www.flickr.com/photos/rejik/5366078166/" />
     </div>
@@ -292,5 +310,6 @@
 <script src="../dist/horizonal.debug.js"></script>
 <script src="themes/themes.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
