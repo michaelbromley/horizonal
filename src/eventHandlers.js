@@ -16,22 +16,6 @@ function resizeHandler() {
 }
 
 /**
- * We want to prevent the resizeHandler being called too often as the page is re-sized.
- * @param fun
- * @param mil
- * @returns {Function}
- */
-function debounce(fun, mil){
-    var timer;
-    return function(){
-        clearTimeout(timer);
-        timer = setTimeout(function(){
-            fun.apply(null, arguments);
-        }, mil);
-    };
-}
-
-/**
  * Allow keyboard paging with the arrow keys.
  * @param e
  */
@@ -67,6 +51,39 @@ function scrollHandler() {
         if (newPageNumber !== currentPageNumber) {
             PAGE_COLLECTION.showPage(newPageNumber);
             updatePageCount();
+        }
+    }
+}
+
+var _mousewheelLastEvent;
+function mousewheelHandler(e) {
+    e.preventDefault();
+
+    var now =  new Date().getTime();
+    if (250 < now - _mousewheelLastEvent || !_mousewheelLastEvent) {
+        _mousewheelLastEvent = new Date().getTime();
+
+        console.log(e.originalEvent.deltaY);
+        var scrollTo;
+        var deltaY = e.originalEvent.deltaY;
+        if (deltaY < 0) {
+            // down or right swipe
+            if (PAGE_COLLECTION.currentPage === 2) {
+                scrollTo = 0;
+            } else if (1 < PAGE_COLLECTION.currentPage) {
+                scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
+            }
+        } else if (0 < deltaY) {
+            // up or left swipe
+            if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
+                scrollTo = PAGE_COLLECTION.getNext().midPoint;
+            }
+        }
+        if (typeof scrollTo !== 'undefined') {
+            $(window).scrollTop(scrollTo);
+            if (250 < now - _mousewheelLastEvent) {
+                _mousewheelLastEvent = null;
+            }
         }
     }
 }
@@ -192,6 +209,30 @@ function touchendHandler(e) {
             $(window).scrollTop(scrollTo);
         }
     }
+}
+
+// ============================================
+//
+// Utility functions used by the event handlers
+//
+// ============================================
+
+
+
+/**
+ * We want to prevent the resizeHandler being called too often as the page is re-sized.
+ * @param fun
+ * @param mil
+ * @returns {Function}
+ */
+function debounce(fun, mil){
+    var timer;
+    return function(){
+        clearTimeout(timer);
+        timer = setTimeout(function(){
+            fun.apply(null, arguments);
+        }, mil);
+    };
 }
 
 /**

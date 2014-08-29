@@ -113,6 +113,7 @@ function Horizonal() {
         $(window).on('touchend pointerup MSPointerUp', touchendHandler);
         $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
         $('a').on('click', linkHandler);
+        $(window.document).on('wheel', mousewheelHandler);
     }
 
     function unregisterEventHandlers() {
