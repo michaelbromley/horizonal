@@ -20,20 +20,11 @@ function resizeHandler() {
  * @param e
  */
 function keydownHandler(e) {
-    var scrollTo;
     if (e.which === 40 || e.which === 39) {
-        if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
-            scrollTo = PAGE_COLLECTION.getNext().midPoint;
-        }
+        scrollToNextPage();
+        e.preventDefault();
     } else if (e.which === 38 || e.which === 37) {
-        if (PAGE_COLLECTION.currentPage === 2) {
-            scrollTo = 0;
-        } else if (1 < PAGE_COLLECTION.currentPage) {
-            scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
-        }
-    }
-    if (scrollTo !== undefined) {
-        $(window).scrollTop(scrollTo);
+        scrollToPreviousPage();
         e.preventDefault();
     }
 }
@@ -56,34 +47,28 @@ function scrollHandler() {
 }
 
 var _mousewheelLastEvent;
+/**
+ * Handler to throttle the action of a scroll wheel on a mouse/laptop trackpad. This prevents
+ * pages being skipped when a fast scroll motion is performed.
+ * @param e
+ */
 function mousewheelHandler(e) {
     e.preventDefault();
 
     var now =  new Date().getTime();
+
     if (250 < now - _mousewheelLastEvent || !_mousewheelLastEvent) {
+        var deltaY = e.originalEvent.deltaY;
         _mousewheelLastEvent = new Date().getTime();
 
-        console.log(e.originalEvent.deltaY);
-        var scrollTo;
-        var deltaY = e.originalEvent.deltaY;
         if (deltaY < 0) {
-            // down or right swipe
-            if (PAGE_COLLECTION.currentPage === 2) {
-                scrollTo = 0;
-            } else if (1 < PAGE_COLLECTION.currentPage) {
-                scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
-            }
+            scrollToPreviousPage();
         } else if (0 < deltaY) {
-            // up or left swipe
-            if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
-                scrollTo = PAGE_COLLECTION.getNext().midPoint;
-            }
+            scrollToNextPage();
         }
-        if (typeof scrollTo !== 'undefined') {
-            $(window).scrollTop(scrollTo);
-            if (250 < now - _mousewheelLastEvent) {
-                _mousewheelLastEvent = null;
-            }
+
+        if (250 < now - _mousewheelLastEvent) {
+            _mousewheelLastEvent = null;
         }
     }
 }
@@ -194,17 +179,9 @@ function touchendHandler(e) {
         if (isValidSwipe(_touchStartTime, touchEndTime, _touchStartPos, touchEndPos)) {
             var direction = getSwipeDirection(_touchStartPos, touchEndPos);
             if (direction === "down" || direction === "right") {
-                // down or right swipe
-                if (PAGE_COLLECTION.currentPage === 2) {
-                    scrollTo = 0;
-                } else if (1 < PAGE_COLLECTION.currentPage) {
-                    scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
-                }
+                scrollToPreviousPage();
             } else {
-                // up or left swipe
-                if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
-                    scrollTo = PAGE_COLLECTION.getNext().midPoint;
-                }
+                scrollToNextPage();
             }
             $(window).scrollTop(scrollTo);
         }
@@ -217,7 +194,30 @@ function touchendHandler(e) {
 //
 // ============================================
 
+/**
+ * The way the event handlers change from one page to the next is by
+ * setting the value of window.scrollTop, and then letting the
+ * scroll handler take care of actually doing the transition
+ */
+function scrollToNextPage() {
+    var scrollTo;
+    if (PAGE_COLLECTION.currentPage < PAGE_COLLECTION.length) {
+        scrollTo = PAGE_COLLECTION.getNext().midPoint;
+        $(window).scrollTop(scrollTo);
+    }
+}
 
+function scrollToPreviousPage() {
+    var scrollTo;
+    if (PAGE_COLLECTION.currentPage === 2) {
+        scrollTo = 0;
+    } else if (1 < PAGE_COLLECTION.currentPage) {
+        scrollTo = PAGE_COLLECTION.getPrevious().midPoint;
+    }
+    if (typeof scrollTo !== 'undefined') {
+        $(window).scrollTop(scrollTo);
+    }
+}
 
 /**
  * We want to prevent the resizeHandler being called too often as the page is re-sized.
