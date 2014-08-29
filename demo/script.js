@@ -12,8 +12,10 @@
         $('#switch').on('change', function() {
             if ($('#switch').is(':checked')) {
                 horizonal.enable();
+                $('#theme-selector').attr('disabled', null);
             } else {
                 horizonal.disable();
+                $('#theme-selector').attr('disabled', 'true');
             }
         });
     });

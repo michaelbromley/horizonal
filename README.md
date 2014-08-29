@@ -178,7 +178,7 @@ var defaults = {
     staggerDelay: 0.1,
     stagger: 'random',
     customCssFile: false,
-    displayScrollbar: true,
+    displayScrollbar: false,
     scrollbarShortenRatio: 2,
     pageMargin: 20,
     displayPageCount: true,
