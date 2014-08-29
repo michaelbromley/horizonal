@@ -20,6 +20,11 @@ function composePage(currentScroll) {
         // a setTimeout is used to force async execution and allow the loadingIndicator to display before the
         // heavy computations of composePage() are begun.
         setTimeout(function() {
+
+            if (!OPTIONS.displayScrollbar) {
+                $('body').css('overflow-y', 'hidden');
+            }
+
             var allNodes = new NodeCollection(OPTIONS.selector);
 
             PAGE_COLLECTION = pageCollectionGenerator.fromNodeCollection(allNodes);
@@ -44,9 +49,6 @@ function composePage(currentScroll) {
 
             var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
             ROOT.height(documentHeight);
-            if (!OPTIONS.displayScrollbar) {
-                $('body').css('overflow-y', 'hidden');
-            }
             renderPageCount();
             removeLoadingIndicator();
             deferred.resolve();

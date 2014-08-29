@@ -16,7 +16,7 @@ function Horizonal() {
         staggerDelay: 0.1,
         stagger: 'random',
         customCssFile: false,
-        displayScrollbar: true,
+        displayScrollbar: false,
         scrollbarShortenRatio: 2, // long scrolling between pages can be a pain, so a higher value here will shorten the scroll distance between pages
         pageMargin: 20,
         displayPageCount: true,
@@ -112,8 +112,8 @@ function Horizonal() {
         $(window).on('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).on('touchend pointerup MSPointerUp', touchendHandler);
         $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
-        $('a').on('click', linkHandler);
         $(window.document).on('wheel', mousewheelHandler);
+        $('a').on('click', linkHandler);
     }
 
     function unregisterEventHandlers() {
@@ -124,6 +124,7 @@ function Horizonal() {
         $(window).off('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).off('touchend pointerup MSPointerUp', touchendHandler);
         $(window).off('touchmove pointermove MSPointerMove', touchmoveHandler);
+        $(window.document).off('wheel', mousewheelHandler);
         $('a').off('click', linkHandler);
     }
 

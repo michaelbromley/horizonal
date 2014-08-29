@@ -129,7 +129,7 @@ function Horizonal() {
         staggerDelay: 0.1,
         stagger: 'random',
         customCssFile: false,
-        displayScrollbar: true,
+        displayScrollbar: false,
         scrollbarShortenRatio: 2, // long scrolling between pages can be a pain, so a higher value here will shorten the scroll distance between pages
         pageMargin: 20,
         displayPageCount: true,
@@ -225,8 +225,8 @@ function Horizonal() {
         $(window).on('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).on('touchend pointerup MSPointerUp', touchendHandler);
         $(window).on('touchmove pointermove MSPointerMove', touchmoveHandler);
-        $('a').on('click', linkHandler);
         $(window.document).on('wheel', mousewheelHandler);
+        $('a').on('click', linkHandler);
     }
 
     function unregisterEventHandlers() {
@@ -237,6 +237,7 @@ function Horizonal() {
         $(window).off('touchstart pointerdown MSPointerDown', touchstartHandler);
         $(window).off('touchend pointerup MSPointerUp', touchendHandler);
         $(window).off('touchmove pointermove MSPointerMove', touchmoveHandler);
+        $(window.document).off('wheel', mousewheelHandler);
         $('a').off('click', linkHandler);
     }
 
@@ -303,6 +304,11 @@ function composePage(currentScroll) {
         // a setTimeout is used to force async execution and allow the loadingIndicator to display before the
         // heavy computations of composePage() are begun.
         setTimeout(function() {
+
+            if (!OPTIONS.displayScrollbar) {
+                $('body').css('overflow-y', 'hidden');
+            }
+
             var allNodes = new NodeCollection(OPTIONS.selector);
 
             PAGE_COLLECTION = pageCollectionGenerator.fromNodeCollection(allNodes);
@@ -327,9 +333,6 @@ function composePage(currentScroll) {
 
             var documentHeight = PAGE_COLLECTION.last().bottom / OPTIONS.scrollbarShortenRatio + VIEWPORT_HEIGHT;
             ROOT.height(documentHeight);
-            if (!OPTIONS.displayScrollbar) {
-                $('body').css('overflow-y', 'hidden');
-            }
             renderPageCount();
             removeLoadingIndicator();
             deferred.resolve();
