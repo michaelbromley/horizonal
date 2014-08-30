@@ -1,0 +1,84 @@
+
+
+#hrz-container {
+    background-color: #111;
+}
+
+.hrz-page {
+
+}
+
+.hrz-element {
+    transition: opacity 0.1s;
+    color: rgb(13, 186, 13) !important;
+    font-family: Consolas, monaco, monospace !important;
+    line-height: 0.8 !important;
+    line-height: 1.2 !important;
+    font-size: 0.9em;
+}
+
+.hrz-page.hrz-hidden > .hrz-element {
+    display: none;
+}
+
+.hrz-page.hrz-back > .hrz-element,
+.hrz-page.hrz-fore > .hrz-element
+{
+    opacity: 0;
+}
+
+img.hrz-element {
+    transition: none !important;
+    background-color: transparent;
+    filter: url('themes/hacker-console.svg#green');
+}
+
+svg.hrz-element, img.hrz-element {
+    border: 1px solid rgb(13, 186, 13) !important;
+}
+
+/* custom styling of known page elements */
+.hrz-element.splash h1 {
+    background: transparent;
+    border: 5px solid rgb(13, 186, 13);
+    color: rgb(13, 186, 13);
+    font-size: 15vw;
+}
+
+.cta {
+    padding: 10px;
+    border: 1px solid rgb(13, 186, 13);
+    color: rgb(13, 250, 13);
+    border-radius: 0;
+}
+
+.hrz-element.thumbnail {
+    background-color: transparent;
+    border-radius: 0;
+}
+
+p.hrz-element:before {
+    content: '> ';
+    margin-left: -21px;
+}
+
+h2.hrz-element {
+    font-size: 1.4em;
+}
+
+h2:before {
+    content: '#';
+    margin-left: -29px;
+    margin-right: 6px;
+}
+
+li.hrz-element {
+    list-style: none;
+}
+
+li.hrz-element:before {
+    content: '@';
+    font-size: 0.8em;
+    margin-left: -15px;
+    margin-right: 5px;
+}
