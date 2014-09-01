@@ -24,11 +24,11 @@ module.exports = function(grunt) {
                     'src/demo-themes/basic-css-transitions/*.js',
                     'src/demo-themes/basic-css-animations/*.js',
                     'src/demo-themes/basic-javascript-animation/*.js',
-                    'src/demo-themes/slideshow/*.js',
+                    'src/demo-themes/spectrum-slides/*.js',
+                    'src/demo-themes/book-pages/*.js',
                     'src/demo-themes/star-wars/*.js',
                     'src/demo-themes/parallax-effect/*.js',
-                    'src/demo-themes/book-pages/*.js',
-                    'src/demo-themes/hacker-console/*.js',
+                    'src/demo-themes/hacker-console/*.js'
                 ],
                 dest: 'demo/themes/themes.js'
             }

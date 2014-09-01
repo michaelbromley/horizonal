@@ -13,6 +13,7 @@ themes["Hacker Console"] = {
             if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
                 page.domNode.style.opacity = 0;
 
+                // make images green
                 if (isIE()) {
                     $(page.domNode).find('img').replaceWith(svgReplace);
                     $(page.domNode).find('svg').hide();
@@ -29,10 +30,24 @@ themes["Hacker Console"] = {
                         $(el).fadeIn(100);
                     }, delay);
                 });
+
+                // add caret to all textual element while they are typing
+                $('.caret').remove();
+                $(page.domNode).find('p, h1, h2, h3, h4, li').each(function() {
+                    var fontSize = $(this).css('font-size');
+                    $(this).append('<span class="caret" style="height: ' + fontSize + '"></span>');
+                });
+                // after all typing completed, remove carets from all but last textual element
+                window.setTimeout(function() {
+                    $('.caret').slice(0, -1).remove();
+                }, 1000);
             }
 
             /**
              * Internet Explorer can only apply SVG filters to an image if it is embedded within an SVG element.
+             *
+             * Concept and aspects of code borrowed from Karl Horky https://github.com/karlhorky/gray
+             *
              * @returns {*|jQuery|HTMLElement}
              */
             function svgReplace() {

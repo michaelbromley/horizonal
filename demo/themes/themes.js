@@ -110,15 +110,53 @@ themes["Basic JavaScript Animations"] = {
 };
 var themes = themes || {};
 
-themes["Slide Show"] = {
+themes["Spectrum Slides"] = {
     options: {
-        customCssFile: 'themes/slideshow.css',
+        customCssFile: 'themes/spectrum-slides.css',
         pageMargin: 40,
         stagger: 'random',
         staggerDelay: 0,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         rootElement: '#root',
-        pageHideDelay: 3
+        onPageTransition: function(type, page) {
+
+            if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
+                if (page.pageNumber !== 1) {
+                    var h = 245 - (page.pageNumber * 25);
+                    var hslColour = 'hsla(' + h + ', 100%, 75%, 1)';
+                    page.domNode.style.backgroundColor = hslColour;
+                }
+            }
+
+        }
+    }
+};
+var themes = themes || {};
+
+themes["Book Pages"] = {
+    options: {
+        customCssFile: 'themes/book-pages.css',
+        pageMargin: 40,
+        staggerDelay: 0,
+        pageHideDelay: 0.7,
+        selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, ul, ol, pre',
+        rootElement: '#root',
+        onPageTransition: function(type, page) {
+            var $shadowOverlay = $(page.domNode).find('.shadow-overlay');
+            window.clearTimeout(page.timer);
+
+            if ($shadowOverlay.length === 0) {
+                $(page.domNode).append('<div class="shadow-overlay"></div>');
+                $shadowOverlay = $(page.domNode).find('.shadow-overlay');
+            }
+
+            if (type === 'toBackground' || type === 'toFocusFromBack') {
+                $shadowOverlay.fadeIn(150);
+                page.timer = window.setTimeout(function() {
+                    $shadowOverlay.fadeOut(300);
+                }, 500);
+            }
+        }
     }
 };
 var themes = themes || {};
@@ -130,7 +168,46 @@ themes["Star Wars"] = {
         staggerDelay: 0,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, li',
         rootElement: '#root',
-        pageHideDelay: 3
+        pageMargin: 50,
+        onPageTransition: function(type, page) {
+            if ($('.starfield').length === 0) {
+                $('#hrz-container').prepend('<div class="starfield"></div>');
+            }
+
+            var pageHeight = $(window).height() - 100;
+
+            if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
+                var currentPage = page.pageNumber;
+
+                $('.hrz-page').each(function(index) {
+                    var offset = (index + 1) - currentPage;
+
+                    if (index === 0) {
+                        if (currentPage === 1) {
+                            this.style.transform = 'rotateX(0deg) translateZ(0px)';
+                            this.style.opacity = '1';
+                        } else {
+                            this.style.transform = 'rotateX(0deg) translateZ(-1000px)';
+                            this.style.opacity = '0';
+                        }
+                    } else {
+                        this.style.transform = 'rotateX(60deg) translateY(' + parseInt(offset * pageHeight + 100) + 'px)';
+                        if (offset < -2) {
+                            this.style.opacity = '0';
+                        } else {
+                            this.style.opacity = '1';
+                        }
+                    }
+
+                    if (index === currentPage + 1) {
+                        this.style.left = '0px';
+                    } else {
+                        this.style.left = 'inherit';
+                    }
+
+                });
+            }
+        }
     }
 };
 var themes = themes || {};
@@ -149,22 +226,43 @@ themes["Parallax Effect"] = {
                 window.setTimeout(function() {
                     page.domNode.classList.remove('hidden');
                 });
+
+                // scroll the background by adding a class to th container
+                $('#hrz-container').removeClass(function() {
+                    var classList = '';
+                    var totalPages = $('.hrz-page').length;
+                    for (var i = 1; i <= totalPages; i++) {
+                        classList += 'p' + i + ' ';
+                    }
+                    return classList;
+                }).addClass('p' + page.pageNumber);
+
+                if (5 < page.pageNumber) {
+                    $('#hrz-container').addClass('max-top');
+                } else {
+                    $('#hrz-container').removeClass('max-top');
+                }
             }
         },
         onNodeTransition: function(type, node, animator) {
-            var originalTop, z;
+            var originalTop, z, zIndex, pageHeight;
+            pageHeight = $(window).height();
 
             if (type == 'toBackground') {
 
                 z = getRandomZ();
+                zIndex = Math.round(z);
                 node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
-                node.domNode.style.top = (parseInt(node.domNode.style.top) - 1500) + 'px';
+                node.domNode.style.zIndex = zIndex;
+                node.domNode.style.top = (parseInt(node.domNode.style.top) - pageHeight * 2) + 'px';
 
             } else if (type == 'toForeground') {
 
                 z = getRandomZ();
+                zIndex = Math.round(z);
                 node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
-                node.domNode.style.top = (parseInt(node.domNode.style.top) + 1500) + 'px';
+                node.domNode.style.zIndex = zIndex;
+                node.domNode.style.top = (parseInt(node.domNode.style.top) + pageHeight * 2) + 'px';
 
             } else if (type == 'toFocusFromFore') {
 
@@ -181,17 +279,19 @@ themes["Parallax Effect"] = {
                 node.restore();
 
                 if (from === 'back') {
-                    startingTop = (parseInt(node.domNode.style.top) - 700) + 'px';
+                    startingTop = (parseInt(node.domNode.style.top) - pageHeight) + 'px';
                 } else {
-                    startingTop = (parseInt(node.domNode.style.top) + 700) + 'px';
+                    startingTop = (parseInt(node.domNode.style.top) + pageHeight) + 'px';
                 }
 
                 z = getRandomZ();
+                zIndex = Math.round(z);
                 originalTop = node.domNode.style.top;
                 node.domNode.style.top = startingTop;
                 node.domNode.style.opacity = '0';
                 window.setTimeout(function() {
                     node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
+                    node.domNode.style.zIndex = zIndex;
                 }, 1);
                 window.setTimeout(function() {
                     node.domNode.classList.add('transition');
@@ -215,34 +315,6 @@ themes["Parallax Effect"] = {
 };
 var themes = themes || {};
 
-themes["Book Pages"] = {
-    options: {
-        customCssFile: 'themes/book-pages.css',
-        pageMargin: 40,
-        staggerDelay: 0,
-        pageHideDelay: 0.8,
-        selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, ul, ol, pre',
-        rootElement: '#root',
-        onPageTransition: function(type, page) {
-            var $shadowOverlay = $(page.domNode).find('.shadow-overlay');
-            window.clearTimeout(page.timer);
-
-            if ($shadowOverlay.length === 0) {
-                $(page.domNode).append('<div class="shadow-overlay"></div>');
-                $shadowOverlay = $(page.domNode).find('.shadow-overlay');
-            }
-
-            if (type === 'toBackground' || type === 'toFocusFromBack') {
-                $shadowOverlay.fadeIn(150);
-                page.timer = window.setTimeout(function() {
-                    $shadowOverlay.fadeOut(300);
-                }, 500);
-            }
-        }
-    }
-};
-var themes = themes || {};
-
 themes["Hacker Console"] = {
     options: {
         customCssFile: 'themes/hacker-console.css',
@@ -256,6 +328,7 @@ themes["Hacker Console"] = {
             if (type === 'toFocusFromFore' || type === 'toFocusFromBack') {
                 page.domNode.style.opacity = 0;
 
+                // make images green
                 if (isIE()) {
                     $(page.domNode).find('img').replaceWith(svgReplace);
                     $(page.domNode).find('svg').hide();
@@ -272,10 +345,24 @@ themes["Hacker Console"] = {
                         $(el).fadeIn(100);
                     }, delay);
                 });
+
+                // add caret to all textual element while they are typing
+                $('.caret').remove();
+                $(page.domNode).find('p, h1, h2, h3, h4, li').each(function() {
+                    var fontSize = $(this).css('font-size');
+                    $(this).append('<span class="caret" style="height: ' + fontSize + '"></span>');
+                });
+                // after all typing completed, remove carets from all but last textual element
+                window.setTimeout(function() {
+                    $('.caret').slice(0, -1).remove();
+                }, 1000);
             }
 
             /**
              * Internet Explorer can only apply SVG filters to an image if it is embedded within an SVG element.
+             *
+             * Concept and aspects of code borrowed from Karl Horky https://github.com/karlhorky/gray
+             *
              * @returns {*|jQuery|HTMLElement}
              */
             function svgReplace() {

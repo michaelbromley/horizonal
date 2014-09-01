@@ -4,14 +4,16 @@
 
 .hrz-page {
     transform-origin: left center;
-    transition: transform 1.2s;
+    transition: transform 0.8s;
     transform-style: preserve-3d;
     background-color: white;
+    backface-visibility: hidden;
 }
 
 .hrz-page.hrz-back {
-    transform: rotateY(-180deg);
-    box-shadow: 60px 0px 150px -3px rgba(50, 50, 50, 0.47);
+    transform: rotateY(-90deg);
+    box-shadow: 60px 0 150px -3px rgba(50, 50, 50, 0.47);
+    backface-visibility: hidden;
 }
 
 .hrz-page.hrz-focus-from-fore {

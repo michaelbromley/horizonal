@@ -5,7 +5,7 @@ themes["Book Pages"] = {
         customCssFile: 'themes/book-pages.css',
         pageMargin: 40,
         staggerDelay: 0,
-        pageHideDelay: 0.8,
+        pageHideDelay: 0.7,
         selector: 'p,img,h1,h2,h3, h4, .h, .thumbnail, em, ul, ol, pre',
         rootElement: '#root',
         onPageTransition: function(type, page) {

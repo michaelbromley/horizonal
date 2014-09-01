@@ -14,22 +14,43 @@ themes["Parallax Effect"] = {
                 window.setTimeout(function() {
                     page.domNode.classList.remove('hidden');
                 });
+
+                // scroll the background by adding a class to th container
+                $('#hrz-container').removeClass(function() {
+                    var classList = '';
+                    var totalPages = $('.hrz-page').length;
+                    for (var i = 1; i <= totalPages; i++) {
+                        classList += 'p' + i + ' ';
+                    }
+                    return classList;
+                }).addClass('p' + page.pageNumber);
+
+                if (5 < page.pageNumber) {
+                    $('#hrz-container').addClass('max-top');
+                } else {
+                    $('#hrz-container').removeClass('max-top');
+                }
             }
         },
         onNodeTransition: function(type, node, animator) {
-            var originalTop, z;
+            var originalTop, z, zIndex, pageHeight;
+            pageHeight = $(window).height();
 
             if (type == 'toBackground') {
 
                 z = getRandomZ();
+                zIndex = Math.round(z);
                 node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
-                node.domNode.style.top = (parseInt(node.domNode.style.top) - 1500) + 'px';
+                node.domNode.style.zIndex = zIndex;
+                node.domNode.style.top = (parseInt(node.domNode.style.top) - pageHeight * 2) + 'px';
 
             } else if (type == 'toForeground') {
 
                 z = getRandomZ();
+                zIndex = Math.round(z);
                 node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
-                node.domNode.style.top = (parseInt(node.domNode.style.top) + 1500) + 'px';
+                node.domNode.style.zIndex = zIndex;
+                node.domNode.style.top = (parseInt(node.domNode.style.top) + pageHeight * 2) + 'px';
 
             } else if (type == 'toFocusFromFore') {
 
@@ -46,17 +67,19 @@ themes["Parallax Effect"] = {
                 node.restore();
 
                 if (from === 'back') {
-                    startingTop = (parseInt(node.domNode.style.top) - 700) + 'px';
+                    startingTop = (parseInt(node.domNode.style.top) - pageHeight) + 'px';
                 } else {
-                    startingTop = (parseInt(node.domNode.style.top) + 700) + 'px';
+                    startingTop = (parseInt(node.domNode.style.top) + pageHeight) + 'px';
                 }
 
                 z = getRandomZ();
+                zIndex = Math.round(z);
                 originalTop = node.domNode.style.top;
                 node.domNode.style.top = startingTop;
                 node.domNode.style.opacity = '0';
                 window.setTimeout(function() {
                     node.domNode.style.transform = 'translate3d(0, 0, ' + z + 'px)';
+                    node.domNode.style.zIndex = zIndex;
                 }, 1);
                 window.setTimeout(function() {
                     node.domNode.classList.add('transition');

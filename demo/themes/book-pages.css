@@ -7,18 +7,22 @@
     -webkit-transform-origin: left center;
         -ms-transform-origin: left center;
             transform-origin: left center;
-    -webkit-transition: -webkit-transform 1.2s;
-            transition: transform 1.2s;
+    -webkit-transition: -webkit-transform 0.8s;
+            transition: transform 0.8s;
     -webkit-transform-style: preserve-3d;
             transform-style: preserve-3d;
     background-color: white;
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
 }
 
 .hrz-page.hrz-back {
-    -webkit-transform: rotateY(-180deg);
-            transform: rotateY(-180deg);
-    -webkit-box-shadow: 60px 0px 150px -3px rgba(50, 50, 50, 0.47);
-            box-shadow: 60px 0px 150px -3px rgba(50, 50, 50, 0.47);
+    -webkit-transform: rotateY(-90deg);
+            transform: rotateY(-90deg);
+    -webkit-box-shadow: 60px 0 150px -3px rgba(50, 50, 50, 0.47);
+            box-shadow: 60px 0 150px -3px rgba(50, 50, 50, 0.47);
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
 }
 
 .hrz-page.hrz-focus-from-fore {

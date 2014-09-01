@@ -1,0 +1,169 @@
+#hrz-container {
+    -webkit-perspective: 1000px;
+            perspective: 1000px;
+    background: -webkit-radial-gradient(center, ellipse, #111111 79%, #333 100%);
+    background: radial-gradient(ellipse at center, #111111 79%,#333 100%);
+}
+
+.hrz-page {
+    background-color: #fff;
+    overflow: hidden;
+    -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+}
+
+.hrz-page.hrz-back {
+    -webkit-animation: tiltBack 1s both ease;
+            animation: tiltBack 1s both ease;
+    -webkit-transform-origin: center top;
+        -ms-transform-origin: center top;
+            transform-origin: center top;
+}
+
+.hrz-page.hrz-focus-from-fore {
+    -webkit-animation: slideUp 1s both;
+            animation: slideUp 1s both;
+}
+
+.hrz-page.hrz-focus-from-fore > .hrz-element {
+    -webkit-animation: slideDownContents 1s both;
+            animation: slideDownContents 1s both;
+}
+
+.hrz-page.hrz-fore {
+    -webkit-animation: slideDown 0.8s both;
+            animation: slideDown 0.8s both;
+}
+
+.hrz-page.hrz-fore > .hrz-element {
+    -webkit-animation: slideUpContents 1s both;
+            animation: slideUpContents 1s both;
+}
+.hrz-page.hrz-focus-from-back {
+    -webkit-animation: tiltForward 1s both ease;
+            animation: tiltForward 1s both ease;
+    -webkit-transform-origin: center top;
+        -ms-transform-origin: center top;
+            transform-origin: center top;
+}
+
+@-webkit-keyframes tiltBack {
+	0% { }
+	100% {
+        -webkit-transform: rotateX(-15deg) translateZ(-100px);
+                transform: rotateX(-15deg) translateZ(-100px);
+        opacity: 0.7;
+    }
+}
+
+@keyframes tiltBack {
+	0% { }
+	100% {
+        -webkit-transform: rotateX(-15deg) translateZ(-100px);
+                transform: rotateX(-15deg) translateZ(-100px);
+        opacity: 0.7;
+    }
+}
+
+@-webkit-keyframes tiltForward {
+	0% {
+        -webkit-transform: rotateX(-15deg) translateZ(-100px);
+                transform: rotateX(-15deg) translateZ(-100px);
+        opacity: 0.7;
+    }
+	100% { }
+}
+
+@keyframes tiltForward {
+	0% {
+        -webkit-transform: rotateX(-15deg) translateZ(-100px);
+                transform: rotateX(-15deg) translateZ(-100px);
+        opacity: 0.7;
+    }
+	100% { }
+}
+
+@-webkit-keyframes slideUp {
+	0% {
+        -webkit-transform: translateY(1000px);
+                transform: translateY(1000px);
+    }
+	100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+	0% {
+        -webkit-transform: translateY(1000px);
+                transform: translateY(1000px);
+    }
+	100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+}
+@-webkit-keyframes slideDown {
+	0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+	100% {
+        -webkit-transform: translateY(1000px);
+                transform: translateY(1000px);
+    }
+}
+@keyframes slideDown {
+	0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+	100% {
+        -webkit-transform: translateY(1000px);
+                transform: translateY(1000px);
+    }
+}
+
+@-webkit-keyframes slideDownContents {
+	0% {
+        -webkit-transform: translateY(-800px);
+                transform: translateY(-800px);
+    }
+	100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+}
+
+@keyframes slideDownContents {
+	0% {
+        -webkit-transform: translateY(-800px);
+                transform: translateY(-800px);
+    }
+	100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+}
+@-webkit-keyframes slideUpContents {
+	0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+	100% {
+        -webkit-transform: translateY(-800px);
+                transform: translateY(-800px);
+    }
+}
+@keyframes slideUpContents {
+	0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+	100% {
+        -webkit-transform: translateY(-800px);
+                transform: translateY(-800px);
+    }
+}
+

@@ -1,0 +1,86 @@
+#hrz-container {
+    perspective: 1000px;
+    background: radial-gradient(ellipse at center, #111111 79%,#333 100%);
+}
+
+.hrz-page {
+    background-color: #fff;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+.hrz-page.hrz-back {
+    animation: tiltBack 1s both ease;
+    transform-origin: center top;
+}
+
+.hrz-page.hrz-focus-from-fore {
+    animation: slideUp 1s both;
+}
+
+.hrz-page.hrz-focus-from-fore > .hrz-element {
+    animation: slideDownContents 1s both;
+}
+
+.hrz-page.hrz-fore {
+    animation: slideDown 0.8s both;
+}
+
+.hrz-page.hrz-fore > .hrz-element {
+    animation: slideUpContents 1s both;
+}
+.hrz-page.hrz-focus-from-back {
+    animation: tiltForward 1s both ease;
+    transform-origin: center top;
+}
+
+@keyframes tiltBack {
+	0% { }
+	100% {
+        transform: rotateX(-15deg) translateZ(-100px);
+        opacity: 0.7;
+    }
+}
+
+@keyframes tiltForward {
+	0% {
+        transform: rotateX(-15deg) translateZ(-100px);
+        opacity: 0.7;
+    }
+	100% { }
+}
+
+@keyframes slideUp {
+	0% {
+        transform: translateY(1000px);
+    }
+	100% {
+        transform: translateY(0);
+    }
+}
+@keyframes slideDown {
+	0% {
+        transform: translateY(0);
+    }
+	100% {
+        transform: translateY(1000px);
+    }
+}
+
+@keyframes slideDownContents {
+	0% {
+        transform: translateY(-800px);
+    }
+	100% {
+        transform: translateY(0);
+    }
+}
+@keyframes slideUpContents {
+	0% {
+        transform: translateY(0);
+    }
+	100% {
+        transform: translateY(-800px);
+    }
+}
+

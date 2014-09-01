@@ -1,49 +1,182 @@
 #hrz-container {
     -webkit-perspective: 800px;
             perspective: 800px;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#1d1e25), to(#000000));
-    background-image: -webkit-linear-gradient(top, #1d1e25 0%, #000000 100%);
-    background-image: linear-gradient(to bottom, #1d1e25 0%, #000000 100%);
+    background-color: #111;
+}
+#hrz-container:before {
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background:
+        radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 214px 130px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 488px 42px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 600px 84px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 846px 123px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1083px 185px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1226px 145px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 1494px 115px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1674px 76px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1822px 59px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 2072px 33px, #eee, rgba(0,0,0,0)),  radial-gradient(2px 2px at 120px 230px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 290px 160px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 455px 220px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 760px 259px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 899px 240px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 1080px 290px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1280px 188px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1414px 200px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1750px 145px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 1850px 219px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 2020px 223px, #eee, rgba(0,0,0,0)),  radial-gradient(2px 2px at 60px 455px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 320px 423px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 490px 487px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 600px 524px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 800px 455px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 1110px 512px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1278px 498px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1465px 534px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1600px 465px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1800px 423px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 2050px 511px, #eee, rgba(0,0,0,0)),  radial-gradient(1px 1px at 50px 643px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 225px 753px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 476px 620px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 633px 776px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 895px 766px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1022px 738px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1209px 683px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1457px 636px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 1681px 774px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1823px 626px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 2053px 799px, #eee, rgba(0,0,0,0)),  radial-gradient(2px 2px at 99px 830px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 220px 978px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 453px 935px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 625px 897px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 822px 832px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1099px 930px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 1225px 830px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1475px 930px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 1650px 830px, #eee, rgba(0,0,0,0)), radial-gradient(1px 1px at 1860px 930px, #eee, rgba(0,0,0,0)), radial-gradient(2px 2px at 2010px 830px, #eee, rgba(0,0,0,0));
+    background:
+        -webkit-radial-gradient(20px 30px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(214px 130px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(488px 42px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(600px 84px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(846px 123px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1083px 185px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1226px 145px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1494px 115px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1674px 76px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1822px 59px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(2072px 33px, 2px 2px, #eee, rgba(0,0,0,0)),  -webkit-radial-gradient(120px 230px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(290px 160px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(455px 220px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(760px 259px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(899px 240px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1080px 290px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1280px 188px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1414px 200px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1750px 145px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1850px 219px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(2020px 223px, 2px 2px, #eee, rgba(0,0,0,0)),  -webkit-radial-gradient(60px 455px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(320px 423px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(490px 487px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(600px 524px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(800px 455px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1110px 512px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1278px 498px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1465px 534px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1600px 465px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1800px 423px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(2050px 511px, 2px 2px, #eee, rgba(0,0,0,0)),  -webkit-radial-gradient(50px 643px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(225px 753px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(476px 620px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(633px 776px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(895px 766px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1022px 738px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1209px 683px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1457px 636px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1681px 774px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1823px 626px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(2053px 799px, 2px 2px, #eee, rgba(0,0,0,0)),  -webkit-radial-gradient(99px 830px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(220px 978px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(453px 935px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(625px 897px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(822px 832px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1099px 930px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1225px 830px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1475px 930px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1650px 830px, 2px 2px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(1860px 930px, 1px 1px, #eee, rgba(0,0,0,0)), -webkit-radial-gradient(2010px 830px, 2px 2px, #eee, rgba(0,0,0,0));
+    background:
+        radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 214px 130px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 488px 42px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 600px 84px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 846px 123px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1083px 185px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1226px 145px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 1494px 115px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1674px 76px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1822px 59px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 2072px 33px, #eee, rgba(0,0,0,0)),
+
+        radial-gradient(2px 2px at 120px 230px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 290px 160px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 455px 220px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 760px 259px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 899px 240px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 1080px 290px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1280px 188px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1414px 200px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1750px 145px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 1850px 219px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 2020px 223px, #eee, rgba(0,0,0,0)),
+
+        radial-gradient(2px 2px at 60px 455px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 320px 423px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 490px 487px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 600px 524px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 800px 455px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 1110px 512px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1278px 498px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1465px 534px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1600px 465px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1800px 423px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 2050px 511px, #eee, rgba(0,0,0,0)),
+
+        radial-gradient(1px 1px at 50px 643px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 225px 753px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 476px 620px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 633px 776px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 895px 766px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1022px 738px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1209px 683px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1457px 636px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 1681px 774px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1823px 626px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 2053px 799px, #eee, rgba(0,0,0,0)),
+
+        radial-gradient(2px 2px at 99px 830px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 220px 978px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 453px 935px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 625px 897px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 822px 832px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1099px 930px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 1225px 830px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1475px 930px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 1650px 830px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 1860px 930px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 2010px 830px, #eee, rgba(0,0,0,0));
+
+    -webkit-animation: spin 700s infinite;
+
+            animation: spin 700s infinite;
+    content: ' ';
+    opacity: 0.7;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: scale(1) rotateZ(0deg);
+                transform: scale(1) rotateZ(0deg);
+        -webkit-transition-timing-function: linear;
+                transition-timing-function: linear;
+    }
+    50% {
+        -webkit-transform: scale(1.4) rotateZ(180deg);
+                transform: scale(1.4) rotateZ(180deg);
+        -webkit-transition-timing-function: linear;
+                transition-timing-function: linear;
+    }
+    100% {
+        -webkit-transform: scale(1) rotateZ(360deg);
+                transform: scale(1) rotateZ(360deg);
+        -webkit-transition-timing-function: linear;
+                transition-timing-function: linear;
+    }
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: scale(1) rotateZ(0deg);
+                transform: scale(1) rotateZ(0deg);
+        -webkit-transition-timing-function: linear;
+                transition-timing-function: linear;
+    }
+    50% {
+        -webkit-transform: scale(1.4) rotateZ(180deg);
+                transform: scale(1.4) rotateZ(180deg);
+        -webkit-transition-timing-function: linear;
+                transition-timing-function: linear;
+    }
+    100% {
+        -webkit-transform: scale(1) rotateZ(360deg);
+                transform: scale(1) rotateZ(360deg);
+        -webkit-transition-timing-function: linear;
+                transition-timing-function: linear;
+    }
+}
+
+/*
+ Star field code borrowed from Keith Clark http://codepen.io/keithclark/pen/zqcEd
+ */
+.starfield {
+
 }
 
 .hrz-page {
     opacity: 1;
-    -webkit-transform: rotateX(35deg);
-            transform: rotateX(35deg);
-    -webkit-transition: -webkit-transform 2s linear, opacity 0.3s 1.5s;
-            transition: transform 2s linear, opacity 0.3s 1.5s;
+    -webkit-transform: rotateX(60deg);
+            transform: rotateX(60deg);
+    -webkit-transition: -webkit-transform 2s linear, opacity 1s linear;
+            transition: transform 2s linear, opacity 1s linear;
     overflow: hidden;
 }
 
-.hrz-page.hrz-back {
-    -webkit-transform: rotateX(35deg) translateY(-1000px);
-            transform: rotateX(35deg) translateY(-1000px);
-    opacity: 0;
-}
-.hrz-page.hrz-fore {
-    -webkit-transform: rotateX(35deg) translateY(1000px);
-            transform: rotateX(35deg) translateY(1000px);
-    opacity: 0;
+.hrz-page:nth-child(1) {
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    opacity: 1;
 }
 
-.hrz-page.hrz-focus-from-back, .hrz-page.hrz-focus-from-fore {
-    -webkit-transition: -webkit-transform 2s linear, opacity 0.3s;
-            transition: transform 2s linear, opacity 0.3s;
+.hrz-page.hrz-hidden {
+    left: -5000px;
+}
+
+.hrz-page.hrz-fore {
+    -webkit-transform: rotateX(60deg) translateY(800px);
+            transform: rotateX(60deg) translateY(800px);
 }
 
 .hrz-element {
     color: yellow !important;
 }
 
+.hrz-page img {
+    background-color: yellow !important;
+}
+
+.hrz-element code {
+    color: yellow !important;
+    background-color: transparent;
+    border: 1px solid yellow;
+}
+
 /* custom styling of known page elements */
 .hrz-element.splash h1 {
     background: transparent;
     border-radius: 6px;
-    border: 2px solid yellow;
-    color: #222;
+    color: #111;
     text-shadow:
-       -1px -1px 0 yellow,
+        -1px -1px 0 yellow,
         1px -1px 0 yellow,
         -1px 1px 0 yellow,
-         1px 1px 0 yellow;
+        1px 1px 0 yellow;
 }
